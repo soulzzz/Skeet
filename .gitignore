@@ -1,0 +1,11 @@
+.vs/
+x64/
+*.user
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+imgui.ini
+*.bak
+*.db
+lic.ini
