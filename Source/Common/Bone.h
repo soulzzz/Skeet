@@ -231,8 +231,8 @@ namespace SkeletonLists {
 	static std::list<EBoneIndex> Right_Arm = { EBoneIndex::Neck_01, EBoneIndex::Upperarm_R, EBoneIndex::Lowerarm_R, EBoneIndex::Hand_R };
 	static std::list<EBoneIndex> Left_Arm = { EBoneIndex::Neck_01, EBoneIndex::Upperarm_L, EBoneIndex::Lowerarm_L, EBoneIndex::Hand_L };
 	static std::list<EBoneIndex> Spine = { EBoneIndex::Neck_01, EBoneIndex::Spine_01, EBoneIndex::Pelvis };
-	static std::list<EBoneIndex> Lower_Right = { EBoneIndex::Pelvis, EBoneIndex::Thigh_R, EBoneIndex::Calf_R, EBoneIndex::Foot_R };
-	static std::list<EBoneIndex> Lower_Left = { EBoneIndex::Pelvis, EBoneIndex::Thigh_L, EBoneIndex::Calf_L, EBoneIndex::Foot_L };
+	static std::list<EBoneIndex> Lower_Right = { EBoneIndex::Pelvis, EBoneIndex::Thigh_R, EBoneIndex::Calf_R, EBoneIndex::Foot_R, EBoneIndex::Ball_R };
+	static std::list<EBoneIndex> Lower_Left = { EBoneIndex::Pelvis, EBoneIndex::Thigh_L, EBoneIndex::Calf_L, EBoneIndex::Foot_L, EBoneIndex::Ball_L };
 	static std::list<std::list<EBoneIndex>> Skeleton = { Right_Arm, Left_Arm, Spine, Lower_Right, Lower_Left };
 
 	static std::list<EBoneIndex> Bones = {
@@ -252,9 +252,11 @@ namespace SkeletonLists {
 		EBoneIndex::Thigh_R, 
 		EBoneIndex::Calf_R, 
 		EBoneIndex::Foot_R,
+		EBoneIndex::Ball_R,
 		EBoneIndex::Thigh_L, 
 		EBoneIndex::Calf_L, 
 		EBoneIndex::Foot_L,
+		EBoneIndex::Ball_L,
 	};
 	// 静态的骨骼索引列表，用于指定瞄准的骨骼
 	static std::list<EBoneIndex> AimBones = 
@@ -294,7 +296,9 @@ namespace SkeletonLists {
 		EBoneIndex::Calf_R,
 		// 左脚骨骼
 		EBoneIndex::Foot_L,
+		EBoneIndex::Ball_L,
 		// 右脚骨骼
 		EBoneIndex::Foot_R,
+		EBoneIndex::Ball_R,
 	};
 };

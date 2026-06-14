@@ -25,11 +25,17 @@ namespace Offset
 
 		// FName / object id decode
 		Set("ObjID", 0x20);
+		Set("ObjID2", 0x1C);
 		Set("DecryptNameIndexRor", 1);
 		Set("DecryptNameIndexXorKey1", 0x07360F24);
 		Set("DecryptNameIndexXorKey2", 0xB621EC05);
 		Set("DecryptNameIndexRval", 23);
 		Set("DecryptNameIndexSval", 25);
+		Set("DecryptNameIndex2Ror", 1);
+		Set("DecryptNameIndex2XorKey1", 0x221A03AC);
+		Set("DecryptNameIndex2XorKey2", 0x12082DD7);
+		Set("DecryptNameIndex2Rval", 17);
+		Set("DecryptNameIndex2Sval", 31);
 
 		// World / actor traversal
 		Set("CurrentLevel", 0x800);

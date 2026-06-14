@@ -9,6 +9,7 @@ class Decrypt
 {
 public:
     static DWORD CIndex(DWORD value);
+    static DWORD CIndex2(DWORD value);
     static uint64_t Xe(uint64_t addr);
     static void DestroyXe();
 };

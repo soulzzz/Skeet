@@ -284,23 +284,81 @@ public:
 			
 
 			if (GameData.PID != 0) {
-				
+				uint64_t currentLevelPtr = Decrypt::Xe(mem.Read<uint64_t>(GameData.UWorld + GameData.Offset["CurrentLevel"]));
+				uint64_t gameInstancePtr = Decrypt::Xe(mem.Read<uint64_t>(GameData.UWorld + GameData.Offset["GameInstance"]));
+				uint64_t localPlayerArray = mem.Read<uint64_t>(gameInstancePtr + GameData.Offset["LocalPlayer"]);
+				uint64_t localPlayerPtr = Decrypt::Xe(mem.Read<uint64_t>(localPlayerArray));
+				uint64_t playerControllerPtr = Decrypt::Xe(mem.Read<uint64_t>(localPlayerPtr + GameData.Offset["PlayerController"]));
+				uint64_t acknowledgedPawnPtr = Decrypt::Xe(mem.Read<uint64_t>(playerControllerPtr + GameData.Offset["AcknowledgedPawn"]));
 
-				int MapID = Decrypt::CIndex(mem.Read<uint64_t>(GameData.UWorld + GameData.Offset["ObjID"]));
-				Utils::Log(0, "MapID is [%d]", MapID);
-				GameData.MapName = GNames::GetNameByID(MapID);
-				Utils::Log(0, "Entered the game scene, World name is [%s]", GameData.MapName.c_str());
-				if (Utils::IsLobby(GameData.MapName)) {
-					GameData.Scene = Scene::Lobby;
-					/*if (MapID == 446822) {
-						GameData.Scene = Scene::Lobby;
+				const int worldId1 = Decrypt::CIndex(mem.Read<int>(GameData.UWorld + GameData.Offset["ObjID"]));
+				const int worldId2 = Decrypt::CIndex2(mem.Read<int>(GameData.UWorld + GameData.Offset["ObjID2"]));
+				int worldId = worldId1;
+				int levelId = 0;
+				std::string worldName = GNames::GetNameByID(worldId1);
+				std::string worldName2 = GNames::GetNameByID(worldId2);
+				std::string levelName = "fail";
+				std::string levelName2 = "fail";
+
+				if (!Utils::ValidPtr(currentLevelPtr)) {
+					const int levelId1 = Decrypt::CIndex(mem.Read<int>(currentLevelPtr + GameData.Offset["ObjID"]));
+					const int levelId2 = Decrypt::CIndex2(mem.Read<int>(currentLevelPtr + GameData.Offset["ObjID2"]));
+					levelId = levelId1;
+					levelName = GNames::GetNameByID(levelId1);
+					levelName2 = GNames::GetNameByID(levelId2);
+
+					if (levelName == "fail" && levelName2 != "fail") {
+						levelId = levelId2;
+						levelName = levelName2;
 					}
-					else {
-						GameData.Scene = Scene::Gaming;
-					}*/
+				}
+
+				if (worldName == "fail" && worldName2 != "fail") {
+					worldId = worldId2;
+					worldName = worldName2;
+				}
+
+				GameData.MapName = (levelName != "fail" && !levelName.empty()) ? levelName : worldName;
+
+				static int lastLoggedWorldId = 0;
+				static int lastLoggedWorldId2 = 0;
+				static int lastLoggedLevelId = 0;
+				static std::string lastLoggedWorldName2;
+				static std::string lastLoggedLevelName2;
+				static std::string lastLoggedMapName;
+
+				if (worldId != lastLoggedWorldId || worldId2 != lastLoggedWorldId2 || levelId != lastLoggedLevelId || GameData.MapName != lastLoggedMapName || worldName2 != lastLoggedWorldName2 || levelName2 != lastLoggedLevelName2) {
+					Utils::Log(0, "Scene probe: UWorld=%p CurrentLevel=%p AckPawn=%p WorldID1=%d WorldID2=%d LevelID=%d WorldName1=[%s] WorldName2=[%s] LevelName1=[%s] LevelName2=[%s] ActiveMap=[%s]",
+						GameData.UWorld,
+						currentLevelPtr,
+						acknowledgedPawnPtr,
+						worldId1,
+						worldId2,
+						levelId,
+						GNames::GetNameByID(worldId1).c_str(),
+						worldName2.c_str(),
+						levelName.c_str(),
+						levelName2.c_str(),
+						GameData.MapName.c_str());
+					lastLoggedWorldId = worldId;
+					lastLoggedWorldId2 = worldId2;
+					lastLoggedLevelId = levelId;
+					lastLoggedWorldName2 = worldName2;
+					lastLoggedLevelName2 = levelName2;
+					lastLoggedMapName = GameData.MapName;
+				}
+
+				const bool hasPawn = !Utils::ValidPtr(acknowledgedPawnPtr);
+				const bool hasMapName = !GameData.MapName.empty() && GameData.MapName != "fail";
+
+				if (hasMapName) {
+					GameData.Scene = Utils::IsLobby(GameData.MapName) ? Scene::Lobby : Scene::Gaming;
+				}
+				else if (hasPawn) {
+					GameData.Scene = Scene::Gaming;
 				}
 				else {
-					GameData.Scene = Scene::Gaming;
+					GameData.Scene = Scene::Lobby;
 				}
 			}
 
@@ -416,7 +474,6 @@ public:
 		std::thread UpdateKeyStateThread(KeyState::Update);
 		std::thread UpdateActorsThread(Actors::Update);
 		std::thread UpdatePlayersThread(Players::Update);
-		std::thread UpdatePlayerFogsThread(Players::UpdateFogPlayers);
 		std::thread UpdateVehiclesThread(Vehicles::Update);
 		std::thread AimBotRunThread(AimBot::Run);
 		std::thread UpdateCameraThread(UpdateCamera);

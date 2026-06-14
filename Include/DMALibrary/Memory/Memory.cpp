@@ -57,7 +57,7 @@ bool Memory::DumpMemoryMap(bool debug)
 
 		if (pPhysMemMap->cMap == 0)
 		{
-			printf("[!] Failed to get physical memory map\n");
+			LOG("[!] Physical memory map is unavailable, continuing without mmap support\n");
 			VMMDLL_MemFree(pPhysMemMap);
 			VMMDLL_Close(handle);
 			return false;

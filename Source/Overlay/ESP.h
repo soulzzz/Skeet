@@ -301,12 +301,17 @@ public:
 	{
 		FVector2D Head = Player.Skeleton.ScreenBones.at(EBoneIndex::Head);
 		FVector2D Root = Player.Skeleton.ScreenBones.at(EBoneIndex::Root);
+		FVector2D BallL = Player.Skeleton.ScreenBones.count(EBoneIndex::Ball_L) ? Player.Skeleton.ScreenBones.at(EBoneIndex::Ball_L) : Player.Skeleton.ScreenBones.at(EBoneIndex::Foot_L);
+		FVector2D BallR = Player.Skeleton.ScreenBones.count(EBoneIndex::Ball_R) ? Player.Skeleton.ScreenBones.at(EBoneIndex::Ball_R) : Player.Skeleton.ScreenBones.at(EBoneIndex::Foot_R);
+		float bottomY = Root.Y;
+		if (BallL.Y > bottomY) bottomY = BallL.Y;
+		if (BallR.Y > bottomY) bottomY = BallR.Y;
 
 		ImVec2 Size, Pos;
-		Size.y = (Root.Y - Head.Y) * 1.09;
+		Size.y = (bottomY - Head.Y) * 1.09f;
 		Size.x = Size.y * 0.6;
 
-		Pos = ImVec2(Root.X - Size.x / 2, Head.Y - Size.y * 0.08);
+		Pos = ImVec2(Root.X - Size.x / 2, Head.Y - Size.y * 0.08f);
 
 		return ImVec4{ Pos.x,Pos.y,Size.x,Size.y };
 	}
@@ -999,6 +1004,10 @@ public:
 		int M200PlayerCount = 0;
 		int PalyerBB = 500;//最近敌人
 		std::string DisNane = "";
+		int skippedTeamOrDead = 0;
+		int skippedDistance = 0;
+		int skippedOffScreen = 0;
+		int drawnPlayers = 0;
 
 		for (auto& Item : PlayersVector)
 		{
@@ -1007,6 +1016,7 @@ public:
 			
 			if (Player.IsMe || Player.IsMyTeam || (Player.State == CharacterState::Dead) || (Player.TeamID == 0))
 			{
+				++skippedTeamOrDead;
 				continue;
 			}
 			
@@ -1014,6 +1024,7 @@ public:
 
 			if (Player.Distance > GameData.Config.ESP.DistanceMax)
 			{
+				++skippedDistance;
 				continue;
 			}
 			if (Player.Distance <= 200)
@@ -1042,18 +1053,31 @@ public:
 			
 			const auto& bones = SkeletonLists::Bones;
 			for (EBoneIndex Bone : bones) {
-				Player.Skeleton.LocationBones[Bone] = VectorHelper::GetBoneWithRotation(Player.Skeleton.Bones[Bone], Player.ComponentToWorld);
+				if (Bone == EBoneIndex::Root) {
+					Player.Skeleton.LocationBones[Bone] = Player.Location;
+				}
+				else {
+					Player.Skeleton.LocationBones[Bone] = VectorHelper::GetBoneWithRotation(Player.Skeleton.Bones[Bone], Player.ComponentToWorld);
+				}
 				Player.Skeleton.ScreenBones[Bone] = VectorHelper::WorldToScreen(Player.Skeleton.LocationBones[Bone]);
 				
 			}
 			
+			Player.InScreen =
+				VectorHelper::IsInScreen(Player.Skeleton.ScreenBones[EBoneIndex::Head]) &&
+				VectorHelper::IsInScreen(Player.Skeleton.ScreenBones[EBoneIndex::Root]);
 
 			RenderHelper::PlayerColor PlayerColors = RenderHelper::GetPlayerColor(Player);
 			ImColor UseColor = PlayerColors.infoUseColor;
 			
 		
 			if (!Player.InScreen)
+			{
+				++skippedOffScreen;
 				continue;
+			}
+
+			++drawnPlayers;
 
 			//是否可以显示骨骼
 			if (GameData.Config.ESP.Skeleton) {
@@ -1100,7 +1124,14 @@ public:
 						(GameData.AimBot.Target != Player.Entity || !GameData.AimBot.Lock)))
 					RenderHelper::Circle(ImVec2(Headpos.x, Headpos.y), Rect.w / 12, PlayerColors.skeletonUseColor, GameData.Config.ESP.SkeletonWidth, 32);
 			}
-			const auto h = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::Foot_L].Y - (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::ForeHead].Y, w = (h / 4.0f) * 2.5f, x = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::Root].X - (w / 2.0f), y = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::ForeHead].Y;
+			float legBottomY = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::Foot_L].Y;
+			float footRightY = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::Foot_R].Y;
+			float ballLeftY = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::Ball_L].Y;
+			float ballRightY = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::Ball_R].Y;
+			if (footRightY > legBottomY) legBottomY = footRightY;
+			if (ballLeftY > legBottomY) legBottomY = ballLeftY;
+			if (ballRightY > legBottomY) legBottomY = ballRightY;
+			const auto h = legBottomY - (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::ForeHead].Y, w = (h / 4.0f) * 2.5f, x = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::Root].X - (w / 2.0f), y = (float)(int)Player.Skeleton.ScreenBones[EBoneIndex::ForeHead].Y;
 
 			const float Scale = (float)FontSize / 14.f;
 			ImVec2 HealthBarPos, HealthBarSize;
@@ -1507,6 +1538,18 @@ public:
 				
 			}
 
+		}
+		static DWORD lastEspLogTick = 0;
+		DWORD now = GetTickCount();
+		if (now - lastEspLogTick >= 2000)
+		{
+			Utils::Log(0, "ESP draw: total=%d drawn=%d skippedTeamOrDead=%d skippedDistance=%d skippedOffScreen=%d",
+				static_cast<int>(PlayersVector.size()),
+				drawnPlayers,
+				skippedTeamOrDead,
+				skippedDistance,
+				skippedOffScreen);
+			lastEspLogTick = now;
 		}
 		//危险预警
 		if (GameData.Config.ESP.DangerWarning)
@@ -2006,4 +2049,3 @@ public:
 		}
 	};
 };
-

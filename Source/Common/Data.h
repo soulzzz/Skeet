@@ -288,6 +288,8 @@ inline static const std::vector<int> BoneIndex = {
 		EBoneIndex::Calf_R,
 		EBoneIndex::Foot_L,
 		EBoneIndex::Foot_R,
+		EBoneIndex::Ball_L,
+		EBoneIndex::Ball_R,
 };
 
 struct VehicleWheelInfo {
@@ -432,6 +434,7 @@ struct Player
 	int ObjID;
 	int Sex = 0;
 	uint64_t Entity;
+	std::string EntityName;
 	bool IsMe = false;
 	bool IsMyTeam = false;
 	bool InScreen = true;
@@ -523,9 +526,11 @@ struct Player
 			{EBoneIndex::Thigh_R, FTransform()},
 			{EBoneIndex::Calf_R, FTransform()},
 			{EBoneIndex::Foot_R, FTransform()},
+			{EBoneIndex::Ball_R, FTransform()},
 			{EBoneIndex::Thigh_L, FTransform()},
 			{EBoneIndex::Calf_L, FTransform()},
 			{EBoneIndex::Foot_L, FTransform()},
+			{EBoneIndex::Ball_L, FTransform()},
 		};
 		std::unordered_map<int, FVector> LocationBones = {
 			{EBoneIndex::Root, FVector()},
@@ -544,9 +549,11 @@ struct Player
 			{EBoneIndex::Thigh_R, FVector()},
 			{EBoneIndex::Calf_R, FVector()},
 			{EBoneIndex::Foot_R, FVector()},
+			{EBoneIndex::Ball_R, FVector()},
 			{EBoneIndex::Thigh_L, FVector()},
 			{EBoneIndex::Calf_L, FVector()},
 			{EBoneIndex::Foot_L, FVector()},
+			{EBoneIndex::Ball_L, FVector()},
 		};
 		std::unordered_map<int, bool> VisibleBones = {
 			{EBoneIndex::Root, TRUE},
@@ -565,9 +572,11 @@ struct Player
 			{EBoneIndex::Thigh_R, TRUE},
 			{EBoneIndex::Calf_R, TRUE},
 			{EBoneIndex::Foot_R, TRUE},
+			{EBoneIndex::Ball_R, TRUE},
 			{EBoneIndex::Thigh_L, TRUE},
 			{EBoneIndex::Calf_L, TRUE},
 			{EBoneIndex::Foot_L, TRUE},
+			{EBoneIndex::Ball_L, TRUE},
 		};
 		std::unordered_map<int, FVector2D> ScreenBones = {
 			{EBoneIndex::Root, FVector2D()},
@@ -586,9 +595,11 @@ struct Player
 			{EBoneIndex::Thigh_R, FVector2D()},
 			{EBoneIndex::Calf_R, FVector2D()},
 			{EBoneIndex::Foot_R, FVector2D()},
+			{EBoneIndex::Ball_R, FVector2D()},
 			{EBoneIndex::Thigh_L, FVector2D()},
 			{EBoneIndex::Calf_L, FVector2D()},
 			{EBoneIndex::Foot_L, FVector2D()},
+			{EBoneIndex::Ball_L, FVector2D()},
 		};
 		std::unordered_map<int, bool> BonesVisiablity = {
 			{EBoneIndex::Root, 1},
@@ -607,9 +618,11 @@ struct Player
 			{EBoneIndex::Thigh_R, 1},
 			{EBoneIndex::Calf_R, 1},
 			{EBoneIndex::Foot_R, 1},
+			{EBoneIndex::Ball_R, 1},
 			{EBoneIndex::Thigh_L, 1},
 			{EBoneIndex::Calf_L, 1},
 			{EBoneIndex::Foot_L, 1},
+			{EBoneIndex::Ball_L, 1},
 		};
 	} Skeleton;
 };
@@ -1107,7 +1120,7 @@ struct FGameData
 			int rankList = VK_F10;
 			int Quit_key = VK_END;
 			bool UseLastFrameCameraCache = false;
-			bool UseThread = false;
+			bool UseThread = true;
 			int FusionModeKey = VK_INSERT;
 			bool zhixiangmoshi = false;
 			int MonitorCurrentIdx = 0;
@@ -1183,7 +1196,7 @@ struct FGameData
 
 		struct
 		{
-			bool PhysXDebug = true;
+			bool PhysXDebug = false;
 			int PhysxLoadRadius = 300;
 			int PhysxStaticRefreshInterval = 3000;
 			int PhysxDynamicRefreshInterval = 3000;

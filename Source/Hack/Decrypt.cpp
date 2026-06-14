@@ -19,6 +19,20 @@ DWORD Decrypt::CIndex(DWORD value)
     return rotated ^ complexPart ^ static_cast<DWORD>(GameData.Offset["DecryptNameIndexXorKey2"]);
 }
 
+DWORD Decrypt::CIndex2(DWORD value)
+{
+    const DWORD xorResult = value ^ static_cast<DWORD>(GameData.Offset["DecryptNameIndex2XorKey1"]);
+    const DWORD rotated = GameData.Offset["DecryptNameIndex2Ror"]
+        ? _rotr(xorResult, static_cast<int>(GameData.Offset["DecryptNameIndex2Rval"]))
+        : _rotl(xorResult, static_cast<int>(GameData.Offset["DecryptNameIndex2Rval"]));
+
+    const DWORD complexPart =
+        (xorResult << static_cast<int>(GameData.Offset["DecryptNameIndex2Sval"])) |
+        ((xorResult >> 1) & 0x7FFF0000);
+
+    return rotated ^ complexPart ^ static_cast<DWORD>(GameData.Offset["DecryptNameIndex2XorKey2"]);
+}
+
 
 void Decrypt::DestroyXe()
 {

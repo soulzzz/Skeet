@@ -14,14 +14,14 @@ namespace KeyState
 
 		if (!GameData.Keyboard.InitKeyboard())
 		{
-			MessageBoxA(NULL, "热键初始化失败，请重启主机", "提示", MB_ICONERROR | MB_OK | MB_TOPMOST);
+			MessageBoxA(NULL, "Keyboard hotkey initialization failed. Please restart the host.", "Error", MB_ICONERROR | MB_OK | MB_TOPMOST);
 			//Utils::Log(2, "Failed to initialize keyboard hotkeys through kernel.");
 			GameData.KeyState = false;
 		}
 		else {
 			//Utils::Log(1, U8("初始化键盘热键成功（免责声明：该游戏仅供学习使用与本人无关，请及时在24小时内删除谢谢）"));
 			GameData.KeyState = true;
-			Utils::Log(1, U8("初始化键盘热键成功（免责声明：该游戏仅供学习使用与本人无关，请及时在24小时内删除谢谢）:%llx", GameData.Keyboard.GetAddrss()));
+			Utils::Log(1, "Keyboard hotkeys initialized successfully: %llx", GameData.Keyboard.GetAddrss());
 		}
 	}
 	void Update() {

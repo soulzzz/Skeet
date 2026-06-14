@@ -71,9 +71,27 @@ namespace Utils
 	}
 
 	inline bool IsLobby(const std::string& mapName) {
-		bool IsLobby = (mapName.find("fail") != std::string::npos || mapName.find("None") != std::string::npos || mapName.find("TslLobby") != std::string::npos || mapName.find("Tsl") != std::string::npos);
-		if (IsLobby) return IsLobby;
-		return mapName.find("Main") == std::string::npos;
+		if (mapName.empty() || mapName == "fail" || mapName == "None") {
+			return true;
+		}
+
+		static const std::vector<std::string> lobbyMarkers = {
+			"TslLobby",
+			"Lobby",
+			"Frontend",
+			"FrontEnd",
+			"Entry",
+			"Login",
+			"Returning"
+		};
+
+		for (const auto& marker : lobbyMarkers) {
+			if (mapName.find(marker) != std::string::npos) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	inline bool Contains(std::vector<std::string> vec, std::string str) {
