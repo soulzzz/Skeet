@@ -228,12 +228,12 @@ enum EBoneIndex
 };
 
 namespace SkeletonLists {
-	static std::list<EBoneIndex> Right_Arm = { EBoneIndex::Neck_01, EBoneIndex::Upperarm_R, EBoneIndex::Lowerarm_R, EBoneIndex::Hand_R };
+	static std::list<EBoneIndex> Spine = { EBoneIndex::Head, EBoneIndex::Neck_01, EBoneIndex::Pelvis };
 	static std::list<EBoneIndex> Left_Arm = { EBoneIndex::Neck_01, EBoneIndex::Upperarm_L, EBoneIndex::Lowerarm_L, EBoneIndex::Hand_L };
-	static std::list<EBoneIndex> Spine = { EBoneIndex::Neck_01, EBoneIndex::Spine_01, EBoneIndex::Pelvis };
-	static std::list<EBoneIndex> Lower_Right = { EBoneIndex::Pelvis, EBoneIndex::Thigh_R, EBoneIndex::Calf_R, EBoneIndex::Foot_R, EBoneIndex::Ball_R };
+	static std::list<EBoneIndex> Right_Arm = { EBoneIndex::Neck_01, EBoneIndex::Upperarm_R, EBoneIndex::Lowerarm_R, EBoneIndex::Hand_R };
 	static std::list<EBoneIndex> Lower_Left = { EBoneIndex::Pelvis, EBoneIndex::Thigh_L, EBoneIndex::Calf_L, EBoneIndex::Foot_L, EBoneIndex::Ball_L };
-	static std::list<std::list<EBoneIndex>> Skeleton = { Right_Arm, Left_Arm, Spine, Lower_Right, Lower_Left };
+	static std::list<EBoneIndex> Lower_Right = { EBoneIndex::Pelvis, EBoneIndex::Thigh_R, EBoneIndex::Calf_R, EBoneIndex::Foot_R, EBoneIndex::Ball_R };
+	static std::list<std::list<EBoneIndex>> Skeleton = { Spine, Left_Arm, Right_Arm, Lower_Left, Lower_Right };
 
 	static std::list<EBoneIndex> Bones = {
 		EBoneIndex::Root,

@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ 生成的包含文件。
-// 供 DMA-KaKa.rc 使用
+// 供 skeet.rc 使用
 //
 #define IDR_DLL_X641                    101
 #define IDR_DLL_X861                    102

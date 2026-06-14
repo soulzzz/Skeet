@@ -274,6 +274,7 @@ inline static const std::vector<int> BoneIndex = {
 		EBoneIndex::ForeHead,
 		EBoneIndex::Head,
 		EBoneIndex::Neck_01,
+		EBoneIndex::Spine_01,
 		EBoneIndex::Spine_03,
 		EBoneIndex::Pelvis,
 		EBoneIndex::Upperarm_L,
@@ -1119,7 +1120,7 @@ struct FGameData
 			bool FusionMode = true;
 			int rankList = VK_F10;
 			int Quit_key = VK_END;
-			bool UseLastFrameCameraCache = false;
+			bool UseLastFrameCameraCache = true;
 			bool UseThread = true;
 			int FusionModeKey = VK_INSERT;
 			bool zhixiangmoshi = false;
@@ -1204,7 +1205,7 @@ struct FGameData
 			int PhysxRefreshLimit = 0;
 			bool Enable = true;
 			bool Stroke = true;
-			bool miwu = false;
+			bool miwu = true;
 			int DistanceStyle = 1;
 			int HealthBarStyle = 0;
 			bool VisibleCheck = true;

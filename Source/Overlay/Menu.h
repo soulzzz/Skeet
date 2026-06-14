@@ -222,7 +222,7 @@ ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFl
 
 const char* top_tabs_char[] = { U8(" 自瞄"),  U8(" 视觉"), U8(" 物品分组"), U8(" 雷达"), U8(" 设置") };
 const char* top_tabs_icon_char[] = { "o", "c", "m", "M", "f" };
-static float tab_alpha = 0.f; /* */ static float tab_add; /* */ static int active_tab = 0; static float anim = 0.f; static float alpha = 0.f;
+static int active_tab = 0;
 static std::vector<int> comboSelections(EntityLists.size(), 0); // 初始化所有 Combo 的选项为 0
 const std::string WeapType[7] = { "AR", "DMR", "SR", "LMG", "HG", "SG", "SMG" };
 const char* top_label = top_tabs_char[0];
@@ -700,17 +700,13 @@ public:
 			EndGroup();
 
 
-			tab_alpha = ImLerp(tab_alpha, (tabs == active_tab) ? 1.f : 0.f, 15.f * ImGui::GetIO().DeltaTime);
-			if (tab_alpha < 0.01f && tab_add < 0.01f) active_tab = tabs;
+			active_tab = tabs;
 
-			anim = ImLerp(anim, (tabs == active_tab) ? 1.f : 0.f, 6.f * ImGui::GetIO().DeltaTime);
-
-
-			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, tab_alpha * style->Alpha);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, style->Alpha);
 			{
 				if (active_tab == 0)
 				{
-					ImGui::SetCursorPos(ImVec2(region.x - (tab_alpha * region.x - 18), 190 - (anim * 120)));
+					ImGui::SetCursorPos(ImVec2(18.f, 70.f));
 					ImGui::BeginChild(false, "Child", "o", ImVec2(1145, 565));
 					{
 						ImGui::BeginGroup();
@@ -867,7 +863,14 @@ public:
 								
 									HWND Progman = FindWindowA("Progman", NULL);
 									ShowWindow(Progman, SW_SHOW);
-									exit(0);
+									if (hwnd && IsWindow(hwnd))
+									{
+										PostMessage(hwnd, WM_CLOSE, 0, 0);
+									}
+									else
+									{
+										ExitProcess(0);
+									}
 								
 								}
 
@@ -1089,7 +1092,7 @@ public:
 				else if (active_tab == 1)
 				{
 
-					 ImGui::SetCursorPos(ImVec2(region.x - (tab_alpha * region.x - 18), 190 - (anim * 120)));
+					 ImGui::SetCursorPos(ImVec2(18.f, 70.f));
 
 					 ImGui::BeginChild(false, "Child", "o", ImVec2(1145, 565));
 					 {
@@ -1317,7 +1320,7 @@ public:
 				 else if (active_tab == 2)
 				 {
 
-					 ImGui::SetCursorPos(ImVec2(region.x - (tab_alpha * region.x - 18), 190 - (anim * 120)));
+					 ImGui::SetCursorPos(ImVec2(18.f, 70.f));
 
 					 ImGui::BeginChild(false, "Child", "o", ImVec2(1145, 565));
 					 {
@@ -1625,7 +1628,7 @@ public:
 				 }
 				 else if (active_tab == 3)
 				 {
-					 ImGui::SetCursorPos(ImVec2(region.x - (tab_alpha * region.x - 18), 190 - (anim * 120)));
+					 ImGui::SetCursorPos(ImVec2(18.f, 70.f));
 					 ImGui::BeginChild(false, "Child", "o", ImVec2(1145, 565));
 					 {
 						 ImGui::BeginGroup();
@@ -1709,7 +1712,7 @@ public:
 				 else if (active_tab == 4)
 				 {
 
-					 ImGui::SetCursorPos(ImVec2(region.x - (tab_alpha * region.x - 18), 190 - (anim * 120)));
+					 ImGui::SetCursorPos(ImVec2(18.f, 70.f));
 
 					 ImGui::BeginChild(false, "Child", "o", ImVec2(1145, 565));
 					 {
@@ -1779,12 +1782,6 @@ public:
 								 ImGui::Checkbox(U8("指向模式"), &GameData.Config.Overlay.zhixiangmoshi);
 								 
 								 ImGui::Checkbox(U8("垂直同步"), &GameData.Config.Overlay.VSync);
-
-								 ImGui::Checkbox(U8("备用相机"), &GameData.Config.Overlay.UseLastFrameCameraCache);
-
-								 ImGui::Checkbox(U8("独立线程"), &GameData.Config.Overlay.UseThread);
-
-								 ImGui::Checkbox(U8("过滤迷雾"), &GameData.Config.ESP.miwu);	
 
 								 if (ImGui::Checkbox(U8("融合模式"), &GameData.Config.Overlay.FusionMode)) {
 									 HWND Progman = FindWindowA("Progman", NULL);

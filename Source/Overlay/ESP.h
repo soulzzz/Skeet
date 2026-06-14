@@ -14,6 +14,41 @@
 
 class ESP {
 public:
+	static bool IsFiniteScreenPoint(const FVector2D& point)
+	{
+		return std::isfinite(point.X) && std::isfinite(point.Y) && point.X != 0.0f && point.Y != 0.0f;
+	}
+
+	static FVector2D GetScreenBone(const Player& Player, EBoneIndex bone)
+	{
+		const auto it = Player.Skeleton.ScreenBones.find(bone);
+		if (it != Player.Skeleton.ScreenBones.end())
+		{
+			return it->second;
+		}
+
+		return FVector2D(0.0f, 0.0f);
+	}
+
+	static void RefreshPlayerScreenBones(Player& Player)
+	{
+		for (int bone : BoneIndex)
+		{
+			const auto locationIt = Player.Skeleton.LocationBones.find(static_cast<EBoneIndex>(bone));
+			if (locationIt == Player.Skeleton.LocationBones.end())
+			{
+				continue;
+			}
+
+			Player.Skeleton.ScreenBones[static_cast<EBoneIndex>(bone)] = VectorHelper::WorldToScreen(locationIt->second);
+		}
+
+		Player.Skeleton.ScreenBones[EBoneIndex::Root] = VectorHelper::WorldToScreen(Player.Location);
+		Player.InScreen =
+			VectorHelper::IsInScreen(Player.Skeleton.ScreenBones[EBoneIndex::Head]) &&
+			VectorHelper::IsInScreen(Player.Skeleton.ScreenBones[EBoneIndex::Root]);
+	}
+
 	static void DrawFPS(ImGuiIO& io)
 	{
 		if (!GameData.Config.Overlay.ShowFPS)
@@ -153,96 +188,82 @@ public:
 		}
 	}*/
 
-	static void DrawSkeleton(Player Player, const ImU32 SkeletonUseColor, const float Thickness)
+	static void DrawSkeleton(const Player& Player, const ImU32 SkeletonUseColor, const float Thickness)
 	{
-		FVector2D neckpos = Player.Skeleton.ScreenBones[EBoneIndex::Neck_01];
-		FVector2D pelvispos = Player.Skeleton.ScreenBones[EBoneIndex::Pelvis];
-		std::vector<std::tuple<ImVec2, ImVec2, ImU32>> Bones;
-		bool failed = false;
-
-		for (const auto& a : SkeletonLists::Skeleton)
+		const ImU32 visibleColor = ImGui::ColorConvertFloat4ToU32(Utils::FloatToImColor(GameData.Config.ESP.Color.Visible.Skeleton));
+		auto drawSegment = [&](EBoneIndex startBone, EBoneIndex endBone)
 		{
-			FVector2D previous = FVector2D(0, 0);
-			FVector2D current, p1, c1;
-
-
-			for (EBoneIndex bone : a)
+			const FVector2D start = GetScreenBone(Player, startBone);
+			const FVector2D end = GetScreenBone(Player, endBone);
+			if (!IsFiniteScreenPoint(start) || !IsFiniteScreenPoint(end))
 			{
-				current = (bone == EBoneIndex::Neck_01) ? neckpos : (bone == EBoneIndex::Pelvis) ? pelvispos : Player.Skeleton.ScreenBones[bone];
-
-				if (previous.X != 0.f && previous.Y != 0.f)
-				{
-					p1 = previous;
-					c1 = current;
-
-					auto visible = Player.Skeleton.VisibleBones[bone];
-					ImU32 color = ImGui::ColorConvertFloat4ToU32(Utils::FloatToImColor(GameData.Config.ESP.Color.Visible.Skeleton));
-					Bones.emplace_back(std::make_tuple(ImVec2(p1.X, p1.Y), ImVec2(c1.X, c1.Y), visible ? color : SkeletonUseColor));
-
-					if (p1.X == INFINITY || p1.Y == INFINITY || c1.X == INFINITY || c1.Y == INFINITY) {
-						failed = true;
-						Bones.clear();
-						break;
-					}
-
-				}
-				previous = current;
+				return;
 			}
 
-			if (failed)
-				break;
-		}
+			const auto visibleIt = Player.Skeleton.VisibleBones.find(endBone);
+			const bool visible = visibleIt != Player.Skeleton.VisibleBones.end() && visibleIt->second;
+			RenderHelper::Line(ImVec2(start.X, start.Y), ImVec2(end.X, end.Y), visible ? visibleColor : SkeletonUseColor, Thickness);
+		};
 
-		for (auto& line : Bones)
-		{
-			RenderHelper::Line(std::get<0>(line), std::get<1>(line), std::get<2>(line), Thickness);
-		}
+		drawSegment(EBoneIndex::Head, EBoneIndex::Neck_01);
+		drawSegment(EBoneIndex::Neck_01, EBoneIndex::Pelvis);
+
+		drawSegment(EBoneIndex::Neck_01, EBoneIndex::Upperarm_L);
+		drawSegment(EBoneIndex::Upperarm_L, EBoneIndex::Lowerarm_L);
+		drawSegment(EBoneIndex::Lowerarm_L, EBoneIndex::Hand_L);
+
+		drawSegment(EBoneIndex::Neck_01, EBoneIndex::Upperarm_R);
+		drawSegment(EBoneIndex::Upperarm_R, EBoneIndex::Lowerarm_R);
+		drawSegment(EBoneIndex::Lowerarm_R, EBoneIndex::Hand_R);
+
+		drawSegment(EBoneIndex::Pelvis, EBoneIndex::Thigh_L);
+		drawSegment(EBoneIndex::Thigh_L, EBoneIndex::Calf_L);
+		drawSegment(EBoneIndex::Calf_L, EBoneIndex::Foot_L);
+		drawSegment(EBoneIndex::Foot_L, EBoneIndex::Ball_L);
+
+		drawSegment(EBoneIndex::Pelvis, EBoneIndex::Thigh_R);
+		drawSegment(EBoneIndex::Thigh_R, EBoneIndex::Calf_R);
+		drawSegment(EBoneIndex::Calf_R, EBoneIndex::Foot_R);
+		drawSegment(EBoneIndex::Foot_R, EBoneIndex::Ball_R);
 	}
 	
-	static void DrawSkeleton_Physx(Player Player, const ImU32 SkeletonUseColor, const float Thickness)
+	static void DrawSkeleton_Physx(const Player& Player, const ImU32 SkeletonUseColor, const float Thickness)
 	{
-		FVector2D neckpos = Player.Skeleton.ScreenBones[EBoneIndex::Neck_01];
-		FVector2D pelvispos = Player.Skeleton.ScreenBones[EBoneIndex::Pelvis];
-		std::vector<std::tuple<ImVec2, ImVec2, ImU32>> Bones;
-		bool failed = false;
-
-		for (const auto& a : SkeletonLists::Skeleton)
+		const ImU32 visibleColor = ImGui::ColorConvertFloat4ToU32(Utils::FloatToImColor(GameData.Config.ESP.Color.Visible.Skeleton));
+		auto drawSegment = [&](EBoneIndex startBone, EBoneIndex endBone)
 		{
-			FVector2D previous = FVector2D(0, 0);
-			FVector2D current, p1, c1;
-
-
-			for (EBoneIndex bone : a)
+			const FVector2D start = GetScreenBone(Player, startBone);
+			const FVector2D end = GetScreenBone(Player, endBone);
+			if (!IsFiniteScreenPoint(start) || !IsFiniteScreenPoint(end))
 			{
-				current = (bone == EBoneIndex::Neck_01) ? neckpos : (bone == EBoneIndex::Pelvis) ? pelvispos : Player.Skeleton.ScreenBones[bone];
-
-				if (previous.X != 0.f && previous.Y != 0.f)
-				{
-					p1 = previous;
-					c1 = current;
-
-					auto visible = Player.Skeleton.VisibleBones[bone];
-					ImU32 color = ImGui::ColorConvertFloat4ToU32(Utils::FloatToImColor(GameData.Config.ESP.Color.Visible.Skeleton));
-					Bones.emplace_back(std::make_tuple(ImVec2(p1.X, p1.Y), ImVec2(c1.X, c1.Y), visible ? color : SkeletonUseColor));
-
-					if (p1.X == INFINITY || p1.Y == INFINITY || c1.X == INFINITY || c1.Y == INFINITY) {
-						failed = true;
-						Bones.clear();
-						break;
-					}
-
-				}
-				previous = current;
+				return;
 			}
 
-			if (failed)
-				break;
-		}
+			const auto visibleIt = Player.Skeleton.VisibleBones.find(endBone);
+			const bool visible = visibleIt != Player.Skeleton.VisibleBones.end() && visibleIt->second;
+			RenderHelper::Line(ImVec2(start.X, start.Y), ImVec2(end.X, end.Y), visible ? visibleColor : SkeletonUseColor, Thickness);
+		};
 
-		for (auto& line : Bones)
-		{
-			RenderHelper::Line(std::get<0>(line), std::get<1>(line), std::get<2>(line), Thickness);
-		}
+		drawSegment(EBoneIndex::Head, EBoneIndex::Neck_01);
+		drawSegment(EBoneIndex::Neck_01, EBoneIndex::Pelvis);
+
+		drawSegment(EBoneIndex::Neck_01, EBoneIndex::Upperarm_L);
+		drawSegment(EBoneIndex::Upperarm_L, EBoneIndex::Lowerarm_L);
+		drawSegment(EBoneIndex::Lowerarm_L, EBoneIndex::Hand_L);
+
+		drawSegment(EBoneIndex::Neck_01, EBoneIndex::Upperarm_R);
+		drawSegment(EBoneIndex::Upperarm_R, EBoneIndex::Lowerarm_R);
+		drawSegment(EBoneIndex::Lowerarm_R, EBoneIndex::Hand_R);
+
+		drawSegment(EBoneIndex::Pelvis, EBoneIndex::Thigh_L);
+		drawSegment(EBoneIndex::Thigh_L, EBoneIndex::Calf_L);
+		drawSegment(EBoneIndex::Calf_L, EBoneIndex::Foot_L);
+		drawSegment(EBoneIndex::Foot_L, EBoneIndex::Ball_L);
+
+		drawSegment(EBoneIndex::Pelvis, EBoneIndex::Thigh_R);
+		drawSegment(EBoneIndex::Thigh_R, EBoneIndex::Calf_R);
+		drawSegment(EBoneIndex::Calf_R, EBoneIndex::Foot_R);
+		drawSegment(EBoneIndex::Foot_R, EBoneIndex::Ball_R);
 	}
 	static void DrawFOV()
 	{
@@ -315,7 +336,7 @@ public:
 
 		return ImVec4{ Pos.x,Pos.y,Size.x,Size.y };
 	}
-	static std::unordered_map<int, std::list<ItemInfo>> GroupItems(std::vector<std::pair<uint64_t, ItemInfo>> Items, float ThresholdX, float ThresholdY) {
+	static std::unordered_map<int, std::list<ItemInfo>> GroupItems(const std::vector<std::pair<uint64_t, ItemInfo>>& Items, float ThresholdX, float ThresholdY) {
 		static const auto IsNear = [&](const FVector2D& A, const FVector2D& B) {
 			return std::abs(A.X - B.X) < ThresholdX && std::abs(A.Y - B.Y) < ThresholdY;
 			};
@@ -323,8 +344,8 @@ public:
 		std::unordered_map<int, std::list<ItemInfo>> Groups;
 		int GroupId = 0;
 
-		for (auto& Key : Items) {
-			auto& Item = Key.second;
+		for (const auto& Key : Items) {
+			ItemInfo Item = Key.second;
 
 			bool FoundGroup = false;
 			Item.ScreenLocation = VectorHelper::WorldToScreen(Item.Location);
@@ -346,13 +367,18 @@ public:
 		}
 		return Groups;
 	}
-	static void DrawItems(std::unordered_map<uint64_t, ItemInfo> Items)
+	static void DrawItems(const std::unordered_map<uint64_t, ItemInfo>& Items)
 	{
 		// 检查物品绘制功能是否启用
 		if (!GameData.Config.Item.Enable) return;
 
 		// 将物品从 unordered_map 转换为 vector，以便排序
-		std::vector<std::pair<uint64_t, ItemInfo>> Vectors(Items.begin(), Items.end());
+		std::vector<std::pair<uint64_t, ItemInfo>> Vectors;
+		Vectors.reserve(Items.size());
+		for (const auto& item : Items)
+		{
+			Vectors.emplace_back(item.first, item.second);
+		}
 
 		// 根据物品距离进行降序排序
 		std::sort(Vectors.begin(), Vectors.end(), [](const std::pair<uint64_t, ItemInfo>& a, const std::pair<uint64_t, ItemInfo>& b) {
@@ -383,7 +409,7 @@ public:
 					// 检查物品是否隐藏或超出最大距离
 					if (ItemInfo.bHidden || ItemInfo.Distance > GameData.Config.Item.DistanceMax) continue;
 
-					std::string Text = Utils::StringToUTF8(std::format("{}", ItemInfo.DisplayName));
+					std::string Text = Utils::StringToUTF8(ItemInfo.DisplayName);
 					int GroupIndex = GameData.Config.Item.Lists[ItemInfo.Name].Group;
 
 					// 检查是否显示该组
@@ -500,7 +526,7 @@ public:
 
 				ItemInfo.Distance = GameData.Camera.Location.Distance(ItemInfo.Location) / 100.0f; // 更新距离
 
-				std::string Text = Utils::StringToUTF8(std::format("{}", ItemInfo.DisplayName));
+				std::string Text = Utils::StringToUTF8(ItemInfo.DisplayName);
 				ImColor InfoColor = ImColor(255, 255, 255); // 默认信息颜色
 
 				// 绘制文本或距离
@@ -532,13 +558,18 @@ public:
 			}
 		}
 	}
-	static void DrawProjects(std::unordered_map<uint64_t, ProjectInfo> Items)
+	static void DrawProjects(const std::unordered_map<uint64_t, ProjectInfo>& Items)
 	{
 		// 检查项目绘制功能是否启用
 		if (!GameData.Config.Project.Enable) return;
 
 		// 将项目从 unordered_map 转换为 vector，以便排序
-		std::vector<std::pair<uint64_t, ProjectInfo>> Vectors(Items.begin(), Items.end());
+		std::vector<std::pair<uint64_t, ProjectInfo>> Vectors;
+		Vectors.reserve(Items.size());
+		for (const auto& item : Items)
+		{
+			Vectors.emplace_back(item.first, item.second);
+		}
 
 		// 根据项目距离进行降序排序
 		std::sort(Vectors.begin(), Vectors.end(), [](const std::pair<uint64_t, ProjectInfo>& a, const std::pair<uint64_t, ProjectInfo>& b) {
@@ -654,7 +685,7 @@ public:
 					ImGui::GetWindowDrawList()->AddLine({ Vertices[i].X, Vertices[i].Y }, { Vertices[i + 1].X,  Vertices[i + 1].Y }, color, thickness);
 		}
 	}
-	static void DrawVehicles(std::unordered_map<uint64_t, VehicleInfo> Vehicles)
+	static void DrawVehicles(const std::unordered_map<uint64_t, VehicleInfo>& Vehicles)
 	{
 		
 		FVector2D FistPos; //
@@ -662,7 +693,12 @@ public:
 		if (!GameData.Config.Vehicle.Enable) return;
 
 		// 将车辆信息从 unordered_map 转换为 vector 以便排序
-		std::vector<std::pair<uint64_t, VehicleInfo>> Vectors(Vehicles.begin(), Vehicles.end());
+		std::vector<std::pair<uint64_t, VehicleInfo>> Vectors;
+		Vectors.reserve(Vehicles.size());
+		for (const auto& item : Vehicles)
+		{
+			Vectors.emplace_back(item.first, item.second);
+		}
 
 		// 根据车辆距离进行降序排序
 		std::sort(Vectors.begin(), Vectors.end(), [](const std::pair<uint64_t, VehicleInfo>& a, const std::pair<uint64_t, VehicleInfo>& b) {
@@ -746,10 +782,15 @@ public:
 			}
 		}
 	}
-	static void DrawVehicleWheels(std::unordered_map<uint64_t, VehicleWheelInfo> VehicleWheels)
+	static void DrawVehicleWheels(const std::unordered_map<uint64_t, VehicleWheelInfo>& VehicleWheels)
 	{
 		// 将 VehicleWheels 中的键值对复制到一个向量中
-		std::vector<std::pair<uint64_t, VehicleWheelInfo>> Vectors(VehicleWheels.begin(), VehicleWheels.end());
+		std::vector<std::pair<uint64_t, VehicleWheelInfo>> Vectors;
+		Vectors.reserve(VehicleWheels.size());
+		for (const auto& item : VehicleWheels)
+		{
+			Vectors.emplace_back(item.first, item.second);
+		}
 
 		// 按照 Wheel 的距离进行排序，距离越远的排在前面
 		std::sort(Vectors.begin(), Vectors.end(), [](const std::pair<uint64_t, VehicleWheelInfo>& a, const std::pair<uint64_t, VehicleWheelInfo>& b) {
@@ -775,40 +816,11 @@ public:
 			ImVec2 HeadInfoSize = RenderHelper::StrokeText(Text.c_str(), { Wheel.ScreenLocation.X, Wheel.ScreenLocation.Y }, InfoColor, 14, true, true);
 		}
 	}
-	static PlayerRankInfo GetPlayerRankInfo(const std::unordered_map<std::string, PlayerRankList> PlayerRankLists, const Player Player)
+	static void DrawRadars(const std::unordered_map<uint64_t, Player>& Players, const std::unordered_map<uint64_t, VehicleInfo>& Vehicles, const std::unordered_map<uint64_t, PackageInfo>& Packages)
 	{
-		PlayerRankInfo PlayerRankData; // 声明一个变量用于存储玩家排名信息
-
-		// 检查玩家排名列表中是否包含该玩家的名称
-		if (PlayerRankLists.count(Player.Name) > 0)
+		for (const auto& Item : Vehicles)
 		{
-			PlayerRankList PlayerRank = PlayerRankLists.at(Player.Name); // 获取该玩家的排名信息
-
-			// 根据配置的排名模式，选择相应的排名数据
-			switch (GameData.Config.PlayerList.RankMode) {
-			case 1:
-				PlayerRankData = PlayerRank.TPP; // 第三人称排名
-				break;
-			case 2:
-				PlayerRankData = PlayerRank.SquadTPP; // 第三人称组队排名
-				break;
-			case 3:
-				PlayerRankData = PlayerRank.FPP; // 第一人称排名
-				break;
-			case 4:
-				PlayerRankData = PlayerRank.SquadFPP; // 第一人称组队排名
-				break;
-			default:
-				break; // 如果没有匹配的模式，保持 PlayerRankData 为初始状态
-			}
-		}
-		return PlayerRankData; // 返回玩家的排名信息
-	}
-	static void DrawRadars(std::unordered_map<uint64_t, Player> Players, std::unordered_map<uint64_t, VehicleInfo> Vehicles, std::unordered_map<uint64_t, PackageInfo> Packages)
-	{
-		for (auto& Item : Vehicles)
-		{
-			VehicleInfo& Vehicle = Item.second;
+			const VehicleInfo& Vehicle = Item.second;
 
 			std::string IconUrl = "Assets/image/Map/car_land.png";
 
@@ -834,9 +846,9 @@ public:
 			}
 		}
 
-		for (auto& Item : Packages)
+		for (const auto& Item : Packages)
 		{
-			PackageInfo& Package = Item.second;
+			const PackageInfo& Package = Item.second;
 
 			if (Package.Type == EntityType::AirDrop)
 			{
@@ -893,9 +905,9 @@ public:
 			}
 		}
 
-		for (auto& Item : Players)
+		for (const auto& Item : Players)
 		{
-			Player& Player = Item.second;
+			const Player& Player = Item.second;
 
 			if (Player.InFog || Player.IsMe || Player.IsMyTeam || (Player.State == CharacterState::Dead))
 			{
@@ -990,17 +1002,22 @@ public:
 		}
 	}
 
-	static void DrawPlayers(std::unordered_map<uint64_t, Player> Players)
+	static void DrawPlayers(const std::unordered_map<uint64_t, Player>& Players)
 	{
 		if (!GameData.Config.ESP.Enable) return;
 
-		std::vector<std::pair<uint64_t, Player>> PlayersVector(Players.begin(), Players.end());
+		std::vector<std::pair<uint64_t, Player>> PlayersVector;
+		PlayersVector.reserve(Players.size());
+		for (const auto& item : Players)
+		{
+			PlayersVector.emplace_back(item.first, item.second);
+		}
 
 		std::sort(PlayersVector.begin(), PlayersVector.end(), [](const std::pair<uint64_t, Player>& a, const std::pair<uint64_t, Player>& b) {
 			return a.second.Distance > b.second.Distance;
 			});
 
-		std::unordered_map<std::string, PlayerRankList> PlayerRankLists = Data::GetPlayerRankLists();
+		const std::unordered_map<std::string, PlayerRankList> PlayerSegmentLists = Data::GetPlayerSegmentLists();
 		int M200PlayerCount = 0;
 		int PalyerBB = 500;//最近敌人
 		std::string DisNane = "";
@@ -1038,6 +1055,8 @@ public:
 
 			}
 
+			RefreshPlayerScreenBones(Player);
+
 			//是否可以显示信息
 			bool bShowInfo = (Player.Distance <= GameData.Config.ESP.InfoDistanceMax) ||
 				(GameData.Config.ESP.AimExpandInfo && GameData.AimBot.TargetPlayerInfo.Entity == Player.Entity);
@@ -1046,26 +1065,6 @@ public:
 				(Player.WeaponName != "fail" && Player.WeaponName != "Unknown") &&
 				(Player.WeaponID > 0);
 
-
-		
-			// 预先缓存骨骼列表长度，避免重复获取
-			
-			
-			const auto& bones = SkeletonLists::Bones;
-			for (EBoneIndex Bone : bones) {
-				if (Bone == EBoneIndex::Root) {
-					Player.Skeleton.LocationBones[Bone] = Player.Location;
-				}
-				else {
-					Player.Skeleton.LocationBones[Bone] = VectorHelper::GetBoneWithRotation(Player.Skeleton.Bones[Bone], Player.ComponentToWorld);
-				}
-				Player.Skeleton.ScreenBones[Bone] = VectorHelper::WorldToScreen(Player.Skeleton.LocationBones[Bone]);
-				
-			}
-			
-			Player.InScreen =
-				VectorHelper::IsInScreen(Player.Skeleton.ScreenBones[EBoneIndex::Head]) &&
-				VectorHelper::IsInScreen(Player.Skeleton.ScreenBones[EBoneIndex::Root]);
 
 			RenderHelper::PlayerColor PlayerColors = RenderHelper::GetPlayerColor(Player);
 			ImColor UseColor = PlayerColors.infoUseColor;
@@ -1079,18 +1078,6 @@ public:
 
 			++drawnPlayers;
 
-			//是否可以显示骨骼
-			if (GameData.Config.ESP.Skeleton) {
-				bool isLockedTarget = (GameData.AimBot.Target == Player.Entity && GameData.AimBot.Lock);
-				bool shouldDrawSkeleton = !GameData.Config.ESP.LockedHiddenBones || !isLockedTarget;
-
-				if (GameData.Config.ESP.Skeleton && (!GameData.Config.ESP.LockedHiddenBones || (GameData.AimBot.Target != Player.Entity || !GameData.AimBot.Lock)))
-				{
-					DrawSkeleton_Physx(Player, PlayerColors.skeletonUseColor, GameData.Config.ESP.SkeletonWidth);
-				}
-
-			}
-
 			ImVec2 Pos = {
 				static_cast<float>(static_cast<int>(Player.Skeleton.ScreenBones[EBoneIndex::Root].X)),
 				static_cast<float>(static_cast<int>(Player.Skeleton.ScreenBones[EBoneIndex::ForeHead].Y))
@@ -1100,7 +1087,6 @@ public:
 
 			auto Rect = Get2DBox(Player);
 
-			FVector2D HeadPos = Player.Skeleton.ScreenBones[EBoneIndex::ForeHead];
 			//鎖定變色 
 			if (GameData.Config.ESP.soudingbianse) {
 				if(GameData.AimBot.Target==Player.Entity && GameData.AimBot.Lock){
@@ -1318,11 +1304,11 @@ public:
 				//	/*{ health_xPos - 25.0f, y - 5.0f },*/
 				//	{ health_xPos - textSize.x / 7 , Pos.y + 2.0f },
 				//	0);
-				InfoText += std::format("[{}] ", Player.TeamID);
+				InfoText += "[" + std::to_string(Player.TeamID) + "] ";
 			}
 				
 			//战队
-			if (GameData.Config.ESP.ClanName && Player.ClanName != "") InfoText += std::format("[{}] ", Player.ClanName);
+			if (GameData.Config.ESP.ClanName && Player.ClanName != "") InfoText += "[" + Player.ClanName + "] ";
 			//名字
 			if (GameData.Config.ESP.Nickname && bShowInfo) InfoText += Player.Name + " ";
 
@@ -1335,25 +1321,27 @@ public:
 				ImVec2 HeadInfoSize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x, Pos.y - 6.f }, PlayerColors.infoUseColor, FontSize, true, true);
 				Pos.y -= HeadInfoSize.y;
 			}
-			auto Ranky = Pos.y;
 			ImVec2 HeadInfoSize;
 			PlayerRankInfo PlayerRankData;
-			PlayerRankList temp = Data::GetPlayerSegmentListsItem(Player.Name);
-			switch (GameData.Config.PlayerList.RankMode) {
-			case 1:
-				PlayerRankData = temp.TPP;
-				break;
-			case 2:
-				PlayerRankData = temp.SquadTPP;
-				break;
-			case 3:
-				PlayerRankData = temp.FPP;
-				break;
-			case 4:
-				PlayerRankData = temp.SquadFPP;
-				break;
-			default:
-				break;
+			const auto segmentIt = PlayerSegmentLists.find(Player.Name);
+			if (segmentIt != PlayerSegmentLists.end())
+			{
+				switch (GameData.Config.PlayerList.RankMode) {
+				case 1:
+					PlayerRankData = segmentIt->second.TPP;
+					break;
+				case 2:
+					PlayerRankData = segmentIt->second.SquadTPP;
+					break;
+				case 3:
+					PlayerRankData = segmentIt->second.FPP;
+					break;
+				case 4:
+					PlayerRankData = segmentIt->second.SquadFPP;
+					break;
+				default:
+					break;
+				}
 			}
 
 			// 只在段位不为空的情况下处理
@@ -1363,12 +1351,11 @@ public:
 				HeadInfoSize = RenderHelper::StrokeText(PlayerRankData.TierToString.c_str(), { Pos.x - GameData.Config.ESP.FontSize + 1, Pos.y - 6.f }, PlayerColors.infoUseColor, FontSize, true, true);
 				Pos.y -= HeadInfoSize.y;
 				// 准备KDA文本和大小
-				ImVec2 KDASize = ImVec2(0, 0); // 默认值
 				std::string InfoText;
 				if (PlayerRankData.KDAToString != "0.00")
 				{
-					InfoText = std::format(" {}", PlayerRankData.KDAToString);
-					KDASize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x + GameData.Config.ESP.FontSize + 1, Pos.y - 6.f }, PlayerColors.infoUseColor, FontSize, true, false);
+					InfoText = " " + PlayerRankData.KDAToString;
+					RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x + GameData.Config.ESP.FontSize + 1, Pos.y - 6.f }, PlayerColors.infoUseColor, FontSize, true, false);
 				}
 				// 绘制排名图标
 				//if (GameData.Config.ESP.showIcon) {
@@ -1418,7 +1405,7 @@ public:
 				//距离
 				InfoText = "";
 
-				InfoText += std::format("{}M", (int)Player.Distance);
+				InfoText += std::to_string((int)Player.Distance) + "M";
 
 				if (InfoText != "") {
 					ImVec2 HeadInfoSize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x, Pos.y }, PlayerColors.infoUseColor, FontSize, true, false);
@@ -1430,7 +1417,7 @@ public:
 				//血量
 				InfoText = "";
 
-				InfoText += std::format("{}HP", (int)Player.Health);
+				InfoText += std::to_string((int)Player.Health) + "HP";
 
 				if (InfoText != "") {
 					ImVec2 HeadInfoSize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x, Pos.y }, PlayerColors.infoUseColor, FontSize, true, false);
@@ -1450,7 +1437,7 @@ public:
 			if (GameData.Config.ESP.Partner && Player.PartnerLevel > 0 && bShowInfo) {
 				InfoText = "";
 
-				InfoText += std::format("走狗Lvl.{}", (int)Player.PartnerLevel);
+				InfoText += "走狗Lvl." + std::to_string((int)Player.PartnerLevel);
 
 				if (InfoText != "") {
 					ImVec2 HeadInfoSize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x, Pos.y }, PlayerColors.infoUseColor, FontSize, true, false);
@@ -1461,7 +1448,7 @@ public:
 			if (GameData.Config.ESP.等级)
 			{
 				InfoText = "";
-				InfoText += std::format("Lv.{}", (int)Player.SurvivalLevel);
+				InfoText += "Lv." + std::to_string((int)Player.SurvivalLevel);
 
 				if (InfoText != "") {
 					ImVec2 HeadInfoSize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x, Pos.y }, PlayerColors.infoUseColor, FontSize, true, false);
@@ -1472,7 +1459,7 @@ public:
 			if (GameData.Config.ESP.击杀 && Player.KillCount > 0)
 			{
 				InfoText = "";
-				InfoText += std::format("K.{}", (int)Player.KillCount);
+				InfoText += "K." + std::to_string((int)Player.KillCount);
 
 				if (InfoText != "") {
 					ImVec2 HeadInfoSize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x, Pos.y }, PlayerColors.infoUseColor, FontSize, true, false);
@@ -1483,7 +1470,7 @@ public:
 			if (GameData.Config.ESP.伤害 && Player.DamageDealtOnEnemy > 0)
 			{
 				InfoText = "";
-				InfoText += std::format("S.{}", (int)Player.DamageDealtOnEnemy);
+				InfoText += "S." + std::to_string((int)Player.DamageDealtOnEnemy);
 
 				if (InfoText != "") {
 					ImVec2 HeadInfoSize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x, Pos.y }, PlayerColors.infoUseColor, FontSize, true, false);
@@ -1510,7 +1497,7 @@ public:
 			if (GameData.Config.ESP.观战 && Player.SpectatedCount > 0)
 			{
 				InfoText = "";
-				InfoText += std::format("G.{}", (int)Player.SpectatedCount);
+				InfoText += "G." + std::to_string((int)Player.SpectatedCount);
 
 				if (InfoText != "") {
 					ImVec2 HeadInfoSize = RenderHelper::StrokeText(Utils::StringToUTF8(InfoText).c_str(), { Pos.x, Pos.y }, PlayerColors.infoUseColor, FontSize, true, false);
@@ -1561,9 +1548,9 @@ public:
 			int EnemiesBehindCount = 0;
 			bool IsBeingAimedFromBehind = false;
 
-			for (auto& Item : Players)
+			for (const auto& Item : Players)
 			{
-				Player& Player = Item.second;
+				const Player& Player = Item.second;
 				if (!Player.IsAimMe) continue;
 
 				float PlayerAngle = atan2(
@@ -1607,7 +1594,7 @@ public:
 
 	}
 
-	static void DrawPlayersEarly(std::unordered_map<uint64_t, Player> Players)
+	static void DrawPlayersEarly(const std::unordered_map<uint64_t, Player>& Players)
 	{
 		if (!GameData.Config.Early.Enable) return;
 
@@ -1616,9 +1603,9 @@ public:
 		float AngleXSize = 2.f * Scale;
 		float AngleYSize = 5.f * Scale;
 
-		for (auto& Item : Players)
+		for (const auto& Item : Players)
 		{
-			Player& Player = Item.second;
+			const Player& Player = Item.second;
 
 			if (Player.IsMe || Player.IsMyTeam || (Player.State == CharacterState::Dead))
 			{
@@ -1673,11 +1660,16 @@ public:
 		}
 	}
 
-	static void DrawPackages(std::unordered_map<uint64_t, PackageInfo> Packages)
+	static void DrawPackages(const std::unordered_map<uint64_t, PackageInfo>& Packages)
 	{
 		if (!GameData.Config.AirDrop.Enable && !GameData.Config.DeadBox.Enable) return;
 
-		std::vector<std::pair<uint64_t, PackageInfo>> VectorItems(Packages.begin(), Packages.end());
+		std::vector<std::pair<uint64_t, PackageInfo>> VectorItems;
+		VectorItems.reserve(Packages.size());
+		for (const auto& item : Packages)
+		{
+			VectorItems.emplace_back(item.first, item.second);
+		}
 
 		std::sort(VectorItems.begin(), VectorItems.end(), [](const std::pair<uint64_t, PackageInfo>& a, const std::pair<uint64_t, PackageInfo>& b) {
 			return a.second.Distance > b.second.Distance;
@@ -1708,7 +1700,7 @@ public:
 
 					for (auto& ItemInfo : Package.Items)
 					{
-						std::string Text = Utils::StringToUTF8(std::format("{}", ItemInfo.DisplayName));
+						std::string Text = Utils::StringToUTF8(ItemInfo.DisplayName);
 						int GroupIndex = GameData.Config.Item.Lists[ItemInfo.Name].Group;
 						ImColor TextColor = InfoColor;
 						float FontSize = GameData.Config.AirDrop.FontSize - 1;
@@ -1775,7 +1767,7 @@ public:
 
 					for (auto& ItemInfo : Package.Items)
 					{
-						std::string Text = Utils::StringToUTF8(std::format("{}", ItemInfo.DisplayName));
+						std::string Text = Utils::StringToUTF8(ItemInfo.DisplayName);
 						int GroupIndex = GameData.Config.Item.Lists[ItemInfo.Name].Group;
 						ImColor TextColor = InfoColor;
 						float FontSize = GameData.Config.DeadBox.FontSize - 1;
@@ -2012,21 +2004,28 @@ public:
 			return;
 		}
 
+		const bool drawWorldEntities = !GameData.bShowMouseCursor && !GameData.AimBot.Lock && !GameData.Config.ESP.FocusMode;
+		const bool drawRadar = GameData.Radar.Visibility || GameData.Radar.MiniRadarVisibility;
+		const bool needVehicles = (drawWorldEntities && GameData.Config.Vehicle.Enable) || (drawRadar && (GameData.Config.Radar.Main.ShowVehicle || GameData.Config.Radar.Mini.ShowVehicle));
+		const bool needItems = drawWorldEntities && GameData.Config.Item.Enable;
+		const bool needPackages = (drawWorldEntities && (GameData.Config.AirDrop.Enable || GameData.Config.DeadBox.Enable)) ||
+			(drawRadar && (GameData.Config.Radar.Main.ShowAirDrop || GameData.Config.Radar.Main.ShowDeadBox || GameData.Config.Radar.Mini.ShowAirDrop || GameData.Config.Radar.Mini.ShowDeadBox));
+		const bool needProjects = GameData.Config.Project.Enable;
+
 		std::unordered_map<uint64_t, Player> Players = Data::GetPlayers();
-		std::unordered_map<uint64_t, VehicleWheelInfo> VehicleWheels = Data::GetVehicleWheels();
-		std::unordered_map<uint64_t, VehicleInfo> Vehicles = Data::GetVehicles();
-		std::unordered_map<uint64_t, ItemInfo> Items = Data::GetItems();
-		std::unordered_map<uint64_t, ProjectInfo> Projects = Data::GetProjects();
-		std::unordered_map<uint64_t, PackageInfo> Packages = Data::GetPackages();
+		std::unordered_map<uint64_t, VehicleInfo> Vehicles = needVehicles ? Data::GetVehicles() : std::unordered_map<uint64_t, VehicleInfo>{};
+		std::unordered_map<uint64_t, ItemInfo> Items = needItems ? Data::GetItems() : std::unordered_map<uint64_t, ItemInfo>{};
+		std::unordered_map<uint64_t, ProjectInfo> Projects = needProjects ? Data::GetProjects() : std::unordered_map<uint64_t, ProjectInfo>{};
+		std::unordered_map<uint64_t, PackageInfo> Packages = needPackages ? Data::GetPackages() : std::unordered_map<uint64_t, PackageInfo>{};
 
 		if (!GameData.bShowMouseCursor && !GameData.AimBot.Lock)
 		{
 			if (!GameData.Config.ESP.FocusMode)
 			{
-				DrawItems(Items);
+				if (!Items.empty()) DrawItems(Items);
 				//DrawVehicleWheels(VehicleWheels);
-				DrawVehicles(Vehicles);
-				DrawPackages(Packages);
+				if (!Vehicles.empty()) DrawVehicles(Vehicles);
+				if (!Packages.empty()) DrawPackages(Packages);
 			}
 
 			DrawFOV();
@@ -2041,8 +2040,8 @@ public:
 		}
 		DrawLocalPlayerProject();
 		DrawAimBotPoint();
-		DrawProjects(Projects);
-		DrawRadars(Players, Vehicles, Packages);
+		if (!Projects.empty()) DrawProjects(Projects);
+		if (drawRadar) DrawRadars(Players, Vehicles, Packages);
 		if (GameData.Config.ESP.PhysXDebug) {
 			DrawNextHintMesh();
 			//DrawNearModel();

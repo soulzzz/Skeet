@@ -453,6 +453,10 @@ public:
 
 		Config::Load();
 
+		GameData.Config.Overlay.UseLastFrameCameraCache = true;
+		GameData.Config.Overlay.UseThread = true;
+		GameData.Config.ESP.miwu = true;
+
 		if (!mem.Init("TslGame.exe", true, false))
 		{
 			Utils::Log(2, U8("init error! No get TslGame.exe read pid faild"));
@@ -489,3 +493,6 @@ public:
 		UpdatePIDThread.join();
 	}
 };
+
+
+

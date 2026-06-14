@@ -24,7 +24,7 @@
     <ProjectGuid>{3082529e-a996-48c4-981b-1795cdae093f}</ProjectGuid>
     <RootNamespace>OXO</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
-    <ProjectName>DMA-KaKa</ProjectName>
+    <ProjectName>skeet</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -77,8 +77,8 @@
     <LibraryPath>$(DXSDK_DIR)Lib\x64;$(SolutionDir)Source;$(SolutionDir)Lib;$(SolutionDir)Include\Mosquitto;$(SolutionDir)Server;$(LibraryPath)</LibraryPath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
-    <OutDir>$(ProjectDir)x64\AKM_Test\</OutDir>
-    <TargetName>AKM_Test</TargetName>
+    <OutDir>$(ProjectDir)x64\skeet\</OutDir>
+    <TargetName>skeet</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)Include;$(SolutionDir)Source;$(SolutionDir)Include\imgui;$(SolutionDir)Include\libs\freetype\include;$(IncludePath)</IncludePath>
@@ -162,7 +162,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\Release;$(SolutionDir)Include\DMARender;$(SolutionDir)lib;$(SolutionDir)x64\AKM_Test;$(SolutionDir)Include\DMARender\Vectors;$(SolutionDir)Include\sdk\Lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\Release;$(SolutionDir)Include\DMARender;$(SolutionDir)lib;$(SolutionDir)x64\skeet;$(SolutionDir)Include\DMARender\Vectors;$(SolutionDir)Include\sdk\Lib\x64</AdditionalLibraryDirectories>
       <AdditionalDependencies>wsock32.lib;Ws2_32.lib;SetupAPI.lib;Dwmapi.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;bcrypt.lib;crypt32.lib;embree4.lib;tbb12.lib;zstd.lib;VMP\VMProtectSDK64.lib;Iphlpapi.lib;Shell32.lib;mosquitto.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <IgnoreAllDefaultLibraries>
@@ -379,7 +379,7 @@
     <Library Include="QPLibX64_MT.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DMA-KaKa.rc" />
+    <ResourceCompile Include="skeet.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\libs\emscripten\shell_minimal.html" />

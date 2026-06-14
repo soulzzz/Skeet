@@ -136,8 +136,14 @@ namespace KeyState
 							ShowWindow(Progman, SW_SHOW);
 							//ShowWindow(TrayWnd, SW_SHOW);
 							
-							exit(0);
-							//ExitProcess(0);
+							if (GameData.Config.Overlay.hWnd && IsWindow(GameData.Config.Overlay.hWnd))
+							{
+								PostMessage(GameData.Config.Overlay.hWnd, WM_CLOSE, 0, 0);
+							}
+							else
+							{
+								ExitProcess(0);
+							}
 							
 							
 						}

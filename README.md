@@ -1,4 +1,4 @@
-# DMA-kaka
+# skeet
  pubg dma source
 
   
@@ -53,4 +53,3 @@ DWORD Decrypt::CIndex(DWORD encrypted_id)
     return rotated_part ^ complex_part ^ key2;
 }
 ```
-

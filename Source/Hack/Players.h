@@ -17,31 +17,133 @@ class Players
 private:
     static constexpr size_t kMaxBoneReadCount = 190;
 
-    static int ResolveSkeletonBoneIndex(EGender gender, int bone)
+    static void UpdateScreenBone(Player& player, EBoneIndex bone, const FVector& location)
     {
-        if (gender != EGender::Female)
-        {
-            return bone;
-        }
+        player.Skeleton.LocationBones[bone] = location;
+        player.Skeleton.ScreenBones[bone] = VectorHelper::WorldToScreen(location);
+    }
 
+    struct SkeletonIndexTable
+    {
+        int Head;
+        int Neck;
+        int Pelvis;
+        int Spine01;
+        int Spine03;
+        int ForeHead;
+        int LeftShoulder;
+        int LeftElbow;
+        int LeftHand;
+        int RightShoulder;
+        int RightElbow;
+        int RightHand;
+        int LeftThigh;
+        int LeftCalf;
+        int LeftFoot;
+        int LeftBall;
+        int RightThigh;
+        int RightCalf;
+        int RightFoot;
+        int RightBall;
+    };
+
+    static const SkeletonIndexTable& GetSkeletonIndexTable(EGender gender)
+    {
+        static const SkeletonIndexTable kMaleTable =
+        {
+            10,
+            5,
+            1,
+            2,
+            4,
+            15,
+            88,
+            89,
+            90,
+            115,
+            116,
+            117,
+            172,
+            173,
+            174,
+            175,
+            178,
+            179,
+            180,
+            181,
+        };
+
+        static const SkeletonIndexTable kFemaleTable =
+        {
+            10,
+            5,
+            1,
+            2,
+            4,
+            15,
+            95,
+            96,
+            97,
+            122,
+            123,
+            124,
+            180,
+            183,
+            181,
+            182,
+            186,
+            189,
+            187,
+            188,
+        };
+
+        return gender == EGender::Female ? kFemaleTable : kMaleTable;
+    }
+
+    static int ResolveSkeletonBoneIndex(const SkeletonIndexTable& table, int bone)
+    {
         switch (bone)
         {
+        case EBoneIndex::ForeHead:
+            return table.ForeHead;
+        case EBoneIndex::Head:
+            return table.Head;
+        case EBoneIndex::Neck_01:
+            return table.Neck;
+        case EBoneIndex::Spine_01:
+            return table.Spine01;
+        case EBoneIndex::Spine_03:
+            return table.Spine03;
+        case EBoneIndex::Pelvis:
+            return table.Pelvis;
+        case EBoneIndex::Upperarm_L:
+            return table.LeftShoulder;
+        case EBoneIndex::Lowerarm_L:
+            return table.LeftElbow;
+        case EBoneIndex::Hand_L:
+            return table.LeftHand;
+        case EBoneIndex::Upperarm_R:
+            return table.RightShoulder;
+        case EBoneIndex::Lowerarm_R:
+            return table.RightElbow;
+        case EBoneIndex::Hand_R:
+            return table.RightHand;
         case EBoneIndex::Thigh_L:
-            return 180;
+            return table.LeftThigh;
         case EBoneIndex::Calf_L:
-            return 183;
+            return table.LeftCalf;
         case EBoneIndex::Foot_L:
-            return 181;
+            return table.LeftFoot;
         case EBoneIndex::Ball_L:
-            return 182;
+            return table.LeftBall;
         case EBoneIndex::Thigh_R:
-            return 186;
+            return table.RightThigh;
         case EBoneIndex::Calf_R:
-            return 189;
+            return table.RightCalf;
         case EBoneIndex::Foot_R:
-            return 187;
+            return table.RightFoot;
         case EBoneIndex::Ball_R:
-            return 188;
+            return table.RightBall;
         default:
             return bone;
         }
@@ -123,6 +225,57 @@ private:
             std::abs(location.Z) < 200000.0f;
     }
 
+    static FVector GetBoneWorldPosition(const FTransform& bone, const FTransform& toWorld)
+    {
+        const float bx = bone.Translation.X;
+        const float by = bone.Translation.Y;
+        const float bz = bone.Translation.Z;
+
+        const float x2 = toWorld.Rotation.X + toWorld.Rotation.X;
+        const float y2 = toWorld.Rotation.Y + toWorld.Rotation.Y;
+        const float z2 = toWorld.Rotation.Z + toWorld.Rotation.Z;
+
+        const float xx2 = toWorld.Rotation.X * x2;
+        const float yy2 = toWorld.Rotation.Y * y2;
+        const float zz2 = toWorld.Rotation.Z * z2;
+
+        const float m11 = (1.0f - (yy2 + zz2)) * toWorld.Scale3D.X;
+        const float m22 = (1.0f - (xx2 + zz2)) * toWorld.Scale3D.Y;
+        const float m33 = (1.0f - (xx2 + yy2)) * toWorld.Scale3D.Z;
+
+        const float yz2 = toWorld.Rotation.Y * z2;
+        const float wx2 = toWorld.Rotation.W * x2;
+        const float m32 = (yz2 - wx2) * toWorld.Scale3D.Z;
+        const float m23 = (yz2 + wx2) * toWorld.Scale3D.Y;
+
+        const float xy2 = toWorld.Rotation.X * y2;
+        const float wz2 = toWorld.Rotation.W * z2;
+        const float m21 = (xy2 - wz2) * toWorld.Scale3D.Y;
+        const float m12 = (xy2 + wz2) * toWorld.Scale3D.X;
+
+        const float xz2 = toWorld.Rotation.X * z2;
+        const float wy2 = toWorld.Rotation.W * y2;
+        const float m31 = (xz2 + wy2) * toWorld.Scale3D.Z;
+        const float m13 = (xz2 - wy2) * toWorld.Scale3D.X;
+
+        return FVector(
+            bx * m11 + by * m21 + bz * m31 + toWorld.Translation.X,
+            bx * m12 + by * m22 + bz * m32 + toWorld.Translation.Y,
+            bx * m13 + by * m23 + bz * m33 + toWorld.Translation.Z
+        );
+    }
+
+    static void UpdateSkeletonScreenData(Player& player)
+    {
+        UpdateScreenBone(player, EBoneIndex::Root, player.Location);
+
+        for (int bone : BoneIndex)
+        {
+            const FVector boneLocation = GetBoneWorldPosition(player.Skeleton.Bones[bone], player.ComponentToWorld);
+            UpdateScreenBone(player, static_cast<EBoneIndex>(bone), boneLocation);
+        }
+    }
+
     static bool ReadBoneTransforms(Player& player, const std::string& entityName)
     {
         uint64_t boneArray = ResolveCandidatePointer(mem.Read<uint64_t>(player.MeshComponent + GameData.Offset["StaticMesh"]));
@@ -134,6 +287,7 @@ private:
         player.BoneArray = boneArray;
         const bool isFemale = entityName.find("Female") != std::string::npos;
         const EGender gender = isFemale ? EGender::Female : EGender::Male;
+        const SkeletonIndexTable& indexTable = GetSkeletonIndexTable(gender);
         const size_t boneCount = isFemale ? 190 : 183;
         if (boneCount == 0 || boneCount > kMaxBoneReadCount)
         {
@@ -145,7 +299,7 @@ private:
 
         for (int bone : BoneIndex)
         {
-            const int sourceBone = ResolveSkeletonBoneIndex(gender, bone);
+            const int sourceBone = ResolveSkeletonBoneIndex(indexTable, bone);
             if (sourceBone <= 0 || static_cast<size_t>(sourceBone) > boneCount)
             {
                 continue;
@@ -230,19 +384,7 @@ private:
             return false;
         }
 
-        player.Skeleton.LocationBones[EBoneIndex::Head] = VectorHelper::GetBoneWithRotation(player.Skeleton.Bones[EBoneIndex::Head], player.ComponentToWorld);
-        player.Skeleton.LocationBones[EBoneIndex::Root] = player.Location;
-        player.Skeleton.LocationBones[EBoneIndex::ForeHead] = VectorHelper::GetBoneWithRotation(player.Skeleton.Bones[EBoneIndex::ForeHead], player.ComponentToWorld);
-        player.Skeleton.LocationBones[EBoneIndex::Foot_L] = VectorHelper::GetBoneWithRotation(player.Skeleton.Bones[EBoneIndex::Foot_L], player.ComponentToWorld);
-        player.Skeleton.LocationBones[EBoneIndex::Foot_R] = VectorHelper::GetBoneWithRotation(player.Skeleton.Bones[EBoneIndex::Foot_R], player.ComponentToWorld);
-        player.Skeleton.LocationBones[EBoneIndex::Pelvis] = VectorHelper::GetBoneWithRotation(player.Skeleton.Bones[EBoneIndex::Pelvis], player.ComponentToWorld);
-
-        player.Skeleton.ScreenBones[EBoneIndex::Head] = VectorHelper::WorldToScreen(player.Skeleton.LocationBones[EBoneIndex::Head]);
-        player.Skeleton.ScreenBones[EBoneIndex::Root] = VectorHelper::WorldToScreen(player.Skeleton.LocationBones[EBoneIndex::Root]);
-        player.Skeleton.ScreenBones[EBoneIndex::ForeHead] = VectorHelper::WorldToScreen(player.Skeleton.LocationBones[EBoneIndex::ForeHead]);
-        player.Skeleton.ScreenBones[EBoneIndex::Foot_L] = VectorHelper::WorldToScreen(player.Skeleton.LocationBones[EBoneIndex::Foot_L]);
-        player.Skeleton.ScreenBones[EBoneIndex::Foot_R] = VectorHelper::WorldToScreen(player.Skeleton.LocationBones[EBoneIndex::Foot_R]);
-        player.Skeleton.ScreenBones[EBoneIndex::Pelvis] = VectorHelper::WorldToScreen(player.Skeleton.LocationBones[EBoneIndex::Pelvis]);
+        UpdateSkeletonScreenData(player);
 
         player.InScreen = VectorHelper::IsInScreen(player.Skeleton.ScreenBones[EBoneIndex::Head]) &&
             VectorHelper::IsInScreen(player.Skeleton.ScreenBones[EBoneIndex::Root]);
@@ -370,7 +512,7 @@ public:
                 lastLogTick = now;
             }
 
-            Sleep(45);
+            Sleep(5);
         }
     }
 };

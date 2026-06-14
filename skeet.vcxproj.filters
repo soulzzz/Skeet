@@ -212,7 +212,7 @@
     <Library Include="Include\libs\freetype\win64\freetype.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DMA-KaKa.rc" />
+    <ResourceCompile Include="skeet.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\libs\emscripten\shell_minimal.html" />
