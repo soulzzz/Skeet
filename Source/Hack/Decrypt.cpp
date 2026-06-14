@@ -5,10 +5,18 @@
 
 DWORD Decrypt::CIndex(DWORD value)
 {
-    DWORD xorResult = value ^ GameData.Offset["DecryptNameIndexXorKey1"];
-    DWORD rotated = GameData.Offset["DecryptNameIndexRor"] ? _rotr(xorResult, GameData.Offset["DecryptNameIndexRval"]) : _rotl(xorResult, GameData.Offset["DecryptNameIndexRval"]);
+    const DWORD xorResult = value ^ static_cast<DWORD>(GameData.Offset["DecryptNameIndexXorKey1"]);
+    const DWORD rotated = GameData.Offset["DecryptNameIndexRor"]
+        ? _rotr(xorResult, static_cast<int>(GameData.Offset["DecryptNameIndexRval"]))
+        : _rotl(xorResult, static_cast<int>(GameData.Offset["DecryptNameIndexRval"]));
 
-    return rotated ^ (rotated << GameData.Offset["DecryptNameIndexSval"]) ^ GameData.Offset["DecryptNameIndexXorKey2"];
+    // Current KaKa reference uses a mixed form:
+    // rotated ^ ((xorResult << sval) | ((xorResult >> 7) & 0x1FF0000)) ^ key2
+    const DWORD complexPart =
+        (xorResult << static_cast<int>(GameData.Offset["DecryptNameIndexSval"])) |
+        ((xorResult >> 7) & 0x1FF0000);
+
+    return rotated ^ complexPart ^ static_cast<DWORD>(GameData.Offset["DecryptNameIndexXorKey2"]);
 }
 
 

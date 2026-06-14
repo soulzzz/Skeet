@@ -34,7 +34,6 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
-//#include"MenuWebRadar.h"
 extern int currentLanguageIndex;  // 声明全局变量
 // 定义骨骼点位置和名称
 struct BonePosition {

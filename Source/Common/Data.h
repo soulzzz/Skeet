@@ -1474,15 +1474,6 @@ struct FGameData
 			char globalBuf[1024] = "\0";
 			std::string 到期时间 = "";
 		} eyou;
-		struct {
-			char IP[256] = "192.168.110.1";
-			char  Port[256] = "8081";
-			char  SubTitle[256] = "";
-			std::string RadarUrl;
-			bool isWebRadarConnect = false;
-			bool isWebRadarEnable = false;
-		} WebRadar;
-
 	} Config;
 
 

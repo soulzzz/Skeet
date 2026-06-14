@@ -17,91 +17,18 @@ class Rank
 {
 public:
     std::string sendGetRequestWithWininet(const std::string& host, int port, const std::string& path) {
-        HINTERNET hInternet = InternetOpenA("WinINet Example", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
-        if (!hInternet) {
-            return "hInternet error";
-        }
-
-        HINTERNET hConnect = InternetConnectA(hInternet, host.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
-        if (!hConnect) {
-            InternetCloseHandle(hInternet);
-            return "hConnect error";
-        }
-
-        const char* acceptTypes[] = { "*/*", NULL };
-        //const char* acceptTypes[] = { "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7", NULL };
-        HINTERNET hRequest = HttpOpenRequestA(hConnect, "GET", path.c_str(), NULL, NULL, acceptTypes, INTERNET_FLAG_RELOAD, 0);
-        if (!hRequest) {
-            InternetCloseHandle(hConnect);
-            InternetCloseHandle(hInternet);
-            return "hRequest error";
-        }
-
-        //const char* headers = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\r\n";
-        const char* headers = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36\r\n";
-
-        if (!HttpSendRequestA(hRequest, headers, strlen(headers), NULL, 0)) {
-            InternetCloseHandle(hRequest);
-            InternetCloseHandle(hConnect);
-            InternetCloseHandle(hInternet);
-            return "headers error";
-        }
-
-        std::string response;
-        char buffer[4096];
-        DWORD bytesRead;
-        while (InternetReadFile(hRequest, &buffer, sizeof(buffer), &bytesRead) && bytesRead != 0) {
-            response.append(buffer, bytesRead);
-        }
-
-        InternetCloseHandle(hRequest);
-        InternetCloseHandle(hConnect);
-        InternetCloseHandle(hInternet);
-
-        return response;
+        (void)host;
+        (void)port;
+        (void)path;
+        return "";
     }
 
     std::string sendPostRequestWithWininet(const std::string& host, int port, const std::string& path, const std::string& data) {
-        HINTERNET hInternet = InternetOpenA("WinINet Example", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
-        if (!hInternet) {
-            return "";
-        }
-
-        HINTERNET hConnect = InternetConnectA(hInternet, host.c_str(), port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
-        if (!hConnect) {
-            InternetCloseHandle(hInternet);
-            return "";
-        }
-
-        const char* acceptTypes[] = { "*/*", NULL };
-        HINTERNET hRequest = HttpOpenRequestA(hConnect, "POST", path.c_str(), NULL, NULL, acceptTypes, INTERNET_FLAG_RELOAD, 0);
-        if (!hRequest) {
-            InternetCloseHandle(hConnect);
-            InternetCloseHandle(hInternet);
-            return "";
-        }
-
-        std::string headers = "Content-Type: application/x-www-form-urlencoded\r\nContent-Length: " + std::to_string(data.length());
-        if (!HttpSendRequestA(hRequest, headers.c_str(), headers.length(), (LPVOID)data.c_str(), data.length())) {
-            InternetCloseHandle(hRequest);
-            InternetCloseHandle(hConnect);
-            InternetCloseHandle(hInternet);
-            return "";
-        }
-
-        std::string response;
-        char buffer[4096];
-        DWORD bytesRead;
-
-        while (InternetReadFile(hRequest, buffer, sizeof(buffer), &bytesRead) && bytesRead != 0) {
-            response.append(buffer, bytesRead);
-        }
-
-        InternetCloseHandle(hRequest);
-        InternetCloseHandle(hConnect);
-        InternetCloseHandle(hInternet);
-
-        return response;
+        (void)host;
+        (void)port;
+        (void)path;
+        (void)data;
+        return "";
     }
 
     std::string extractOrReturnOriginal(const std::string& input) {
@@ -487,8 +414,7 @@ public:
 
         for (const auto& name : names) {
 
-            // ¼ì²é¸ÃÍæ¼ÒÊÇ·ñÒÑ¾­³É¹¦²éÑ¯¹ı
-            if (QuerySuccess[name])
+            // å¦«â‚¬éŒãƒ¨î‡šéœâ•î†é„îˆšæƒå®¸èŒ¬ç²¡é´æ„¬å§›éŒãƒ¨î‡—æ©?            if (QuerySuccess[name])
             {
                 continue;
             }
@@ -507,11 +433,10 @@ public:
 
 
 
-        std::vector<std::future<void>> futures_list;  // ÓÃÓÚ´æ´¢ËùÓĞµÄÒì²½ÈÎÎñ
+        std::vector<std::future<void>> futures_list;  // é¢ã„¤ç°¬ç€›æ¨ºåéµâ‚¬éˆå¤Œæ®‘å¯®å‚›î„æµ è¯²å§Ÿ
 
         for (auto& [name, future] : futures) {
-            // ¼ì²é¸ÃÍæ¼ÒÊÇ·ñÒÑ¾­³É¹¦²éÑ¯¹ı
-            if (QuerySuccess[name]) {
+            // å¦«â‚¬éŒãƒ¨î‡šéœâ•î†é„îˆšæƒå®¸èŒ¬ç²¡é´æ„¬å§›éŒãƒ¨î‡—æ©?            if (QuerySuccess[name]) {
                 continue;
             }
 
@@ -519,7 +444,7 @@ public:
                 continue;
             }
 
-            // ½«Ã¿¸öÈÎÎñÒì²½»¯
+            // çå—˜ç˜¡æ¶“îƒæ¢é”â€³ç´“å§ãƒ¥å¯²
             futures_list.push_back(std::async(std::launch::async, [&] {
                 std::string response = future.get();
                 if (!response.empty()) {
@@ -530,13 +455,13 @@ public:
                         QuerySuccess[name] = true;
                     }
 
-                    // ½âÎö JSON Êı¾İ
+                    // ç‘™ï½†ç€½ JSON éç‰ˆåµ
                     cJSON* root = cJSON_Parse(response.c_str());
                     if (root == nullptr) {
                         return;
                     }
                     // std::cout << "Root JSON: " << cJSON_Print(root) << std::endl;
-                     // »ñÈ¡ "data" ¶ÔÏó
+                     // é‘¾å³°å½‡ "data" ç€µç¡…è–„
                     cJSON* data = cJSON_GetObjectItemCaseSensitive(root, "data");
                     if (data == nullptr) {
                         std::cout << "Root: " << root << std::endl;
@@ -555,25 +480,25 @@ public:
                         cJSON_Delete(attributes);
                         return;
                     }
-                    RankList.SquadFPP.Tier = Utils::StringToUTF8("Î´¶¨¼¶");
+                    RankList.SquadFPP.Tier = Utils::StringToUTF8("éˆî„ç•¾ç»¾?);
 
-                    // ´¦Àí SquadFPP
+                    // æ¾¶å‹­æ‚Š SquadFPP
                     cJSON* squad_fpp = cJSON_GetObjectItemCaseSensitive(rankedGameModeStats, "squad-fpp");
                     if (squad_fpp != nullptr) {
-                        // ½âÎö "currentTier"
+                        // ç‘™ï½†ç€½ "currentTier"
                         cJSON* currentTier = cJSON_GetObjectItemCaseSensitive(squad_fpp, "currentTier");
                         if (currentTier != nullptr) {
                             cJSON* tier = cJSON_GetObjectItemCaseSensitive(currentTier, "tier");
                             cJSON* subTier = cJSON_GetObjectItemCaseSensitive(currentTier, "subTier");
 
                             if (tier && subTier) {
-                                // Æ´½Ó "tier" ºÍ "subTier"
+                                // é·å…¼å¸´ "tier" éœ?"subTier"
                                 RankList.SquadFPP.Tier = std::string(tier->valuestring) + " " + subTier->valuestring;
                             }
 
                         }
 
-                        // »ñÈ¡ÆäËû×Ö¶Î
+                        // é‘¾å³°å½‡éæœµç²¬ç€›æ¥î†Œ
                         cJSON* currentRankPoint = cJSON_GetObjectItemCaseSensitive(squad_fpp, "currentRankPoint");
                         if (currentRankPoint != nullptr) {
                             RankList.SquadFPP.RankPoint = currentRankPoint->valueint;
@@ -589,23 +514,23 @@ public:
                             RankList.SquadFPP.WinRatio = static_cast<float>(winRatio->valuedouble);
                         }
                     }
-                    RankList.SquadTPP.Tier = Utils::StringToUTF8("Î´¶¨¼¶");
-                    // ´¦Àí SquadTPP
+                    RankList.SquadTPP.Tier = Utils::StringToUTF8("éˆî„ç•¾ç»¾?);
+                    // æ¾¶å‹­æ‚Š SquadTPP
                     cJSON* squad = cJSON_GetObjectItemCaseSensitive(rankedGameModeStats, "squad");
                     if (squad != nullptr) {
-                        // ½âÎö "currentTier"
+                        // ç‘™ï½†ç€½ "currentTier"
                         cJSON* currentTier = cJSON_GetObjectItemCaseSensitive(squad, "currentTier");
                         if (currentTier != nullptr) {
                             cJSON* tier = cJSON_GetObjectItemCaseSensitive(currentTier, "tier");
                             cJSON* subTier = cJSON_GetObjectItemCaseSensitive(currentTier, "subTier");
 
                             if (tier && subTier) {
-                                // Æ´½Ó "tier" ºÍ "subTier"
+                                // é·å…¼å¸´ "tier" éœ?"subTier"
                                 RankList.SquadTPP.Tier = std::string(tier->valuestring) + " " + subTier->valuestring;
                             }
                         }
 
-                        // »ñÈ¡ÆäËû×Ö¶Î
+                        // é‘¾å³°å½‡éæœµç²¬ç€›æ¥î†Œ
                         cJSON* currentRankPoint = cJSON_GetObjectItemCaseSensitive(squad, "currentRankPoint");
                         if (currentRankPoint != nullptr) {
                             RankList.SquadTPP.RankPoint = currentRankPoint->valueint;
@@ -621,23 +546,23 @@ public:
                             RankList.SquadTPP.WinRatio = static_cast<float>(winRatio->valuedouble);
                         }
                     }
-                    RankList.TPP.Tier = Utils::StringToUTF8("Î´¶¨¼¶");
-                    // ´¦Àí Solo TPP
+                    RankList.TPP.Tier = Utils::StringToUTF8("éˆî„ç•¾ç»¾?);
+                    // æ¾¶å‹­æ‚Š Solo TPP
                     cJSON* solo = cJSON_GetObjectItemCaseSensitive(rankedGameModeStats, "solo");
                     if (solo != nullptr) {
-                        // ½âÎö "currentTier"
+                        // ç‘™ï½†ç€½ "currentTier"
                         cJSON* currentTier = cJSON_GetObjectItemCaseSensitive(solo, "currentTier");
                         if (currentTier != nullptr) {
                             cJSON* tier = cJSON_GetObjectItemCaseSensitive(currentTier, "tier");
                             cJSON* subTier = cJSON_GetObjectItemCaseSensitive(currentTier, "subTier");
 
                             if (tier && subTier) {
-                                // Æ´½Ó "tier" ºÍ "subTier"
+                                // é·å…¼å¸´ "tier" éœ?"subTier"
                                 RankList.TPP.Tier = std::string(tier->valuestring) + " " + subTier->valuestring;
                             }
                         }
 
-                        // »ñÈ¡ÆäËû×Ö¶Î
+                        // é‘¾å³°å½‡éæœµç²¬ç€›æ¥î†Œ
                         cJSON* currentRankPoint = cJSON_GetObjectItemCaseSensitive(solo, "currentRankPoint");
                         if (currentRankPoint != nullptr) {
                             RankList.TPP.RankPoint = currentRankPoint->valueint;
@@ -654,10 +579,10 @@ public:
                         }
                     }
 
-                    // ±£´æÅÅÃûÊı¾İ
+                    // æ·‡æ¿†ç“¨éºæ‘æ‚•éç‰ˆåµ
                     Data::SetPlayerRankListsItem(name, RankList);
 
-                    cJSON_Delete(root);  // ÊÍ·Å½âÎöµÄ JSON Êı¾İ
+                    cJSON_Delete(root);  // é–²å©ƒæ–ç‘™ï½†ç€½é¨?JSON éç‰ˆåµ
                 }
                 else {
                     std::lock_guard<std::mutex> lock(queryMutex);
@@ -666,8 +591,7 @@ public:
                 }));
         }
 
-        // µÈ´ıËùÓĞÒì²½ÈÎÎñÍê³É
-        for (auto& fut : futures_list) {
+        // ç»›å¤Šç·Ÿéµâ‚¬éˆå¤Šç´“å§ãƒ¤æ¢é”â€³ç•¬é´?        for (auto& fut : futures_list) {
             fut.get();
         }
 
@@ -682,7 +606,7 @@ public:
     std::string extractPaidInterface(const std::string& Name, const std::string& ModeName) {
         std::cout << "Name: " << Name << std::endl;
         std::string url = "/getRankByName?name=" + Name;
-        std::string data = sendGetRequestWithWininet("pubg.000881.xyz", 0, url);//1504²éÑ¯£º45.205.30.22", 8080,
+        std::string data = sendGetRequestWithWininet("pubg.000881.xyz", 0, url);//1504éŒãƒ¨î‡—é”›?5.205.30.22", 8080,
                                                                                 //pubg.000881.xyz", 0,
         return data;
 
@@ -774,7 +698,7 @@ public:
 
 
 
-    //È¥Hack.h ÎÄ¼şÄÚ°Ñ std::thread UpdateRankThread(Rank::Update); ¸Ä³É std::thread UpdateRankThread(Rank::UpdatePaid);
+    //é˜ç±‹ack.h é‚å›¦æ¬¢éå‘®å¦¸ std::thread UpdateRankThread(Rank::Update); é€è§„åš std::thread UpdateRankThread(Rank::UpdatePaid);
     static void UpdatePaid() {
 
         Rank rank;

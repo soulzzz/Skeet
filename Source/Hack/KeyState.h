@@ -26,6 +26,7 @@ namespace KeyState
 	}
 	void Update() {
 		//Utils::Log(1, "Key Thread Running...");
+		std::unordered_map<int, bool> fallbackKeyStates;
 		while (true)
 		{
 			GameData.Keyboard.UpdateKeys();
@@ -58,7 +59,18 @@ namespace KeyState
 
 			for (auto Key : Keys)
 			{
-				if (GameData.Keyboard.WasKeyPressed(Key.first))
+				bool wasPressed = GameData.Keyboard.WasKeyPressed(Key.first);
+				short asyncState = GetAsyncKeyState(Key.first);
+				bool isDownFallback = (asyncState & 0x8000) != 0;
+				bool wasDownFallback = fallbackKeyStates[Key.first];
+				fallbackKeyStates[Key.first] = isDownFallback;
+
+				if (!wasPressed && isDownFallback && !wasDownFallback)
+				{
+					wasPressed = true;
+				}
+
+				if (wasPressed)
 				{
 					for (auto KeyName : Key.second)
 					{

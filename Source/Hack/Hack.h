@@ -35,7 +35,6 @@
 #include <Utils/KmBoxNet.h>
 #include <Utils/Lurker.h>
 #include <Utils/MoBox.h>
-#include "Webpageradar.h"
 #include "autoRecoil.h"
 #include <Hack/Segment.h>
 #include <Hack/VisibleCheck.h>
@@ -120,20 +119,20 @@ public:
 		mem.CloseScatterHandle(hScatter);
 	}
 	static void ReleaseLoadedModel() {
-		// 順序刪除場景
+		// Release loaded scenes in a predictable order.
 
-		// 刪除 Dynamic Load Scene
+		// Release dynamic load scene.
 		{
 
 			//std::lock_guard<std::mutex> lock(GameData.dynamicLoadMutex);
 			try {
 				auto dynamicLoadScene = GameData.DynamicLoadScene;
-				// 檢查指標是否有效
+				// Validate the pointer before deleting.
 				if (dynamicLoadScene != nullptr) {
 					delete dynamicLoadScene;
-					GameData.DynamicLoadScene = nullptr; // 確保指標清空
+					GameData.DynamicLoadScene = nullptr;
 #ifdef _PHYSX_DEBUG
-					Utils::Log(1, "释放静态加载场景");
+					Utils::Log(1, "Released dynamic load scene");
 #endif
 				}
 			}
@@ -142,18 +141,18 @@ public:
 			}
 		}
 
-		// 刪除 Height Field Scene
+		// Release height field scene.
 		{
 
 			//std::lock_guard<std::mutex> lock(GameData.heightFieldMutex);
 			try {
 				auto heightFieldScene = GameData.HeightFieldScene;
-				// 檢查指標是否有效
+				// Validate the pointer before deleting.
 				if (heightFieldScene != nullptr) {
 					delete heightFieldScene;
-					GameData.HeightFieldScene = nullptr; // 確保指標清空
+					GameData.HeightFieldScene = nullptr;
 #ifdef _PHYSX_DEBUG
-					Utils::Log(1, "释放高度场场景");
+					Utils::Log(1, "Released height field scene");
 #endif
 				}
 			}
@@ -162,18 +161,18 @@ public:
 			}
 		}
 
-		// 刪除 Dynamic Rigid Scene
+		// Release dynamic rigid scene.
 		{
 
 			// std::lock_guard<std::mutex> lock(GameData.globalMutex);
 			try {
 				auto globalScene = GameData.DynamicRigidScene;
-				// 檢查指標是否有效
+				// Validate the pointer before deleting.
 				if (globalScene != nullptr) {
 					delete globalScene;
-					GameData.DynamicRigidScene = nullptr; // 確保指標清空
+					GameData.DynamicRigidScene = nullptr;
 #ifdef _PHYSX_DEBUG
-					Utils::Log(1, "释放动态加载场景");
+					Utils::Log(1, "Released dynamic rigid scene");
 #endif
 				}
 			}
@@ -185,42 +184,29 @@ public:
 
 	static void StartLoadMapModel() {
 		static std::mutex gameDataMutex;
-		// 调用释放模型的函数
 		//ReleaseLoadedModel();
 		Sleep(GameData.ThreadSleep);
-		// 记录日志，表示开始加载地图模型...
-		Utils::Log(1, "开始加载地图模型...");
+		Utils::Log(1, "Starting map model load...");
 
-		// 加互斥锁，确保创建新场景时的线程安全
+		// Create the dynamic load scene.
 		{
 			std::lock_guard<std::mutex> lock(gameDataMutex);
-			// 创建动态加载场景，使用 PrunerPayload 和 PrunerPayloadHash
 			GameData.DynamicLoadScene = new Physics::VisibleScene<PrunerPayload, PrunerPayloadHash>(Physics::prunerPayloadExtractor);
-
-			// 创建并启动线程以更新动态高度场
 			std::thread LoadDynamicHeightFieldThread(VisibleCheck::UpdateDynamicHeightField);
 			LoadDynamicHeightFieldThread.detach();
 		}
-		// 加互斥锁，确保创建新场景时的线程安全
+		// Create the height field scene.
 		{
 			std::lock_guard<std::mutex> lock(gameDataMutex);
-
-
-			// 创建高度场场景，使用 uint64_t 和 Int64Hash
 			GameData.HeightFieldScene = new Physics::VisibleScene<uint64_t, Int64Hash>(Physics::int64Extractor);
-			// 创建并启动线程以更新动态刚体
 			std::thread LoadDynamicRigidThread(VisibleCheck::UpdateDynamicRigid);
 			LoadDynamicRigidThread.detach();
 
 		}
-		// 加互斥锁，确保创建新场景时的线程安全
+		// Create the dynamic rigid scene.
 		{
 			std::lock_guard<std::mutex> lock(gameDataMutex);
-
-
-			// 创建动态刚体场景，使用 PrunerPayload 和 PrunerPayloadHash
 			GameData.DynamicRigidScene = new Physics::VisibleScene<PrunerPayload, PrunerPayloadHash>(Physics::prunerPayloadExtractor);
-			// 创建并启动线程以按范围更新场景
 			std::thread LoadSceneByRangeThread(VisibleCheck::UpdateSceneByRange);
 
 			LoadSceneByRangeThread.detach();
@@ -437,7 +423,6 @@ public:
 		std::thread UpdateItemsThread(Items::Update);
 		std::thread UpdateProjectsThread(Projects::Update);
 		std::thread UpdateRadarThread(Radar::Update);
-		//std::thread UpdateWebRadarThread(WebRadar::Rundata);
 		std::thread UpdateRecoilThread(Recoil::autoRecoil);
 		//std::thread UpdateRankThread(Segment::Update);
 		

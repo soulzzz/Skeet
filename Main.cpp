@@ -1,4 +1,4 @@
-﻿#define _PHYSX_DEBUG
+#define _PHYSX_DEBUG
 #include <winsock2.h>
 #include <windows.h>
 #include <Overlay/Overlay.h>
@@ -66,55 +66,24 @@ bool DeleteFile(const std::string& file_path) {
 }
 
 void OpenConsole() {
-	// 分配一个新的控制台窗口
+	// Allocate a fresh console window.
 	AllocConsole();
 
-	// 将标准输出和标准错误重定向到控制台
+	// Redirect stdio to the console.
 	FILE* fp;
-	freopen_s(&fp, "CONOUT$", "w", stdout);  // 将 std::cout 重定向到控制台
-	freopen_s(&fp, "CONOUT$", "w", stderr);  // 将 std::cerr 重定向到控制台
-	freopen_s(&fp, "CONIN$", "r", stdin);    // 将 std::cin 重定向到控制台
+	freopen_s(&fp, "CONOUT$", "w", stdout);
+	freopen_s(&fp, "CONOUT$", "w", stderr);
+	freopen_s(&fp, "CONIN$", "r", stdin);
 
-	//std::cout << "控制台窗口已打开。" << std::endl;
+	//std::cout << "Console window opened." << std::endl;
 }
 
 bool DownloadFileWithProgress(const std::string& url, const std::string& output_file) {
-	HINTERNET hSession = InternetOpenW(L"Updater/1.0", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
-	if (!hSession) return false;
-
-	HINTERNET hConnect = InternetOpenUrlA(hSession, url.c_str(), NULL, 0, INTERNET_FLAG_RELOAD, 0);
-	if (!hConnect) {
-		InternetCloseHandle(hSession);
-		return false;
-	}
-
-	std::ofstream outFile(output_file, std::ios::binary);
-	if (!outFile) {
-		InternetCloseHandle(hConnect);
-		InternetCloseHandle(hSession);
-		return false;
-	}
-
-	DWORD dwRead = 0;
-	std::vector<char> buffer(8192);
-	DWORD dwDownloaded = 0;
-	while (InternetReadFile(hConnect, buffer.data(), buffer.size(), &dwRead) && dwRead > 0) {
-		outFile.write(buffer.data(), dwRead);
-		dwDownloaded += dwRead;
-		std::cout << "\rDownloading: "
-			<< std::fixed << std::setprecision(2)
-			<< dwDownloaded / (1024.0 * 1024.0) << " MB";
-		std::cout.flush();
-	}
-
-	InternetCloseHandle(hConnect);
-	InternetCloseHandle(hSession);
-	outFile.close();
-
-	std::cout << std::endl;
+	(void)url;
+	(void)output_file;
 	return true;
 }
-// 将宽字符串转换为多字节字符串
+// Convert a wide string to a multibyte string.
 std::string WideStringToMultiByte(const std::wstring& wideString) {
 	int size_needed = WideCharToMultiByte(CP_ACP, 0, &wideString[0], (int)wideString.size(), NULL, 0, NULL, NULL);
 	std::string multiByteString(size_needed, 0);
@@ -166,21 +135,21 @@ bool ExtractZipArchive(const std::string& zip_file) {
 	return (exitCode == 0);
 }
 
-// 设置控制台文本颜色
+// Set console text color.
 void SetConsoleColor(WORD color) {
 	HANDLE hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsoleOutput, color);
 }
-// 显示菜单并高亮选中项
+// Draw the menu and highlight the selected item.
 void DisplayMenu(const std::vector<std::string>& menuItems, int selectedItem, const std::string g) {
-	system("cls");  // 清除屏幕
+	system("cls");
 	printf("%s\n", g.c_str());
 	for (int i = 0; i < menuItems.size(); ++i) {
 		if (i == selectedItem) {
-			SetConsoleColor(FOREGROUND_RED | FOREGROUND_INTENSITY);  // 设置红色高亮
+			SetConsoleColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
 		}
 		else {
-			SetConsoleColor(FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);  // 设置白色
+			SetConsoleColor(FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);
 		}
 		printf("%s\n", menuItems[i].c_str());
 	}
