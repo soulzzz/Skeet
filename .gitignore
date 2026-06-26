@@ -1,0 +1,41 @@
+# ===================== Build output =====================
+/x64/
+/Debug/
+/Release/
+[Dd]ebug/
+[Rr]elease/
+*.exe
+*.pdb
+*.exp
+*.ilk
+*.idb
+*.obj
+*.tlog
+*.ipdb
+*.iobj
+*.ipch
+*.lastbuildstate
+*.unsuccessfulbuild
+*.cache
+
+# ===================== Visual Studio IDE =====================
+/.vs/
+*.suo
+*.user
+*.aps
+*.VC.db
+*.VC.opendb
+*.opensdf
+*.sdf
+
+# ===================== Runtime / user state =====================
+imgui.ini
+language_setting.txt
+lic.ini
+
+# ===================== OS junk =====================
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+.DS_Store
