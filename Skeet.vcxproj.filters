@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Include\DMALibrary\DMALibrary.cpp" />
@@ -41,7 +41,6 @@
     <ClCompile Include="Include\DMARender\Vectors\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\PaoX Pro\Source\Utils\MachineCodeGenerator.h" />
     <ClInclude Include="Include\DMALibrary\framework.h" />
     <ClInclude Include="Include\DMALibrary\libs\leechcore.h" />
     <ClInclude Include="Include\DMALibrary\libs\vmmdll.h" />
@@ -192,7 +191,6 @@
     <ClInclude Include="Include\backends\imgui_impl_dx11.h" />
     <ClInclude Include="Include\backends\imgui_impl_win32.h" />
     <ClInclude Include="notify.h" />
-    <ClInclude Include="C:\Users\Administrator\Documents\Tencent Files\634850560\FileRecv\imgui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="Include\custom\esp.hpp" />
     <ClInclude Include="Include\custom\esp_preview.hpp" />
@@ -217,6 +215,6 @@
     <Text Include="language_setting.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="AKM.ico" />
+    <Image Include="Skeet.ico" />
   </ItemGroup>
 </Project>

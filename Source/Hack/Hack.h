@@ -37,7 +37,6 @@
 #include <Utils/MoBox.h>
 #include "Webpageradar.h"
 #include "autoRecoil.h"
-#include <Hack/VisibleCheck.h>
 static std::string getCurrentTime2()
 {
 	auto now = std::chrono::system_clock::now();
@@ -444,6 +443,7 @@ public:
 		std::thread UpdateRadarThread(Radar::Update);
 		//std::thread UpdateWebRadarThread(WebRadar::Rundata);
 		std::thread UpdateRecoilThread(Recoil::autoRecoil);
+		Utils::Log(1, "Worker threads started: pid/core/keys/actors/players/fog/vehicles/aimbot/camera/items/projects/radar/recoil");
 
 		//std::thread WriteFunctionThread(WriteFunction);
 

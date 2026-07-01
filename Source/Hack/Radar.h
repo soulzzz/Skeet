@@ -245,7 +245,7 @@ public:
 
                 if (GameData.Radar.Visibility)
                 {
-                    SleepTime = 0;
+                    SleepTime = 1;
                 }
                 else {
                     SleepTime = 4;

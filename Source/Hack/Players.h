@@ -147,7 +147,7 @@ public:
 
 			Data::SetFogPlayers(FogPlayerInfos);
 
-			std::this_thread::sleep_for(std::chrono::microseconds(1));
+			Sleep(50);
 		}
 	}
 	
@@ -158,7 +158,6 @@ public:
 			auto PlayerBlackLists = Data::GetPlayerBlackLists();
 			auto PlayerWhiteLists = Data::GetPlayerWhiteLists();
 			auto LocalPlayerInfo = GameData.LocalPlayerInfo;
-			auto ScatterHandle = mem.CreateScatterHandle();
 
 			std::unordered_map<std::string, GamePlayerInfo> GPlayerLists;
 			std::unordered_map<std::string, PlayerRankList> PlayerRankLists = Data::GetPlayerRankLists();
@@ -166,29 +165,33 @@ public:
 			std::vector<GamePlayerInfo> playerLists;
 			GameData.PlayerCount = mem.Read<int>(GameData.GameState + GameData.Offset["PlayerArray"] + 0x8);  // 读取玩家数量
 			GameData.NumAliveTeams = mem.Read<int>(GameData.GameState + GameData.Offset["NumAliveTeams"]);
-			if (GameData.PlayerCount <= 0)
+			if (GameData.PlayerCount <= 0 || GameData.PlayerCount > 2048)
 			{
 				return;
 			}
-			// 根据玩家数量分配缓冲区
-			uint64_t* PlayerArrayBuffer = new uint64_t[GameData.PlayerCount];
-			// 读取玩家数组并将其存储在缓冲区中
-			mem.Read(mem.Read<uint64_t>(GameData.GameState + GameData.Offset["PlayerArray"]), PlayerArrayBuffer, sizeof(uint64_t) * GameData.PlayerCount);
-			// 将缓冲区内容复制到一个 std::vector 中
-			std::vector<uint64_t> PlayerArray(PlayerArrayBuffer, PlayerArrayBuffer + GameData.PlayerCount);
 
-			// 遍历玩家数组中的每个玩家信息指针
-			for (auto& pPlayerInfo : PlayerArray)
+			const uint64_t PlayerArrayPtr = mem.Read<uint64_t>(GameData.GameState + GameData.Offset["PlayerArray"]);
+			if (Utils::ValidPtr(PlayerArrayPtr))
 			{
-				GamePlayerInfo player;             // 创建一个 GamePlayerInfo 结构体实例
-				player.pPlayerInfo = pPlayerInfo;  // 将当前玩家信息指针赋值给 player 结构体中的 pPlayerInfo 成员
-				if (player.TeamID == 0) {
+				return;
+			}
+
+			std::vector<uint64_t> PlayerArray(static_cast<size_t>(GameData.PlayerCount));
+			mem.Read(PlayerArrayPtr, PlayerArray.data(), sizeof(uint64_t) * PlayerArray.size());
+			playerLists.reserve(PlayerArray.size());
+			GPlayerLists.reserve(PlayerArray.size());
+
+			auto ScatterHandle = mem.CreateScatterHandle();
+
+			for (const auto pPlayerInfo : PlayerArray)
+			{
+				if (Utils::ValidPtr(pPlayerInfo)) {
 					continue;
 				}
-				else {
-					playerLists.push_back(player);     // 将 player 结构体添加到 playerLists 向量中
-				}
-				
+
+				GamePlayerInfo player{};
+				player.pPlayerInfo = pPlayerInfo;
+				playerLists.emplace_back(player);
 			}
 
 			for (GamePlayerInfo& player : playerLists)
@@ -212,9 +215,15 @@ public:
 
 			for (GamePlayerInfo& player : playerLists)
 			{
-				mem.AddScatterReadRequest(ScatterHandle, player.pClanName, (FText*)&player.FClanName);
-				mem.AddScatterReadRequest(ScatterHandle, player.pPlayerName, (FText*)&player.FPlayerName);
-				mem.AddScatterReadRequest(ScatterHandle, player.pAccountId, (FText*)&player.FAccountId);
+				if (!Utils::ValidPtr(player.pClanName)) {
+					mem.AddScatterReadRequest(ScatterHandle, player.pClanName, (FText*)&player.FClanName);
+				}
+				if (!Utils::ValidPtr(player.pPlayerName)) {
+					mem.AddScatterReadRequest(ScatterHandle, player.pPlayerName, (FText*)&player.FPlayerName);
+				}
+				if (!Utils::ValidPtr(player.pAccountId)) {
+					mem.AddScatterReadRequest(ScatterHandle, player.pAccountId, (FText*)&player.FAccountId);
+				}
 			}
 
 			mem.ExecuteReadScatter(ScatterHandle);
@@ -251,7 +260,7 @@ public:
 				// 如果 PlayerRankLists 中没有当前玩家的名字，并且玩家状态为存活 (8) 或人机 (12)
 				if (PlayerRankLists.count(player.PlayerName) == 0)
 				{
-					PlayerRankList playerRankList;
+					PlayerRankList playerRankList{};
 					playerRankList.AccountId = player.AccountId;
 					playerRankList.PlayerName = player.PlayerName;
 					playerRankList.Tem = player.TeamID;

@@ -78,6 +78,7 @@ public:
             }
 
             Data::SetProjects(CacheProjects);
+            Sleep(20);
         }
         mem.CloseScatterHandle(hScatter);
     }

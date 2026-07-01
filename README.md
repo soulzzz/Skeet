@@ -139,6 +139,13 @@ zstd.dll
 
 当前工程已移除 MQTT / Mosquitto 依赖，代码和工程文件不再引用 `mosquitto.lib`、`mosquitto.dll` 或 `mqtt` 目录。
 
+## 配置与日志
+
+- 默认配置文件：`Config/SkeetConfig.bak`。
+- 兼容旧配置：启动时如果存在 `Config/AKMConfig.bak` 会自动读取，并迁移保存为 `Config/SkeetConfig.bak`。
+- 运行日志：`Config/Skeet.log`，记录配置加载/保存、线程启动、关键异常等低频事件。
+- Overlay 默认启用独立线程模式，以降低渲染和数据读取互相阻塞的概率。
+
 ## Offset 更新
 
 Offset 集中维护在：

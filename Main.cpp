@@ -1,4 +1,4 @@
-﻿#define _PHYSX_DEBUG
+#define _PHYSX_DEBUG
 #include <winsock2.h>
 #include <windows.h>
 #include <Overlay/Overlay.h>
@@ -19,7 +19,7 @@ void SetConsoleStyle()
 {
 	SetConsoleOutputCP(CP_UTF8);
 
-	SetConsoleTitle(L"AKM");
+	SetConsoleTitle(L"Skeet");
 
 	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	DWORD dwMode = 0;
@@ -164,7 +164,7 @@ int main() {
 
 	
 
-	//Utils::Log(0, U8("AKM-----助手加载成功......"));
+	//Utils::Log(0, U8("Skeet-----助手加载成功......"));
 
 	GameData.Config.Window.IsLogin = true;//
 

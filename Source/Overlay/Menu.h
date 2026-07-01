@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <Common/Data.h>
 #include <Common/Entitys.h>
@@ -661,12 +661,12 @@ public:
 			GetBackgroundDrawList()->AddText(font::icomoon_menu, 17, pos + ImVec2((region.x / 2 - (ImGui::CalcTextSize(top_label).x / 2) - ImGui::CalcTextSize(top_icon).x) - 8, 14), GetColorU32(c::text::text), top_icon);
 			GetBackgroundDrawList()->AddText(font::calibri_regular, 18, pos + ImVec2((region.x / 2 - (ImGui::CalcTextSize(top_label).x / 2) + ImGui::CalcTextSize(top_icon).x) + 4, 14), GetColorU32(c::text::text), top_label);
 			GetBackgroundDrawList()->AddText(font::icomoon_menu, 16.f, pos + ImVec2(20, region.y - 40), GetColorU32(c::text::text), "z");
-			GetBackgroundDrawList()->AddText(font::calibri_bold, 17.f, pos + ImVec2(44, region.y - 40), GetColorU32(c::text::text), "EX / PUBG-AKM");
+			GetBackgroundDrawList()->AddText(font::calibri_bold, 17.f, pos + ImVec2(44, region.y - 40), GetColorU32(c::text::text), "EX / Skeet");
 			GetBackgroundDrawList()->AddRectFilled(pos + ImVec2(0, region.y - 70), pos + ImVec2(region.x, region.y - 69), ImGui::GetColorU32(c::bg::outline), c::bg::rounding);
 
 			GetBackgroundDrawList()->AddImage(texture::logo, pos + ImVec2(20, 10), pos + ImVec2(20, 10) + ImVec2(30, 23));
-			GetBackgroundDrawList()->AddText(font::calibri_regular, 18, pos + ImVec2(70, 15), GetColorU32(c::text::text), "PUBG-AKM");
-			GetBackgroundDrawList()->AddRectFilled(pos + ImVec2(100 + CalcTextSize("PUBG-AKM").x, 20), pos + ImVec2(101 + CalcTextSize("PUBG-AKM").x, 30), ImGui::GetColorU32(c::bg::outline));
+			GetBackgroundDrawList()->AddText(font::calibri_regular, 18, pos + ImVec2(70, 15), GetColorU32(c::text::text), "Skeet");
+			GetBackgroundDrawList()->AddRectFilled(pos + ImVec2(100 + CalcTextSize("Skeet").x, 20), pos + ImVec2(101 + CalcTextSize("Skeet").x, 30), ImGui::GetColorU32(c::bg::outline));
 
 			PushFont(font::myth_bold);
 

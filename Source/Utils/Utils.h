@@ -11,6 +11,9 @@
 #include <regex>
 #include <fstream>
 #include <iomanip>
+#include <mutex>
+#include <cstdarg>
+#include <cstdio>
 #include <setupapi.h>
 #include <initguid.h>
 #include <devguid.h>
@@ -299,30 +302,41 @@ namespace Utils
 	}
 
 	inline void Log(const int& type, const char* format, ...) {
-		std::ostringstream oss;
-
-		//oss << COLOR_LYELLOW << "[" << getCurrentTime() << "]";
-
-		if (type == 1) {
-			oss << COLOR_LGREEN << "[+] ";
-		}
-		else if (type == 2) {
-			oss << COLOR_RED << "[X] ";
-		}
-		else {
-			oss << COLOR_LYELLOW << "[-] ";
-		}
+		static std::mutex LogMutex;
+		std::lock_guard<std::mutex> lock(LogMutex);
 
 		va_list args;
 		va_start(args, format);
-		char buffer[256];
+		char buffer[1024];
 		std::vsnprintf(buffer, sizeof(buffer), format, args);
-
 		va_end(args);
 
-		oss << buffer;
-		oss << COLOR_RESET;
+		const char* Level = "INFO";
+		const char* Prefix = "[-] ";
+		const char* Color = COLOR_LYELLOW;
+		if (type == 1) {
+			Level = "OK";
+			Prefix = "[+] ";
+			Color = COLOR_LGREEN;
+		}
+		else if (type == 2) {
+			Level = "ERR";
+			Prefix = "[X] ";
+			Color = COLOR_RED;
+		}
+		else if (type == 3) {
+			Level = "WARN";
+			Prefix = "[!] ";
+			Color = COLOR_LYELLOW;
+		}
 
-		std::cout << oss.str() << std::endl;
+		const std::string Time = getCurrentTime();
+		std::cout << Color << "[" << Time << "] " << Prefix << buffer << COLOR_RESET << std::endl;
+
+		CreateDirectoryA("Config", nullptr);
+		static std::ofstream LogFile("Config/Skeet.log", std::ios::app);
+		if (LogFile.is_open()) {
+			LogFile << "[" << Time << "] [" << Level << "] " << buffer << std::endl;
+		}
 	}
 }

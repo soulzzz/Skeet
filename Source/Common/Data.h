@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <windows.h>
 #include <iostream>
@@ -1515,7 +1515,7 @@ namespace Data
 		return GameData.PlayerSegmentLists;
 	}
 
-	inline void SetPlayerSegmentLists(std::unordered_map<std::string, PlayerRankList> value)
+	inline void SetPlayerSegmentLists(const std::unordered_map<std::string, PlayerRankList>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.PlayerSegmentListsMutex);
 		GameData.PlayerSegmentLists = value;
@@ -1535,7 +1535,7 @@ namespace Data
 
 	//查询接口函数
 
-	inline void SetCachePackages(std::unordered_map<uint64_t, PackageInfo> value)
+	inline void SetCachePackages(const std::unordered_map<uint64_t, PackageInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.CachePackagesMutex);
 		if (value.size() == 0)
@@ -1553,7 +1553,7 @@ namespace Data
 		return GameData.Actors.CachePackages;
 	}
 
-	inline void SetPackages(std::unordered_map<uint64_t, PackageInfo> value)
+	inline void SetPackages(const std::unordered_map<uint64_t, PackageInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.PackagesMutex);
 		if (value.size() == 0)
@@ -1577,7 +1577,7 @@ namespace Data
 		return GameData.EnemyInfoMap;
 	}
 
-	inline void SetEnemyInfoMap(std::unordered_map<uint64_t, tMapInfo> value)
+	inline void SetEnemyInfoMap(const std::unordered_map<uint64_t, tMapInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.EnemyInfoMapMutex);
 		if (value.size() == 0)
@@ -1595,7 +1595,7 @@ namespace Data
 		return GameData.PlayerLists;
 	}
 
-	inline void SetPlayerLists(std::unordered_map<std::string, GamePlayerInfo> value)
+	inline void SetPlayerLists(const std::unordered_map<std::string, GamePlayerInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.PlayerListsMutex);
 		if (value.size() == 0)
@@ -1613,7 +1613,7 @@ namespace Data
 		return GameData.PlayerRankLists;
 	}
 
-	inline void SetPlayerRankLists(std::unordered_map<std::string, PlayerRankList> value)
+	inline void SetPlayerRankLists(const std::unordered_map<std::string, PlayerRankList>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.PlayerRankListsMutex);
 		GameData.PlayerRankLists = value;
@@ -1654,7 +1654,7 @@ namespace Data
 		GameData.PlayerWhiteLists[key] = value;
 	}
 
-	inline void SetPlayerWhiteLists(std::unordered_map<std::string, int> value)
+	inline void SetPlayerWhiteLists(const std::unordered_map<std::string, int>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.PlayerWhiteListsMutex);
 		GameData.PlayerWhiteLists = value;
@@ -1689,7 +1689,7 @@ namespace Data
 		GameData.PlayerBlackLists[key] = value;
 	}
 
-	inline void SetPlayerBlackLists(std::unordered_map<std::string, int> value)
+	inline void SetPlayerBlackLists(const std::unordered_map<std::string, int>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.PlayerBlackListsMutex);
 		GameData.PlayerBlackLists = value;
@@ -1707,7 +1707,7 @@ namespace Data
 		return GameData.PlayerBlackLists;
 	}
 
-	inline void SetCachePlayers(std::unordered_map<uint64_t, Player> value)
+	inline void SetCachePlayers(const std::unordered_map<uint64_t, Player>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.CachePlayersMutex);
 		if (value.size() == 0)
@@ -1725,7 +1725,7 @@ namespace Data
 		return GameData.Actors.CachePlayers;
 	}
 
-	inline void SetCacheEntitys(std::unordered_map<uint64_t, ActorEntityInfo> value)
+	inline void SetCacheEntitys(const std::unordered_map<uint64_t, ActorEntityInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.CacheEntitysMutex);
 		if (value.size() == 0)
@@ -1743,7 +1743,7 @@ namespace Data
 		return GameData.Actors.CacheEntitys;
 	}
 
-	inline void SetPlayersData(std::unordered_map<uint64_t, Player> value)
+	inline void SetPlayersData(const std::unordered_map<uint64_t, Player>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.PlayersDataMutex);
 		if (value.size() == 0)
@@ -1761,7 +1761,7 @@ namespace Data
 		return GameData.Actors.PlayersData;
 	}
 
-	inline void SetPlayers(std::unordered_map<uint64_t, Player> value)
+	inline void SetPlayers(const std::unordered_map<uint64_t, Player>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.PlayersMutex);
 		if (value.size() == 0)
@@ -1785,7 +1785,7 @@ namespace Data
 		return GameData.Actors.Players[Key];
 	}
 
-	inline void SetVehicles(std::unordered_map<uint64_t, VehicleInfo> value)
+	inline void SetVehicles(const std::unordered_map<uint64_t, VehicleInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.VehiclesMutex);
 		if (value.size() == 0)
@@ -1803,7 +1803,7 @@ namespace Data
 		return GameData.Actors.Vehicles;
 	}
 
-	inline void SetCacheVehicles(std::unordered_map<uint64_t, VehicleInfo> value)
+	inline void SetCacheVehicles(const std::unordered_map<uint64_t, VehicleInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.CacheVehiclesMutex);
 		if (value.size() == 0)
@@ -1821,7 +1821,7 @@ namespace Data
 		return GameData.Actors.CacheVehicles;
 	}
 
-	inline void SetVehiclWheels(std::unordered_map<uint64_t, VehicleWheelInfo> value)
+	inline void SetVehiclWheels(const std::unordered_map<uint64_t, VehicleWheelInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.VehicleWheelsMutex);
 		if (value.size() == 0)
@@ -1857,7 +1857,7 @@ namespace Data
 		return { GameData.GNameLists, GameData.GNameListsByID };
 	}
 
-	inline void SetGNameLists(std::unordered_map<std::string, EntityInfo, FnvHash> value)
+	inline void SetGNameLists(const std::unordered_map<std::string, EntityInfo, FnvHash>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.GNameListsMutex);
 		GameData.GNameLists = value;
@@ -1883,7 +1883,7 @@ namespace Data
 		}
 	}
 
-	inline void SetGNameListsAndGNameListsByIDItem(std::string key, EntityInfo value, int key1, EntityInfo value1)
+	inline void SetGNameListsAndGNameListsByIDItem(const std::string& key, const EntityInfo& value, int key1, const EntityInfo& value1)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.GNameListsMutex);
 		GameData.GNameLists[key] = value;
@@ -1896,7 +1896,7 @@ namespace Data
 		return GameData.GNameListsByID;
 	}
 
-	inline void SetGNameListsByID(std::unordered_map<int, EntityInfo> value)
+	inline void SetGNameListsByID(const std::unordered_map<int, EntityInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.GNameListsMutex);
 		GameData.GNameListsByID = value;
@@ -1904,27 +1904,29 @@ namespace Data
 
 	inline EntityInfo GetGNameListsByIDItem(int key)
 	{
-		std::unique_lock<std::shared_mutex> lock(GameData.Actors.GNameListsMutex);
-		if (GameData.GNameListsByID.count(key) > 0)
+		std::shared_lock<std::shared_mutex> lock(GameData.Actors.GNameListsMutex);
+		const auto it = GameData.GNameListsByID.find(key);
+		if (it != GameData.GNameListsByID.end())
 		{
-			return GameData.GNameListsByID[key];
+			return it->second;
 		}
 
 		return EntityInfo{ "Unknown", EntityType::Unknown, 0, WeaponType::Other };
 	}
 
-	inline EntityInfo GetGNameListsItem(std::string key)
+	inline EntityInfo GetGNameListsItem(const std::string& key)
 	{
-		std::unique_lock<std::shared_mutex> lock(GameData.Actors.GNameListsMutex);
-		if (GameData.GNameLists.count(key) > 0)
+		std::shared_lock<std::shared_mutex> lock(GameData.Actors.GNameListsMutex);
+		const auto it = GameData.GNameLists.find(key);
+		if (it != GameData.GNameLists.end())
 		{
-			return GameData.GNameLists[key];
+			return it->second;
 		}
 
 		return EntityInfo{ "Unknown", EntityType::Unknown, 0, WeaponType::Other };
 	}
 
-	inline void SetCacheDroppedItems(std::unordered_map<uint64_t, DroppedItemInfo> value)
+	inline void SetCacheDroppedItems(const std::unordered_map<uint64_t, DroppedItemInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.CacheDroppedItemsMutex);
 		if (value.size() == 0)
@@ -1942,7 +1944,7 @@ namespace Data
 		return GameData.Actors.CacheDroppedItems;
 	}
 
-	inline void SetCacheDroppedItemGroups(std::unordered_map<uint64_t, DroppedItemGroupInfo> value)
+	inline void SetCacheDroppedItemGroups(const std::unordered_map<uint64_t, DroppedItemGroupInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.CacheDroppedItemGroupsMutex);
 		if (value.size() == 0)
@@ -1960,7 +1962,7 @@ namespace Data
 		return GameData.Actors.CacheDroppedItemGroups;
 	}
 
-	inline void SetItems(std::unordered_map<uint64_t, ItemInfo> value)
+	inline void SetItems(const std::unordered_map<uint64_t, ItemInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.ItemsMutex);
 		if (value.size() == 0)
@@ -1978,7 +1980,7 @@ namespace Data
 		return GameData.Actors.Items;
 	}
 
-	inline void SetCacheProjects(std::unordered_map<uint64_t, ProjectInfo> value)
+	inline void SetCacheProjects(const std::unordered_map<uint64_t, ProjectInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.CacheProjectsMutex);
 		if (value.size() == 0)
@@ -1996,7 +1998,7 @@ namespace Data
 		return GameData.Actors.CacheProjects;
 	}
 
-	inline void SetProjects(std::unordered_map<uint64_t, ProjectInfo> value)
+	inline void SetProjects(const std::unordered_map<uint64_t, ProjectInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.ProjectsMutex);
 		if (value.size() == 0)
@@ -2020,7 +2022,7 @@ namespace Data
 		return GameData.Actors.FogPlayers;
 	}
 
-	inline void SetFogPlayers(std::unordered_map<uint64_t, FogPlayerInfo> value)
+	inline void SetFogPlayers(const std::unordered_map<uint64_t, FogPlayerInfo>& value)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.FogPlayersMutex);
 		if (value.size() == 0)

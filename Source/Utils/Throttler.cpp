@@ -4,7 +4,7 @@
 
 Throttler::Throttler() {}
 
-void Throttler::executeTask(std::string taskName, std::chrono::duration<double> interval, std::function<void()> task) {
+void Throttler::executeTask(const std::string& taskName, std::chrono::duration<double> interval, const std::function<void()>& task) {
 	auto lastExecuted = lastExecuted_[taskName];
 	auto currentTime = std::chrono::steady_clock::now();
 	auto elapsedTime = std::chrono::duration_cast<std::chrono::duration<double>>(currentTime - lastExecuted);
@@ -15,11 +15,14 @@ void Throttler::executeTask(std::string taskName, std::chrono::duration<double> 
 	}
 }
 
-void Throttler::executeTaskWithSleep(std::string taskName, std::chrono::microseconds interval, std::function<void()> task) {
+void Throttler::executeTaskWithSleep(const std::string& taskName, std::chrono::microseconds interval, const std::function<void()>& task) {
 	auto lastExecuted = lastExecuted__[taskName];
 
-	LARGE_INTEGER frequency;
-	QueryPerformanceFrequency(&frequency);
+	static const LARGE_INTEGER frequency = [] {
+		LARGE_INTEGER value{};
+		QueryPerformanceFrequency(&value);
+		return value;
+	}();
 
 	LARGE_INTEGER currentTime;
 	QueryPerformanceCounter(&currentTime);

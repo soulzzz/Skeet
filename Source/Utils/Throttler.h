@@ -13,8 +13,8 @@ class Throttler {
 public:
 	Throttler();
 
-	void executeTask(std::string taskName, std::chrono::duration<double> interval, std::function<void()> task);
-	void executeTaskWithSleep(std::string taskName, std::chrono::microseconds interval, std::function<void()> task);
+	void executeTask(const std::string& taskName, std::chrono::duration<double> interval, const std::function<void()>& task);
+	void executeTaskWithSleep(const std::string& taskName, std::chrono::microseconds interval, const std::function<void()>& task);
 
 private:
 	std::unordered_map<std::string, std::chrono::steady_clock::time_point> lastExecuted_;

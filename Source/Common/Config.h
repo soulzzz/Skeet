@@ -13,20 +13,7 @@ public:
 			return false;
 		}
 
-		const std::string& currentKey = keys[0];
-
-		if (config.count(currentKey) > 0) {
-			if (keys.size() == 1) {
-				value = config[currentKey].get<T>();
-				return true;
-			}
-			else {
-				return SetConfigItem(config[currentKey], std::vector<std::string>(keys.begin() + 1, keys.end()), value);
-			}
-		}
-		else {
-			return false;
-		}
+		return SetConfigItemImpl(config, keys, 0, value);
 	}
 
 	static bool Save()
@@ -494,22 +481,42 @@ public:
 				Config[ConfigName]["FusionModeKey"] = GameData.Config.Overlay.FusionModeKey;
         }();
 
-				Utils::WriteConfigFile("Config/AKMConfig.bak", Config.dump());
+				Utils::WriteConfigFile(CurrentConfigPath, Config.dump());
+				Utils::Log(1, "Config saved: %s", CurrentConfigPath);
 				return true;
 	};
 
 	static void Load()
 	{
-		std::string ConfigText = Utils::ReadConfigFile("Config/AKMConfig.bak");
+		std::string ConfigPath = CurrentConfigPath;
+		std::string ConfigText = Utils::ReadConfigFile(ConfigPath);
+		bool LoadedLegacyConfig = false;
 
 		if (ConfigText == "")
 		{
+			ConfigPath = LegacyConfigPath;
+			ConfigText = Utils::ReadConfigFile(ConfigPath);
+			LoadedLegacyConfig = (ConfigText != "");
+		}
+
+		if (ConfigText == "")
+		{
+			Utils::Log(3, "Config file not found or empty, using defaults: %s", CurrentConfigPath);
 			return;
 		}
 
-		std::string Text = Utils::ReadConfigFile("Config/AKMConfig.bak");
+		nlohmann::json Config;
+		try
+		{
+			Config = nlohmann::json::parse(ConfigText);
+		}
+		catch (const std::exception& e)
+		{
+			Utils::Log(2, "Config parse failed [%s]: %s", ConfigPath.c_str(), e.what());
+			return;
+		}
 
-		auto Config = nlohmann::json::parse(Text);
+		Utils::Log(1, "Config loaded: %s", ConfigPath.c_str());
 
 		[&] {
 			std::string ConfigName = "AimBot";
@@ -986,5 +993,56 @@ public:
 			SetConfigItem(Config, { ConfigName, "FusionModeKey" }, GameData.Config.Overlay.FusionModeKey);
 			SetConfigItem(Config, { ConfigName, "ShowMenu" }, GameData.Config.Menu.ShowKey);
 			}();
+
+		if (LoadedLegacyConfig)
+		{
+			Save();
+			Utils::Log(1, "Migrated legacy config to: %s", CurrentConfigPath);
+		}
+	}
+
+private:
+	inline static constexpr const char* CurrentConfigPath = "Config/SkeetConfig.bak";
+	inline static constexpr const char* LegacyConfigPath = "Config/AKMConfig.bak";
+
+	template <typename T>
+	static bool SetConfigItemImpl(const nlohmann::json& config, const std::vector<std::string>& keys, size_t index, T& value)
+	{
+		if (!config.is_object()) {
+			return false;
+		}
+
+		const auto it = config.find(keys[index]);
+		if (it == config.end()) {
+			return false;
+		}
+
+		if (index + 1 == keys.size()) {
+			try
+			{
+				value = it->get<T>();
+			}
+			catch (const std::exception& e)
+			{
+				Utils::Log(3, "Config key ignored [%s]: %s", JoinKeys(keys).c_str(), e.what());
+				return false;
+			}
+			return true;
+		}
+
+		return SetConfigItemImpl(*it, keys, index + 1, value);
+	}
+
+	static std::string JoinKeys(const std::vector<std::string>& keys)
+	{
+		std::string result;
+		for (size_t i = 0; i < keys.size(); ++i)
+		{
+			if (i > 0) {
+				result += ".";
+			}
+			result += keys[i];
+		}
+		return result;
 	}
 };
