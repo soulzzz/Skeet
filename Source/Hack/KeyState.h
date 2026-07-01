@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Winsock2.h>
 #include <DMALibrary/Memory/Memory.h>
 #include <Common/Data.h>
@@ -14,14 +14,14 @@ namespace KeyState
 
 		if (!GameData.Keyboard.InitKeyboard())
 		{
-			MessageBoxA(NULL, "ÈÈ¼ü³õÊ¼»¯Ê§°Ü£¬ÇëÖØÆôÖ÷»ú", "ÌáÊ¾", MB_ICONERROR | MB_OK | MB_TOPMOST);
+			MessageBoxA(NULL, "çƒ­é”®åˆå§‹åŒ–å¤±è´¥ï¼Œè¯·é‡å¯ä¸»æœº", "æç¤º", MB_ICONERROR | MB_OK | MB_TOPMOST);
 			//Utils::Log(2, "Failed to initialize keyboard hotkeys through kernel.");
 			GameData.KeyState = false;
 		}
 		else {
-			//Utils::Log(1, U8("³õÊ¼»¯¼üÅÌÈÈ¼ü³É¹¦£¨ÃâÔğÉùÃ÷£º¸ÃÓÎÏ·½ö¹©Ñ§Ï°Ê¹ÓÃÓë±¾ÈËÎŞ¹Ø£¬Çë¼°Ê±ÔÚ24Ğ¡Ê±ÄÚÉ¾³ıĞ»Ğ»£©"));
+			//Utils::Log(1, U8("åˆå§‹åŒ–é”®ç›˜çƒ­é”®æˆåŠŸï¼ˆå…è´£å£°æ˜ï¼šè¯¥æ¸¸æˆä»…ä¾›å­¦ä¹ ä½¿ç”¨ä¸æœ¬äººæ— å…³ï¼Œè¯·åŠæ—¶åœ¨24å°æ—¶å†…åˆ é™¤è°¢è°¢ï¼‰"));
 			GameData.KeyState = true;
-			Utils::Log(1, U8("³õÊ¼»¯¼üÅÌÈÈ¼ü³É¹¦£¨ÃâÔğÉùÃ÷£º¸ÃÓÎÏ·½ö¹©Ñ§Ï°Ê¹ÓÃÓë±¾ÈËÎŞ¹Ø£¬Çë¼°Ê±ÔÚ24Ğ¡Ê±ÄÚÉ¾³ıĞ»Ğ»£©:%llx", GameData.Keyboard.GetAddrss()));
+			Utils::Log(1, U8("åˆå§‹åŒ–é”®ç›˜çƒ­é”®æˆåŠŸï¼ˆå…è´£å£°æ˜ï¼šè¯¥æ¸¸æˆä»…ä¾›å­¦ä¹ ä½¿ç”¨ä¸æœ¬äººæ— å…³ï¼Œè¯·åŠæ—¶åœ¨24å°æ—¶å†…åˆ é™¤è°¢è°¢ï¼‰:%llx", GameData.Keyboard.GetAddrss()));
 		}
 	}
 	void Update() {
@@ -116,7 +116,7 @@ namespace KeyState
 							GameData.Config.Window.Players = !GameData.Config.Window.Players;
 						}
 						
-						if (KeyName == "DEAD")//  ÕâÀïÊÇ½áÊø
+						if (KeyName == "DEAD")//  è¿™é‡Œæ˜¯ç»“æŸ
 						{
 
 							HWND Progman = FindWindowA("Progman", NULL);

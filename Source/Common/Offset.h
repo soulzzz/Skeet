@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include <cstdint>
 #include "common/Data.h"
 #include <string>
@@ -6,137 +6,137 @@
 namespace Offset
 {
 	// =========================================================================
-	//  ”≤±‡¬Î∆´“∆≥£¡ø
-	//  ‘≠ http://localhost/offset.txt Õ¯¬ÁªÒ»°¬ﬂº≠“—“∆≥˝,À˘”–∆´“∆‘⁄¥ÀºØ÷–Œ¨ª§°£
-	//  ∏¸–¬ ±÷±Ω”∏ƒ±æŒƒº˛∂‘”¶µƒ constexpr º¥ø…°£
+	//  Á°¨ÁºñÁ†ÅÂÅèÁßªÂ∏∏Èáè
+	//  Âéü http://localhost/offset.txt ÁΩëÁªúËé∑ÂèñÈÄªËæëÂ∑≤ÁßªÈô§,ÊâÄÊúâÂÅèÁßªÂú®Ê≠§ÈõÜ‰∏≠Áª¥Êä§„ÄÇ
+	//  Êõ¥Êñ∞Êó∂Áõ¥Êé•ÊîπÊú¨Êñá‰ª∂ÂØπÂ∫îÁöÑ constexpr Âç≥ÂèØ„ÄÇ
 	// =========================================================================
 	namespace C
 	{
-		// ©§©§ Dynamic globals ©§©§
-		constexpr uint64_t XenuineDecrypt                   = 0x10EA8D28;
-		constexpr uint64_t UWorld                           = 0x12AAFD88;
-		constexpr uint64_t GNames                           = 0x12D3B030;
+		// ‚îÄ‚îÄ Dynamic globals ‚îÄ‚îÄ
+		constexpr uint64_t XenuineDecrypt                   = 0x10D3A628;
+		constexpr uint64_t UWorld                           = 0x1283F488;
+		constexpr uint64_t GNames                           = 0x12ACA740;
 		constexpr uint64_t GNamesPtr                        = 0x10;
-		constexpr uint64_t ChunkSize                        = 0x3E4C;
-		constexpr uint64_t GObjects                         = 0x12CF81A8;
-		constexpr uint64_t Unreal_Engine                    = 0x125D9810;
+		constexpr uint64_t ChunkSize                        = 0x418C;
+		constexpr uint64_t GObjects                         = 0x127FFEE0;
+		constexpr uint64_t Unreal_Engine                    = 0x1283B770;
 
-		// ©§©§ Struct offsets (SIG-based) ©§©§
-		constexpr uint64_t CurrentLevel                     = 0x800;
-		constexpr uint64_t Actors                           = 0x38;
-		constexpr uint64_t GameInstance                     = 0x3B0;
-		constexpr uint64_t LocalPlayer                      = 0xF0;
-		constexpr uint64_t AcknowledgedPawn                 = 0x4A8;
-		constexpr uint64_t PlayerCameraManager              = 0x4D0;
+		// ‚îÄ‚îÄ Struct offsets (SIG-based) ‚îÄ‚îÄ
+		constexpr uint64_t CurrentLevel                     = 0x9B8;
+		constexpr uint64_t Actors                           = 0xF8;
+		constexpr uint64_t GameInstance                     = 0x3E0;
+		constexpr uint64_t LocalPlayer                      = 0x78;
+		constexpr uint64_t AcknowledgedPawn                 = 0x4B0;
+		constexpr uint64_t PlayerCameraManager              = 0x4D8;
 		constexpr uint64_t WeaponProcessor                  = 0x968;
 		constexpr uint64_t EquippedWeapons                  = 0x208;
-		constexpr uint64_t Mesh                             = 0x4A0;
+		constexpr uint64_t Mesh                             = 0x768;
 		constexpr uint64_t AnimScriptInstance               = 0xE30;
-		constexpr uint64_t LastTeamNum                      = 0x2B18;
-		constexpr uint64_t GroggyHealth                     = 0x1530;
-		constexpr uint64_t ComponentToWorld                 = 0x320;
+		constexpr uint64_t LastTeamNum                      = 0x1088;
+		constexpr uint64_t GroggyHealth                     = 0x1328;
+		constexpr uint64_t ComponentToWorld                 = 0x350;
 		constexpr uint64_t RecoilADSRotation_CP             = 0x824;
-		constexpr uint64_t CharacterName                    = 0x1E00;
+		constexpr uint64_t CharacterName                    = 0x1028;
 		constexpr uint64_t LeanLeftAlpha_CP                 = 0x69C;
 		constexpr uint64_t LeanRightAlpha_CP                = 0x6A0;
-		constexpr uint64_t AntiCheatCharacterSyncManager    = 0x1368;
+		constexpr uint64_t AntiCheatCharacterSyncManager    = 0xDA0;
 		constexpr uint64_t DormantCharacterClientList       = 0x78;
 		constexpr uint64_t DormantSoundOnClient             = 0xD0;
 		constexpr uint64_t AntiCheatCharacterSyncManagerEncryption        = 0x48;
 		constexpr uint64_t AntiCheatCharacterSyncManagerEncryption_offset = 0xCC;
 		constexpr uint64_t AntiCheatCharacterSyncManagerShift            = 0x68;
 
-		// ©§©§ Static offsets ©§©§
-		constexpr uint64_t ActorsForGC                      = 0x308;
-		constexpr uint64_t GameState                        = 0x278;
+		// ‚îÄ‚îÄ Static offsets ‚îÄ‚îÄ
+		constexpr uint64_t ActorsForGC                      = 0x1290;
+		constexpr uint64_t GameState                        = 0x930;
 		constexpr uint64_t PlayerController                 = 0x38;
-		constexpr uint64_t ViewTarget                       = 0x1050;
-		constexpr uint64_t CameraCacheLocation              = 0xA30;
-		constexpr uint64_t CameraCacheRotation              = 0xA10;
-		constexpr uint64_t CameraCacheFOV                   = 0xA2C;
-		constexpr uint64_t TeamNumber                       = 0x7C4;
-		constexpr uint64_t MyHUD                            = 0x4C8;
-		constexpr uint64_t BlockInputWidgetList             = 0x5B0;
-		constexpr uint64_t bShowMouseCursor                 = 0x658;
-		constexpr uint64_t ComponentLocation                = 0x330;
-		constexpr uint64_t CharacterState                   = 0x10A0;
-		constexpr uint64_t CharacterMovement                = 0x490;
-		constexpr uint64_t WorldToMap                       = 0x4A8;
+		constexpr uint64_t ViewTarget                       = 0x1070;
+		constexpr uint64_t CameraCacheLocation              = 0x9F8;
+		constexpr uint64_t CameraCacheRotation              = 0x45C;
+		constexpr uint64_t CameraCacheFOV                   = 0x454;
+		constexpr uint64_t TeamNumber                       = 0x6C8;
+		constexpr uint64_t MyHUD                            = 0x4D0;
+		constexpr uint64_t BlockInputWidgetList             = 0x5C0;
+		constexpr uint64_t bShowMouseCursor                 = 0x660;
+		constexpr uint64_t ComponentLocation                = 0x360;
+		constexpr uint64_t CharacterState                   = 0x1E40;
+		constexpr uint64_t CharacterMovement                = 0x4D0;
+		constexpr uint64_t WorldToMap                       = 0x918;
 		constexpr uint64_t LayoutData                       = 0x40;
 		constexpr uint64_t Offsets                          = 0x0;
 		constexpr uint64_t Alignment                        = 0x20;
 		constexpr uint64_t Visibility                       = 0xA9;
 		constexpr uint64_t SelectMinimapSizeIndex           = 0x5C8;
 		constexpr uint64_t Slot                             = 0x38;
-		constexpr uint64_t WidgetStateMap                   = 0x538;
+		constexpr uint64_t WidgetStateMap                   = 0x548;
 		constexpr uint64_t FeatureRepObject                 = 0xCF0;
 		constexpr uint64_t SafetyZonePosition               = 0xB0;
 		constexpr uint64_t SafetyZoneRadius                 = 0xBC;
 		constexpr uint64_t BlueZoneRadius                   = 0xCC;
 		constexpr uint64_t BlueZonePosition                 = 0xC0;
-		constexpr uint64_t NumAliveTeams                    = 0x480;
-		constexpr uint64_t HeaFlag                          = 0x3B9;
-		constexpr uint64_t Health1                          = 0xA3C;
-		constexpr uint64_t Health2                          = 0xA38;
-		constexpr uint64_t Health3                          = 0xA24;
-		constexpr uint64_t Health4                          = 0xA10;
-		constexpr uint64_t Health5                          = 0xA25;
-		constexpr uint64_t Health6                          = 0xA20;
-		constexpr uint64_t PlayerArray                      = 0x410;
-		constexpr uint64_t AccountId                        = 0x810;
-		constexpr uint64_t PlayerName                       = 0x420;
-		constexpr uint64_t PlayerStatusType                 = 0x468;
-		constexpr uint64_t SquadMemberIndex                 = 0xA1C;
-		constexpr uint64_t PlayerState                      = 0x418;
-		constexpr uint64_t PlayerStatistics                 = 0xA10;
-		constexpr uint64_t DamageDealtOnEnemy               = 0x804;
-		constexpr uint64_t SpectatedCount                   = 0x11BC;
-		constexpr uint64_t ping                             = 0x3F8;
-		constexpr uint64_t MatchId                          = 0x518;
-		constexpr uint64_t PartnerLevel                     = 0x716;
-		constexpr uint64_t SurvivalTier                     = 0xCC0;
-		constexpr uint64_t SurvivalLevel                    = 0xCC4;
-		constexpr uint64_t PubgIdData                       = 0xCB8;
-		constexpr uint64_t CharacterClanInfo                = 0x838;
+		constexpr uint64_t NumAliveTeams                    = 0x4B4;
+		constexpr uint64_t HeaFlag                          = 0x318;
+		constexpr uint64_t Health1                          = 0x9A8;
+		constexpr uint64_t Health2                          = 0xA50;
+		constexpr uint64_t Health3                          = 0x984;
+		constexpr uint64_t Health4                          = 0x970;
+		constexpr uint64_t Health5                          = 0x985;
+		constexpr uint64_t Health6                          = 0x980;
+		constexpr uint64_t PlayerArray                      = 0x420;
+		constexpr uint64_t AccountId                        = 0x4D8;
+		constexpr uint64_t PlayerName                       = 0x428;
+		constexpr uint64_t PlayerStatusType                 = 0x408;
+		constexpr uint64_t SquadMemberIndex                 = 0x4A8;
+		constexpr uint64_t PlayerState                      = 0x430;
+		constexpr uint64_t PlayerStatistics                 = 0xA94;
+		constexpr uint64_t DamageDealtOnEnemy               = 0x930;
+		constexpr uint64_t SpectatedCount                   = 0x1824;
+		constexpr uint64_t ping                             = 0x448;
+		constexpr uint64_t MatchId                          = 0x550;
+		constexpr uint64_t PartnerLevel                     = 0x6B6;
+		constexpr uint64_t SurvivalTier                     = 0xCD8;
+		constexpr uint64_t SurvivalLevel                    = 0xCDC;
+		constexpr uint64_t PubgIdData                       = 0xCD0;
+		constexpr uint64_t CharacterClanInfo                = 0x938;
 		constexpr uint64_t CurrentWeaponIndex               = 0x319;
-		constexpr uint64_t WeaponTrajectoryData             = 0x11A8;
-		constexpr uint64_t TrajectoryGravityZ               = 0x10EC;
-		constexpr uint64_t FiringAttachPoint                = 0x8C0;
-		constexpr uint64_t ScopingAttachPoint               = 0xB28;
+		constexpr uint64_t WeaponTrajectoryData             = 0x1200;
+		constexpr uint64_t TrajectoryGravityZ               = 0x3F;
+		constexpr uint64_t FiringAttachPoint                = 0x8D0;
+		constexpr uint64_t ScopingAttachPoint               = 0xE58;
 		constexpr uint64_t TrajectoryConfig                 = 0x108;
 		constexpr uint64_t BallisticCurve                   = 0x28;
 		constexpr uint64_t FloatCurves                      = 0x38;
-		constexpr uint64_t Mesh3P                           = 0x800;
+		constexpr uint64_t Mesh3P                           = 0x810;
 		constexpr uint64_t Keys                             = 0x60;
 		constexpr uint64_t AttachedStaticComponentMap       = 0x1508;
-		constexpr uint64_t WeaponConfig_WeaponClass         = 0x798;
-		constexpr uint64_t ElapsedCookingTime               = 0xB50;
-		constexpr uint64_t PlayerInput                      = 0x548;
+		constexpr uint64_t WeaponConfig_WeaponClass         = 0x790;
+		constexpr uint64_t ElapsedCookingTime               = 0xB18;
+		constexpr uint64_t PlayerInput                      = 0x550;
 		constexpr uint64_t InputAxisProperties              = 0x138;
 		constexpr uint64_t LastUpdateVelocity               = 0x3E0;
-		constexpr uint64_t RootComponent                    = 0x308;
+		constexpr uint64_t RootComponent                    = 0x1A0;
 		constexpr uint64_t StaticMesh                       = 0xAE8;
-		constexpr uint64_t Eyes                             = 0xBD8;
+		constexpr uint64_t Eyes                             = 0x75C;
 		constexpr uint64_t bAlwaysCreatePhysicsState        = 0x488;
-		constexpr uint64_t VehicleMovement                  = 0x468;
-		constexpr uint64_t VehicleRiderComponent            = 0x20E0;
-		constexpr uint64_t ReplicatedMovement               = 0xD0;
+		constexpr uint64_t VehicleMovement                  = 0x478;
+		constexpr uint64_t VehicleRiderComponent            = 0x2050;
+		constexpr uint64_t ReplicatedMovement               = 0x78;
 		constexpr uint64_t LastVehiclePawn                  = 0x270;
 		constexpr uint64_t SeatIndex                        = 0x230;
 		constexpr uint64_t Wheels                           = 0x328;
 		constexpr uint64_t WheelLocation                    = 0x100;
 		constexpr uint64_t DampingRate                      = 0x54;
 		constexpr uint64_t ShapeRadius                      = 0x48;
-		constexpr uint64_t DroppedItemGroup                 = 0x1C0;
-		constexpr uint64_t ItemPackageItems                 = 0x578;
+		constexpr uint64_t DroppedItemGroup                 = 0x108;
+		constexpr uint64_t ItemPackageItems                 = 0x588;
 		constexpr uint64_t DroppedItemGroupUItem            = 0x870;
-		constexpr uint64_t AttachedItems                    = 0x858;
+		constexpr uint64_t AttachedItems                    = 0x868;
 		constexpr uint64_t WeaponAttachmentData             = 0x128;
 		constexpr uint64_t ItemTable                        = 0xB0;
 		constexpr uint64_t ItemID                           = 0x244;
-		constexpr uint64_t DroppedItem                      = 0x458;
-		constexpr uint64_t PreEvalPawnState                 = 0x300;
-		constexpr uint64_t bIsInVehicle_CP                  = 0x954;
+		constexpr uint64_t DroppedItem                      = 0x468;
+		constexpr uint64_t PreEvalPawnState                 = 0x638;
+		constexpr uint64_t bIsInVehicle_CP                  = 0x63C;
 		constexpr uint64_t bIsParachuting_CP                = 0x92E;
 		constexpr uint64_t bIsFreefalling_CP                = 0x92D;
 		constexpr uint64_t bEmergencyPickup_Flying_CP       = 0x92F;
@@ -145,34 +145,34 @@ namespace Offset
 		constexpr uint64_t bIsScoping_CP                    = 0x85D;
 		constexpr uint64_t bIsReloading_CP                  = 0x73D;
 		constexpr uint64_t ControlRotation_CP               = 0x654;
-		constexpr uint64_t CurrentAmmoData                  = 0xE68;
+		constexpr uint64_t CurrentAmmoData                  = 0xDA8;
 		constexpr uint64_t StaticSockets                    = 0xC8;
 		constexpr uint64_t StaticSocketName                 = 0x30;
 		constexpr uint64_t StaticRelativeScale              = 0x50;
 		constexpr uint64_t StaticRelativeLocation           = 0x38;
 		constexpr uint64_t StaticRelativeRotation           = 0x44;
-		constexpr uint64_t InputYawScale                    = 0x64C;
-		constexpr uint64_t AimOffsets                       = 0x1B48;
-		constexpr uint64_t TimeSeconds                      = 0x810;
-		constexpr uint64_t TimeTillExplosion                = 0x824;
-		constexpr uint64_t ExplodeState                     = 0x628;
+		constexpr uint64_t InputYawScale                    = 0x654;
+		constexpr uint64_t AimOffsets                       = 0x1AB8;
+		constexpr uint64_t TimeSeconds                      = 0xAB8;
+		constexpr uint64_t TimeTillExplosion                = 0x834;
+		constexpr uint64_t ExplodeState                     = 0x638;
 		constexpr uint64_t TrainingMapGrid                  = 0x5B0;
 		constexpr uint64_t RecentlyRendered                 = 0xBD8;
-		constexpr uint64_t MortarRotation                   = 0x520;
-		constexpr uint64_t MortarLocation                   = 0x300;
+		constexpr uint64_t MortarRotation                   = 0x530;
+		constexpr uint64_t MortarLocation                   = 0xB0;
 		constexpr uint64_t MortarEntity                     = 0x108;
 		constexpr uint64_t MapGrid_Map                      = 0x4A8;
 		constexpr uint64_t Gender                           = 0xB48;
-		constexpr uint64_t MouseX                           = 0x4C8F;
-		constexpr uint64_t MouseY                           = 0x4C90;
-		constexpr uint64_t PhysicsScene                     = 0x3A0;
+		constexpr uint64_t MouseX                           = 0x4D81;
+		constexpr uint64_t MouseY                           = 0x4D82;
+		constexpr uint64_t PhysicsScene                     = 0x9D0;
 		constexpr uint64_t mPhysXScene                      = 0xD0;
 		constexpr uint64_t rigid_dynamics                   = 0x3B98;
 		constexpr uint64_t CurrentMinimapViewScale1D        = 0x4A4;
 		constexpr uint64_t LastMinimapPos                   = 0x4B8;
 		constexpr uint64_t Minimap                          = 0x480;
-		constexpr uint64_t RecoilValueVector                = 0x1198;
-		constexpr uint64_t VerticalRecovery                 = 0x10D8;
+		constexpr uint64_t RecoilValueVector                = 0x11D8;
+		constexpr uint64_t VerticalRecovery                 = 0x1148;
 		constexpr uint64_t ControlRotation                  = 0x654;
 		constexpr uint64_t Character                        = 0x438;
 		constexpr uint64_t Pawn                             = 0x448;
@@ -184,37 +184,37 @@ namespace Offset
 		constexpr uint64_t ScreenSize                       = 0x4A8;
 		constexpr uint64_t BoneArray                        = 0x10;
 		constexpr uint64_t BoneCount                        = 0xAF0;
-		constexpr uint64_t InventoryFacade                  = 0x17A8;
-		constexpr uint64_t Inventory                        = 0x400;
-		constexpr uint64_t InventoryItems                   = 0x690;
-		constexpr uint64_t InventoryItemCount               = 0x698;
+		constexpr uint64_t InventoryFacade                  = 0x1290;
+		constexpr uint64_t Inventory                        = 0x428;
+		constexpr uint64_t InventoryItems                   = 0x6A0;
+		constexpr uint64_t InventoryItemCount               = 0x6A8;
 		constexpr uint64_t InventoryItemTagItemCount        = 0x40;
-		constexpr uint64_t Equipment                        = 0x408;
-		constexpr uint64_t ItemsArray                       = 0x4F8;
+		constexpr uint64_t Equipment                        = 0x410;
+		constexpr uint64_t ItemsArray                       = 0x508;
 		constexpr uint64_t Durability                       = 0x1E4;
 		constexpr uint64_t Durabilitymax                    = 0x1E0;
-		constexpr uint64_t VehicleCommonComponent           = 0xB30;
-		constexpr uint64_t FloatingVehicleCommonComponent   = 0x4D8;
+		constexpr uint64_t VehicleCommonComponent           = 0xB40;
+		constexpr uint64_t FloatingVehicleCommonComponent   = 0x4E8;
 		constexpr uint64_t FloatingComponent                = 0x4D8;
 		constexpr uint64_t VehicleFuel                      = 0x2E0;
 		constexpr uint64_t VehicleFuelMax                   = 0x2E4;
 		constexpr uint64_t VehicleHealth                    = 0x2D8;
 		constexpr uint64_t VehicleHealthMax                 = 0x2DC;
 
-		// ©§©§ Engine globals ©§©§
-		constexpr uint64_t PhysxSDK                         = 0x125C59C0;
+		// ‚îÄ‚îÄ Engine globals ‚îÄ‚îÄ
+		constexpr uint64_t PhysxSDK                         = 0x12270548;
 
-		// ©§©§ FName / decrypt constants ©§©§
-		constexpr uint64_t ObjID                            = 0x20;
+		// ‚îÄ‚îÄ FName / decrypt constants ‚îÄ‚îÄ
+		constexpr uint64_t ObjID                            = 0x14;
 		constexpr uint64_t DecryptNameIndexRor              = 0x1;
-		constexpr uint64_t DecryptNameIndexRval             = 0x17;
-		constexpr uint64_t DecryptNameIndexSval             = 0x7;
-		constexpr uint64_t DecryptNameIndexXorKey1          = 0x7360F24;
-		constexpr uint64_t DecryptNameIndexXorKey2          = 0xB621EC05;
+		constexpr uint64_t DecryptNameIndexRval             = 0x1F;
+		constexpr uint64_t DecryptNameIndexSval             = 0xF;
+		constexpr uint64_t DecryptNameIndexXorKey1          = 0x673AE3D2;
+		constexpr uint64_t DecryptNameIndexXorKey2          = 0xAE4AEBD1;
 		constexpr uint64_t DecryptNameIndexXorKey3          = 0x1FF0000;
-		constexpr uint64_t DecryptNameIndexDval             = 0x19;
+		constexpr uint64_t DecryptNameIndexDval             = 0x17;
 
-		// ©§©§ Health keys ©§©§
+		// ‚îÄ‚îÄ Health keys ‚îÄ‚îÄ
 		constexpr uint64_t Health_keys0  = 0xCEC7A591;
 		constexpr uint64_t Health_keys1  = 0x9B63B27E;
 		constexpr uint64_t Health_keys2  = 0xCA7F1AA5;
@@ -231,21 +231,39 @@ namespace Offset
 		constexpr uint64_t Health_keys13 = 0x7E93E707;
 		constexpr uint64_t Health_keys14 = 0xE7099E38;
 		constexpr uint64_t Health_keys15 = 0xECD92AA4;
+
+
+		// ‚îÄ‚îÄ Added from latest offset paste ‚îÄ‚îÄ
+		constexpr uint64_t BlueBlockerGaugeTotalMax          = 0x10;
+		constexpr uint64_t CapsuleComponent                  = 0x300;
+		constexpr uint64_t CustomTimeDilation                = 0x1F0;
+		constexpr uint64_t VTable                            = 0xA58;
+		constexpr uint64_t bIsDBNO_CP                        = 0x931;
+		constexpr uint64_t bIsDBNO0                          = 0x3556;
+		constexpr uint64_t bIsDBNO1                          = 0x3554;
+		constexpr uint64_t bIsDBNO2                          = 0x3555;
+		constexpr uint64_t bIsPreparingThrow_CP              = 0x540;
+		constexpr uint64_t bIsThrowing_CP                    = 0x938;
+		constexpr uint64_t bIsFlashed_CP                     = 0x63F;
+		constexpr uint64_t LineTraceSingle                   = 0xDF90CC;
+		constexpr uint64_t HOOK                              = 0x121BA280;
+		constexpr uint64_t HOOK_TWO                          = 0xA9DA06;
+		constexpr uint64_t Physx_sdk                         = 0x12270548;
 	}
 
 	// =========================================================================
-	//  ”√”≤±‡¬Î≥£¡øÃÓ≥‰ GameData.Offset,±£≥÷‘≠”– map ∑√Œ ∑Ω Ω≤ª±‰
-	//  ‘≠ Sever_Init æ≠ http://localhost/offset.txt ¿≠»°≤¢Œƒ±æΩ‚Œˆ,œ÷“—»•≥˝Õ¯¬Á“¿¿µ
-	//  ≤¢÷ÿ√¸√˚Œ™ Init()°£
+	//  Áî®Á°¨ÁºñÁ†ÅÂ∏∏ÈáèÂ°´ÂÖÖ GameData.Offset,‰øùÊåÅÂéüÊúâ map ËÆøÈóÆÊñπÂºè‰∏çÂèò
+	//  Âéü Sever_Init Áªè http://localhost/offset.txt ÊãâÂèñÂπ∂ÊñáÊú¨Ëß£Êûê,Áé∞Â∑≤ÂéªÈô§ÁΩëÁªú‰æùËµñ
+	//  Âπ∂ÈáçÂëΩÂêç‰∏∫ Init()„ÄÇ
 	// =========================================================================
 	inline void Init() {
-		// ©§©§ Health ≈……˙œÓ ©§©§
+		// ‚îÄ‚îÄ Health Ê¥æÁîüÈ°π ‚îÄ‚îÄ
 		GameData.Offset["Health"]                = C::Health4;
 		GameData.Offset["bEncryptedHealth"]      = C::Health4 + 0x15;
 		GameData.Offset["EncryptedHealthOffset"] = C::Health4 + 0x14;
 		GameData.Offset["DecryptedHealthOffset"] = C::Health4 + 0x10;
 
-		// ©§©§ ‘ÿæﬂ ©§©§
+		// ‚îÄ‚îÄ ËΩΩÂÖ∑ ‚îÄ‚îÄ
 		GameData.Offset["VehicleFuel"]             = C::VehicleFuel;
 		GameData.Offset["VehicleCommonComponent"]  = C::VehicleCommonComponent;
 		GameData.Offset["FloatingComponent"]       = C::FloatingComponent;
@@ -253,14 +271,14 @@ namespace Offset
 		GameData.Offset["VehicleHealth"]           = C::VehicleHealth;
 		GameData.Offset["VehicleHealthMax"]        = C::VehicleHealthMax;
 
-		// ©§©§ ±≥∞¸/ŒÔ∆∑ ©§©§
+		// ‚îÄ‚îÄ ËÉåÂåÖ/Áâ©ÂìÅ ‚îÄ‚îÄ
 		GameData.Offset["InventoryFacade"]               = C::InventoryFacade;
 		GameData.Offset["Inventory"]                     = C::Inventory;
 		GameData.Offset["InventoryItems"]                = C::InventoryItems;
 		GameData.Offset["InventoryItemCount"]            = C::InventoryItemCount;
 		GameData.Offset["InventoryItemTagItemCount"]     = C::InventoryItemTagItemCount;
 
-		// ©§©§ Health ◊÷∂Œ”ÎΩ‚√‹ key ©§©§
+		// ‚îÄ‚îÄ Health Â≠óÊÆµ‰∏éËß£ÂØÜ key ‚îÄ‚îÄ
 		GameData.Offset["HeaFlag"] = C::HeaFlag;
 		GameData.Offset["Health1"] = C::Health1;
 		GameData.Offset["Health2"] = C::Health2;
@@ -285,12 +303,12 @@ namespace Offset
 		GameData.Offset["DecryptedHealthOffsets14"] = C::Health_keys14;
 		GameData.Offset["DecryptedHealthOffsets15"] = C::Health_keys15;
 
-		// ©§©§  ‰»Î/‰÷»æ‘”œÓ ©§©§
+		// ‚îÄ‚îÄ ËæìÂÖ•/Ê∏≤ÊüìÊùÇÈ°π ‚îÄ‚îÄ
 		GameData.Offset["MouseX"]                    = C::MouseX;
 		GameData.Offset["MouseY"]                    = C::MouseY;
 		GameData.Offset["bAlwaysCreatePhysicsState"] = C::bAlwaysCreatePhysicsState;
 
-		// ©§©§ ∂ØÃ¨»´æ÷ / FName Ω‚√‹ ©§©§
+		// ‚îÄ‚îÄ Âä®ÊÄÅÂÖ®Â±Ä / FName Ëß£ÂØÜ ‚îÄ‚îÄ
 		GameData.Offset["XenuineDecrypt"]            = C::XenuineDecrypt;
 		GameData.Offset["UWorld"]                    = C::UWorld;
 		GameData.Offset["GNames"]                    = C::GNames;
@@ -305,7 +323,7 @@ namespace Offset
 		GameData.Offset["DecryptNameIndexXorKey3"]   = C::DecryptNameIndexXorKey3;
 		GameData.Offset["ObjID"]                     = C::ObjID;
 
-		// ©§©§ Ω·ππ∆´“∆ ©§©§
+		// ‚îÄ‚îÄ ÁªìÊûÑÂÅèÁßª ‚îÄ‚îÄ
 		GameData.Offset["GameInstance"]          = C::GameInstance;
 		GameData.Offset["LocalPlayer"]           = C::LocalPlayer;
 		GameData.Offset["Actors"]                = C::Actors;
@@ -418,6 +436,72 @@ namespace Offset
 		GameData.Offset["StaticRelativeScale"]   = C::StaticRelativeScale;
 		GameData.Offset["AntiCheatCharacterSyncManager"] = C::AntiCheatCharacterSyncManager;
 
+		// ‚îÄ‚îÄ Latest pasted offsets not previously exported by key ‚îÄ‚îÄ
+		GameData.Offset["GObjects"] = C::GObjects;
+		GameData.Offset["ActorsForGC"] = C::ActorsForGC;
+		GameData.Offset["FeatureRepObject"] = C::FeatureRepObject;
+		GameData.Offset["Health_keys0"] = C::Health_keys0;
+		GameData.Offset["Health_keys1"] = C::Health_keys1;
+		GameData.Offset["Health_keys2"] = C::Health_keys2;
+		GameData.Offset["Health_keys3"] = C::Health_keys3;
+		GameData.Offset["Health_keys4"] = C::Health_keys4;
+		GameData.Offset["Health_keys5"] = C::Health_keys5;
+		GameData.Offset["Health_keys6"] = C::Health_keys6;
+		GameData.Offset["Health_keys7"] = C::Health_keys7;
+		GameData.Offset["Health_keys8"] = C::Health_keys8;
+		GameData.Offset["Health_keys9"] = C::Health_keys9;
+		GameData.Offset["Health_keys10"] = C::Health_keys10;
+		GameData.Offset["Health_keys11"] = C::Health_keys11;
+		GameData.Offset["Health_keys12"] = C::Health_keys12;
+		GameData.Offset["Health_keys13"] = C::Health_keys13;
+		GameData.Offset["Health_keys14"] = C::Health_keys14;
+		GameData.Offset["Health_keys15"] = C::Health_keys15;
+		GameData.Offset["BlueBlockerGaugeTotalMax"] = C::BlueBlockerGaugeTotalMax;
+		GameData.Offset["ping"] = C::ping;
+		GameData.Offset["MatchId"] = C::MatchId;
+		GameData.Offset["CapsuleComponent"] = C::CapsuleComponent;
+		GameData.Offset["CustomTimeDilation"] = C::CustomTimeDilation;
+		GameData.Offset["PubgIdData"] = C::PubgIdData;
+		GameData.Offset["bIsInVehicle_CP"] = C::bIsInVehicle_CP;
+		GameData.Offset["bIsParachuting_CP"] = C::bIsParachuting_CP;
+		GameData.Offset["bIsFreefalling_CP"] = C::bIsFreefalling_CP;
+		GameData.Offset["bEmergencyPickup_Flying_CP"] = C::bEmergencyPickup_Flying_CP;
+		GameData.Offset["bIsReviving_CP"] = C::bIsReviving_CP;
+		GameData.Offset["bIsSwimming_CP"] = C::bIsSwimming_CP;
+		GameData.Offset["VTable"] = C::VTable;
+		GameData.Offset["bIsDBNO_CP"] = C::bIsDBNO_CP;
+		GameData.Offset["bIsDBNO0"] = C::bIsDBNO0;
+		GameData.Offset["bIsDBNO1"] = C::bIsDBNO1;
+		GameData.Offset["bIsDBNO2"] = C::bIsDBNO2;
+		GameData.Offset["bIsPreparingThrow_CP"] = C::bIsPreparingThrow_CP;
+		GameData.Offset["bIsThrowing_CP"] = C::bIsThrowing_CP;
+		GameData.Offset["bIsFlashed_CP"] = C::bIsFlashed_CP;
+		GameData.Offset["RecentlyRendered"] = C::RecentlyRendered;
+		GameData.Offset["MortarRotation"] = C::MortarRotation;
+		GameData.Offset["MortarLocation"] = C::MortarLocation;
+		GameData.Offset["LineTraceSingle"] = C::LineTraceSingle;
+		GameData.Offset["HOOK"] = C::HOOK;
+		GameData.Offset["HOOK_TWO"] = C::HOOK_TWO;
+		GameData.Offset["Equipment"] = C::Equipment;
+		GameData.Offset["ItemsArray"] = C::ItemsArray;
+		GameData.Offset["Durability"] = C::Durability;
+		GameData.Offset["Durabilitymax"] = C::Durabilitymax;
+		GameData.Offset["FloatingVehicleCommonComponent"] = C::FloatingVehicleCommonComponent;
+		GameData.Offset["PhysxSDK"] = C::PhysxSDK;
+		GameData.Offset["Physx_sdk"] = C::Physx_sdk;
+		GameData.Offset["PhysicsScene"] = C::PhysicsScene;
+		GameData.Offset["mPhysXScene"] = C::mPhysXScene;
+		GameData.Offset["rigid_dynamics"] = C::rigid_dynamics;
+		GameData.Offset["Unreal_Engine"] = C::Unreal_Engine;
+		GameData.Offset["CurrentMinimapViewScale1D"] = C::CurrentMinimapViewScale1D;
+		GameData.Offset["LastMinimapPos"] = C::LastMinimapPos;
+		GameData.Offset["Minimap"] = C::Minimap;
+		GameData.Offset["RecoilValueVector"] = C::RecoilValueVector;
+		GameData.Offset["VerticalRecovery"] = C::VerticalRecovery;
+
 		return;
 	}
 }
+
+
+

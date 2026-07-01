@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include<iostream>
 #include<vector>
 #include"struct.h"
@@ -8,9 +8,9 @@
 namespace global
 {
 	inline const char* gamewindowclassname = "UnrealWindow";
-	inline const char* gamewindowtextname = "PUBG£º¾øµØÇóÉú ";
+	inline const char* gamewindowtextname = "PUBGï¼šç»åœ°æ±‚ç”Ÿ ";
 	inline const char* gamewindowtextname2 = "PUBG: BATTLEGROUNDS ";
-	inline const char* ÓÎÏ·Ä£¿éÃû = "TslGame.exe";
+	inline const char* æ¸¸æˆæ¨¡å—å = "TslGame.exe";
 
 	inline std::string G_card;
 	
@@ -19,29 +19,29 @@ namespace global
 	inline std::vector<item> g_items;
 
 
-	// Ìí¼ÓÒ»¸ö mutex ÓÃÓÚ±£»¤È«¾Ö±äÁ¿
+	// æ·»åŠ ä¸€ä¸ª mutex ç”¨äºä¿æŠ¤å…¨å±€å˜é‡
 	inline std::mutex g_mutex;
 	inline std::mutex g_itemmutex;
 
     inline std::string generateCardKey(const std::string& username) {
-        // Ä¿±ê¿¨ÃÜ³¤¶È
+        // ç›®æ ‡å¡å¯†é•¿åº¦
         const size_t targetLength = 34;
 
-        // ¼ÆËãÓÃ»§ÃûµÄ³¤¶È
+        // è®¡ç®—ç”¨æˆ·åçš„é•¿åº¦
         size_t usernameLength = username.length();
 
-        // Èç¹ûÓÃ»§ÃûÒÑ¾­ÊÇ34Î»»ò¸ü³¤£¬Ö±½Ó·µ»ØÓÃ»§ÃûµÄÇ°34Î»
+        // å¦‚æœç”¨æˆ·åå·²ç»æ˜¯34ä½æˆ–æ›´é•¿ï¼Œç›´æ¥è¿”å›ç”¨æˆ·åçš„å‰34ä½
         if (usernameLength >= targetLength) {
             return username.substr(0, targetLength);
         }
 
-        // ·ñÔò£¬½«ÓÃ»§ÃûÖØ¸´£¬Ö±µ½³¤¶È´óÓÚµÈÓÚ34Î»
+        // å¦åˆ™ï¼Œå°†ç”¨æˆ·åé‡å¤ï¼Œç›´åˆ°é•¿åº¦å¤§äºç­‰äº34ä½
         std::string cardKey = username;
         while (cardKey.length() < targetLength) {
             cardKey += username;
         }
 
-        // ½ØÈ¡Ç°34Î»
+        // æˆªå–å‰34ä½
         return cardKey.substr(0, targetLength);
     }
 

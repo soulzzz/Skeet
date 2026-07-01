@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <DMALibrary/Memory/Memory.h>
 #include "common/Data.h"
 #include "common/Entitys.h"
@@ -65,37 +65,37 @@ public:
 					uint32_t temp = uint32_t(GameData.Camera.FOV);
 					if (GameData.Keyboard.IsKeyDown(1))
 					{
-						if (temp <= 75 && temp >= 52)//¼tücÈ«Ï¢
+						if (temp <= 75 && temp >= 52)//ç´…é»å…¨æ¯
 						{
 							Move(0, GameData.Config.AimBot.yRecoil[0]);
 							Sleep(GameData.Config.AimBot.interval[0]);
 							continue;
 						}
-						if (temp == 40)//¶ş±¶
+						if (temp == 40)//äºŒå€
 						{
 							Move(0, GameData.Config.AimBot.yRecoil[1]);
 							Sleep(GameData.Config.AimBot.interval[1]);
 							continue;
 						}
-						if (temp == 26)//Èı±¶
+						if (temp == 26)//ä¸‰å€
 						{
 							Move(0, GameData.Config.AimBot.yRecoil[2]);
 							Sleep(GameData.Config.AimBot.interval[2]);
 							continue;
 						}
-						if (temp == 19)//ËÄ±¶
+						if (temp == 19)//å››å€
 						{
 							Move(0, GameData.Config.AimBot.yRecoil[3]);
 							Sleep(GameData.Config.AimBot.interval[3]);
 							continue;
 						}
-						if (temp == 13)//Áù±¶
+						if (temp == 13)//å…­å€
 						{
 							Move(0, GameData.Config.AimBot.yRecoil[4]);
 							Sleep(GameData.Config.AimBot.interval[4]);
 							continue;
 						}
-						if (temp == 10)//°Ë±¶
+						if (temp == 10)//å…«å€
 						{
 							Move(0, GameData.Config.AimBot.yRecoil[5]);
 							Sleep(GameData.Config.AimBot.interval[5]);

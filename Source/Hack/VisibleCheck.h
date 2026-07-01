@@ -1,13 +1,13 @@
-//#pragma once
+ï»¿//#pragma once
 //#include <Common/VisibleScene.h>
 //#include <Common/Data.h>
 //#include <Utils/Utils.h>
 //#include <Utils/Throttler.h>
-//#include <mutex> // Ìí¼Ó»¥³âÁ¿Í·ÎÄ¼ş
+//#include <mutex> // æ·»åŠ äº’æ–¥é‡å¤´æ–‡ä»¶
 //
 //namespace VisibleCheck {
 //
-//    // ¸üĞÂ³¡¾°ÖĞµÄÎïÌå£¬Í¨¹ı·¶Î§½øĞĞ¼ÓÔØ
+//    // æ›´æ–°åœºæ™¯ä¸­çš„ç‰©ä½“ï¼Œé€šè¿‡èŒƒå›´è¿›è¡ŒåŠ è½½
 //    void UpdateSceneByRange() {
 //        std::unordered_map<PrunerPayload, PxTransformT, PrunerPayloadHash> cache{};
 //        std::set<PrunerPayload> currentSceneObjects{};
@@ -20,7 +20,7 @@
 //                std::set<PrunerPayload> willRemoveObjects{};
 //                FVector currentPosition = GameData.Camera.Location + GameData.Radar.WorldOriginLocation;
 //
-//                // Èç¹ûµ±Ç°Î»ÖÃ¼¸ºõÎªÁã£¬Ö±½Ó·µ»Ø
+//                // å¦‚æœå½“å‰ä½ç½®å‡ ä¹ä¸ºé›¶ï¼Œç›´æ¥è¿”å›
 //                if (currentPosition.IsNearlyZero()) {
 //                    return;
 //                }
@@ -28,7 +28,7 @@
 //#ifdef _PHYSX_DEBUG
 //                auto start = std::chrono::high_resolution_clock::now();
 //#endif
-//                // ¼ÓÔØµ±Ç°·¶Î§ÄÚµÄÎïÌå
+//                // åŠ è½½å½“å‰èŒƒå›´å†…çš„ç‰©ä½“
 //                auto Meshs = physx::LoadShapeByRange(
 //                    lastUpdateTimestamp,
 //                    cache,
@@ -40,7 +40,7 @@
 //                    GameData.Config.ESP.PhysxRefreshLimit
 //                );
 //
-//                // Èç¹ûÓĞÎïÌå±»¼ÓÔØ»òÒÆ³ı
+//                // å¦‚æœæœ‰ç‰©ä½“è¢«åŠ è½½æˆ–ç§»é™¤
 //                if (!Meshs.empty() || !willRemoveObjects.empty()) {
 //#ifdef _PHYSX_DEBUG
 //                    auto end = std::chrono::high_resolution_clock::now();
@@ -48,13 +48,13 @@
 //                    Utils::Log(1, "Static: Load %d meshs cost %d ms", Meshs.size(), duration.count());
 //#endif
 //                    try {
-//                        // ¼ì²éDynamicLoadSceneÊÇ·ñÎªnull
+//                        // æ£€æŸ¥DynamicLoadSceneæ˜¯å¦ä¸ºnull
 //                        if (GameData.DynamicLoadScene == nullptr) {
 //                            Utils::Log(3, "Static: DynamicLoadScene is null, cannot update mesh.");
 //                            return;
 //                        }
 //
-//                        // Ê¹ÓÃstd::lock_guardËø×¡»¥³âÁ¿£¬È·±£Ïß³Ì°²È«
+//                        // ä½¿ç”¨std::lock_guardé”ä½äº’æ–¥é‡ï¼Œç¡®ä¿çº¿ç¨‹å®‰å…¨
 //                        std::lock_guard<std::mutex> lock(GameData.gameDataMutex);
 //                        GameData.DynamicLoadScene->UpdateMesh(Meshs, willRemoveObjects);
 //                    }
@@ -72,7 +72,7 @@
 //        }
 //    }
 //
-//    // ¸üĞÂ¶¯Ì¬¸ß¶È³¡
+//    // æ›´æ–°åŠ¨æ€é«˜åº¦åœº
 //    void UpdateDynamicHeightField() {
 //        std::set<PrunerPayload> UniqueSet{};
 //        std::set<PrunerPayload> HeightFieldSet{};
@@ -86,7 +86,7 @@
 //#ifdef _PHYSX_DEBUG
 //                auto start = std::chrono::high_resolution_clock::now();
 //#endif
-//                // Ë¢ĞÂ¶¯Ì¬¼ÓÔØµÄ¸ß¶È³¡
+//                // åˆ·æ–°åŠ¨æ€åŠ è½½çš„é«˜åº¦åœº
 //                auto Meshs = physx::RefreshDynamicLoadHeightField(
 //                    lastUpdateTimestamp, UniqueSet,
 //                    HeightFieldSet,
@@ -94,7 +94,7 @@
 //                    RemoveHeightFieldKey
 //                );
 //
-//                // Èç¹ûÓĞÎïÌå±»¼ÓÔØ»òÒÆ³ı
+//                // å¦‚æœæœ‰ç‰©ä½“è¢«åŠ è½½æˆ–ç§»é™¤
 //                if (!Meshs.empty() || !RemoveHeightFieldKey.empty()) {
 //#ifdef _PHYSX_DEBUG
 //                    auto end = std::chrono::high_resolution_clock::now();
@@ -102,13 +102,13 @@
 //                    Utils::Log(1, "Load %d meshs cost %d ms", Meshs.size(), duration.count());
 //#endif
 //                    try {
-//                        // ¼ì²é HeightFieldScene ÊÇ·ñÎª null
+//                        // æ£€æŸ¥ HeightFieldScene æ˜¯å¦ä¸º null
 //                        if (GameData.HeightFieldScene == nullptr) {
 //                            Utils::Log(3, "HeightField: HeightFieldScene is null, cannot update mesh.");
 //                            return;
 //                        }
 //
-//                        // Ê¹ÓÃ std::lock_guard Ëø×¡»¥³âÁ¿£¬È·±£Ïß³Ì°²È«
+//                        // ä½¿ç”¨ std::lock_guard é”ä½äº’æ–¥é‡ï¼Œç¡®ä¿çº¿ç¨‹å®‰å…¨
 //                        std::lock_guard<std::mutex> lock(GameData.gameDataMutex);
 //                        GameData.HeightFieldScene->UpdateMesh(Meshs, RemoveHeightFieldKey);
 //                    }
@@ -126,7 +126,7 @@
 //        }
 //    }
 //
-//    // ¸üĞÂ¶¯Ì¬¸ÕÌå
+//    // æ›´æ–°åŠ¨æ€åˆšä½“
 //    void UpdateDynamicRigid() {
 //        Throttler throttler;
 //        std::unordered_map<PrunerPayload, PxTransformT, PrunerPayloadHash> cache{};
@@ -137,7 +137,7 @@
 //            throttler.executeTaskWithSleep("DynamicRigidUpdateSleep", std::chrono::milliseconds(GameData.Config.ESP.PhysxDynamicRefreshInterval), [&currentSceneObjects, &cache, &ptrCache] {
 //                FVector currentPosition = GameData.Camera.Location + GameData.Radar.WorldOriginLocation;
 //
-//                // Èç¹ûµ±Ç°Î»ÖÃ¼¸ºõÎªÁã£¬Ö±½Ó·µ»Ø
+//                // å¦‚æœå½“å‰ä½ç½®å‡ ä¹ä¸ºé›¶ï¼Œç›´æ¥è¿”å›
 //                if (currentPosition.IsNearlyZero()) {
 //                    return;
 //                }
@@ -146,7 +146,7 @@
 //#ifdef _PHYSX_DEBUG
 //                auto start = std::chrono::high_resolution_clock::now();
 //#endif
-//                // ¼ÓÔØ¶¯Ì¬¸ÕÌå
+//                // åŠ è½½åŠ¨æ€åˆšä½“
 //                auto Meshs = physx::LoadDynamicRigidShape(
 //                    currentSceneObjects,
 //                    cache,
@@ -156,7 +156,7 @@
 //                    GameData.Config.ESP.PhysxLoadRadius * 100.f
 //                );
 //
-//                // Èç¹ûÓĞ¶¯Ì¬ÎïÌå±»¼ÓÔØ»òÒÆ³ı
+//                // å¦‚æœæœ‰åŠ¨æ€ç‰©ä½“è¢«åŠ è½½æˆ–ç§»é™¤
 //                if (!Meshs.empty() || !willRemoveShape.empty()) {
 //#ifdef _PHYSX_DEBUG
 //                    auto end = std::chrono::high_resolution_clock::now();
@@ -164,13 +164,13 @@
 //                    Utils::Log(1, "Dynamic: Load %d meshs cost %d ms", Meshs.size(), duration.count());
 //#endif
 //                    try {
-//                        // ¼ì²éDynamicRigidSceneÊÇ·ñÎªnull
+//                        // æ£€æŸ¥DynamicRigidSceneæ˜¯å¦ä¸ºnull
 //                        if (GameData.DynamicRigidScene == nullptr) {
 //                            Utils::Log(3, "Dynamic: DynamicRigidScene is null, cannot update mesh.");
 //                            return;
 //                        }
 //
-//                        // Ê¹ÓÃstd::lock_guardËø×¡»¥³âÁ¿£¬È·±£Ïß³Ì°²È«
+//                        // ä½¿ç”¨std::lock_guardé”ä½äº’æ–¥é‡ï¼Œç¡®ä¿çº¿ç¨‹å®‰å…¨
 //                        std::lock_guard<std::mutex> lock(GameData.gameDataMutex);
 //                        GameData.DynamicRigidScene->UpdateMesh(Meshs, willRemoveShape);
 //                    }
@@ -202,11 +202,11 @@
 #include <Common/Data.h>
 #include <Utils/Utils.h>
 #include <Utils/Throttler.h>
-#include <mutex> // Ìí¼Ó»¥³âÁ¿Í·ÎÄ¼ş
+#include <mutex> // æ·»åŠ äº’æ–¥é‡å¤´æ–‡ä»¶
 
 namespace VisibleCheck {
 
-    // ¸üĞÂ³¡¾°ÖĞµÄÎïÌå£¬Í¨¹ı·¶Î§½øĞĞ¼ÓÔØ
+    // æ›´æ–°åœºæ™¯ä¸­çš„ç‰©ä½“ï¼Œé€šè¿‡èŒƒå›´è¿›è¡ŒåŠ è½½
     void UpdateSceneByRange() {
         std::unordered_map<PrunerPayload, PxTransformT, PrunerPayloadHash> cache{};
         std::set<PrunerPayload> currentSceneObjects{};
@@ -219,7 +219,7 @@ namespace VisibleCheck {
                 std::set<PrunerPayload> willRemoveObjects{};
                 FVector currentPosition = GameData.Camera.Location + GameData.Radar.WorldOriginLocation;
 
-                // Èç¹ûµ±Ç°Î»ÖÃ¼¸ºõÎªÁã£¬Ö±½Ó·µ»Ø
+                // å¦‚æœå½“å‰ä½ç½®å‡ ä¹ä¸ºé›¶ï¼Œç›´æ¥è¿”å›
                 if (currentPosition.IsNearlyZero()) {
                     return;
                 }
@@ -227,7 +227,7 @@ namespace VisibleCheck {
 #ifdef _PHYSX_DEBUG
                 auto start = std::chrono::high_resolution_clock::now();
 #endif
-                // ¼ÓÔØµ±Ç°·¶Î§ÄÚµÄÎïÌå
+                // åŠ è½½å½“å‰èŒƒå›´å†…çš„ç‰©ä½“
                 auto Meshs = physx::LoadShapeByRange(
                     lastUpdateTimestamp,
                     cache,
@@ -239,7 +239,7 @@ namespace VisibleCheck {
                     GameData.Config.ESP.PhysxRefreshLimit
                 );
 
-                // Èç¹ûÓĞÎïÌå±»¼ÓÔØ»òÒÆ³ı
+                // å¦‚æœæœ‰ç‰©ä½“è¢«åŠ è½½æˆ–ç§»é™¤
                 if (!Meshs.empty() || !willRemoveObjects.empty()) {
 #ifdef _PHYSX_DEBUG
                     auto end = std::chrono::high_resolution_clock::now();
@@ -247,13 +247,13 @@ namespace VisibleCheck {
                     Utils::Log(1, "Static: Load %d meshs cost %d ms", Meshs.size(), duration.count());
 #endif
                     try {
-                        // ¼ì²éDynamicLoadSceneÊÇ·ñÎªnull
+                        // æ£€æŸ¥DynamicLoadSceneæ˜¯å¦ä¸ºnull
                         if (GameData.DynamicLoadScene == nullptr) {
                             Utils::Log(3, "Static: DynamicLoadScene is null, cannot update mesh.");
                             return;
                         }
 
-                        // Ê¹ÓÃstd::lock_guardËø×¡»¥³âÁ¿£¬È·±£Ïß³Ì°²È«
+                        // ä½¿ç”¨std::lock_guardé”ä½äº’æ–¥é‡ï¼Œç¡®ä¿çº¿ç¨‹å®‰å…¨
                         std::lock_guard<std::mutex> lock(GameData.gameDataMutex);
                         GameData.DynamicLoadScene->UpdateMesh(Meshs, willRemoveObjects);
                     }
@@ -271,7 +271,7 @@ namespace VisibleCheck {
         }
     }
 
-    // ¸üĞÂ¶¯Ì¬¸ß¶È³¡
+    // æ›´æ–°åŠ¨æ€é«˜åº¦åœº
     void UpdateDynamicHeightField() {
         std::set<PrunerPayload> UniqueSet{};
         std::set<PrunerPayload> HeightFieldSet{};
@@ -285,7 +285,7 @@ namespace VisibleCheck {
 #ifdef _PHYSX_DEBUG
                 auto start = std::chrono::high_resolution_clock::now();
 #endif
-                // Ë¢ĞÂ¶¯Ì¬¼ÓÔØµÄ¸ß¶È³¡
+                // åˆ·æ–°åŠ¨æ€åŠ è½½çš„é«˜åº¦åœº
                 auto Meshs = physx::RefreshDynamicLoadHeightField(
                     lastUpdateTimestamp, UniqueSet,
                     HeightFieldSet,
@@ -293,7 +293,7 @@ namespace VisibleCheck {
                     RemoveHeightFieldKey
                 );
 
-                // Èç¹ûÓĞÎïÌå±»¼ÓÔØ»òÒÆ³ı
+                // å¦‚æœæœ‰ç‰©ä½“è¢«åŠ è½½æˆ–ç§»é™¤
                 if (!Meshs.empty() || !RemoveHeightFieldKey.empty()) {
 #ifdef _PHYSX_DEBUG
                     auto end = std::chrono::high_resolution_clock::now();
@@ -301,13 +301,13 @@ namespace VisibleCheck {
                     Utils::Log(1, "Load %d meshs cost %d ms", Meshs.size(), duration.count());
 #endif
                     try {
-                        // ¼ì²é HeightFieldScene ÊÇ·ñÎª null
+                        // æ£€æŸ¥ HeightFieldScene æ˜¯å¦ä¸º null
                         if (GameData.HeightFieldScene == nullptr) {
                             Utils::Log(3, "HeightField: HeightFieldScene is null, cannot update mesh.");
                             return;
                         }
 
-                        // Ê¹ÓÃ std::lock_guard Ëø×¡»¥³âÁ¿£¬È·±£Ïß³Ì°²È«
+                        // ä½¿ç”¨ std::lock_guard é”ä½äº’æ–¥é‡ï¼Œç¡®ä¿çº¿ç¨‹å®‰å…¨
                         std::lock_guard<std::mutex> lock(GameData.gameDataMutex);
                         GameData.HeightFieldScene->UpdateMesh(Meshs, RemoveHeightFieldKey);
                     }
@@ -325,7 +325,7 @@ namespace VisibleCheck {
         }
     }
 
-    // ¸üĞÂ¶¯Ì¬¸ÕÌå
+    // æ›´æ–°åŠ¨æ€åˆšä½“
     void UpdateDynamicRigid() {
         Throttler throttler;
         std::unordered_map<PrunerPayload, PxTransformT, PrunerPayloadHash> cache{};
@@ -336,7 +336,7 @@ namespace VisibleCheck {
             throttler.executeTaskWithSleep("DynamicRigidUpdateSleep", std::chrono::milliseconds(GameData.Config.ESP.PhysxDynamicRefreshInterval), [&currentSceneObjects, &cache, &ptrCache] {
                 FVector currentPosition = GameData.Camera.Location + GameData.Radar.WorldOriginLocation;
 
-                // Èç¹ûµ±Ç°Î»ÖÃ¼¸ºõÎªÁã£¬Ö±½Ó·µ»Ø
+                // å¦‚æœå½“å‰ä½ç½®å‡ ä¹ä¸ºé›¶ï¼Œç›´æ¥è¿”å›
                 if (currentPosition.IsNearlyZero()) {
                     return;
                 }
@@ -345,7 +345,7 @@ namespace VisibleCheck {
 #ifdef _PHYSX_DEBUG
                 auto start = std::chrono::high_resolution_clock::now();
 #endif
-                // ¼ÓÔØ¶¯Ì¬¸ÕÌå
+                // åŠ è½½åŠ¨æ€åˆšä½“
                 auto Meshs = physx::LoadDynamicRigidShape(
                     currentSceneObjects,
                     cache,
@@ -355,7 +355,7 @@ namespace VisibleCheck {
                     GameData.Config.ESP.PhysxLoadRadius * 100.f
                 );
 
-                // Èç¹ûÓĞ¶¯Ì¬ÎïÌå±»¼ÓÔØ»òÒÆ³ı
+                // å¦‚æœæœ‰åŠ¨æ€ç‰©ä½“è¢«åŠ è½½æˆ–ç§»é™¤
                 if (!Meshs.empty() || !willRemoveShape.empty()) {
 #ifdef _PHYSX_DEBUG
                     auto end = std::chrono::high_resolution_clock::now();
@@ -363,13 +363,13 @@ namespace VisibleCheck {
                     Utils::Log(1, "Dynamic: Load %d meshs cost %d ms", Meshs.size(), duration.count());
 #endif
                     try {
-                        // ¼ì²éDynamicRigidSceneÊÇ·ñÎªnull
+                        // æ£€æŸ¥DynamicRigidSceneæ˜¯å¦ä¸ºnull
                         if (GameData.DynamicRigidScene == nullptr) {
                             Utils::Log(3, "Dynamic: DynamicRigidScene is null, cannot update mesh.");
                             return;
                         }
 
-                        // Ê¹ÓÃstd::lock_guardËø×¡»¥³âÁ¿£¬È·±£Ïß³Ì°²È«
+                        // ä½¿ç”¨std::lock_guardé”ä½äº’æ–¥é‡ï¼Œç¡®ä¿çº¿ç¨‹å®‰å…¨
                         std::lock_guard<std::mutex> lock(GameData.gameDataMutex);
                         GameData.DynamicRigidScene->UpdateMesh(Meshs, willRemoveShape);
                     }

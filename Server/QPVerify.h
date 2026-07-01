@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <iostream>
 #include <Windows.h>
@@ -10,7 +10,7 @@ using namespace std;
 //#define QPEXPORT extern "C" __declspec(dllexport)
 typedef void(_stdcall* PFN_GetMachineCode)(char pMem[1024]);
 bool QPLibInit(BOOL(*pfnLoadDllFromRes)(PVOID* pDllData, DWORD* dwDllSize));
-bool QPInit(const char* ip, unsigned short port, const char* soft = "ͨ��", const char* version = "1", int commKey = 0);
+bool QPInit(const char* ip, unsigned short port, const char* soft = "通用", const char* version = "1", int commKey = 0);
 bool QPGetBulletin(char** ppbuf);
 void QPFree(char* p);
 void QPSetMachineFeature(char* pFeature, int len);

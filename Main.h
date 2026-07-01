@@ -1,4 +1,4 @@
-
+ï»¿
 #pragma once
 #include <winsock2.h>
 #include <windows.h>
@@ -22,7 +22,7 @@
 
 //
 #include "VMP/VMProtectSDK.h"
-extern int currentLanguageIndex;  // ÉùÃ÷È«¾Ö±äÁ¿
+extern int currentLanguageIndex;  // å£°æ˜Žå…¨å±€å˜é‡
 enum class Language1
 {
     Chinese,
@@ -44,10 +44,10 @@ wchar_t s_buffer[33];
 WNDPROC OldEditProc;
 
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-// ¶¨ÒåºìÉ«ÎÄ±¾ÊôÐÔ£¨ºìÉ«ÎÄ±¾£¬ºÚÉ«±³¾°£©
+// å®šä¹‰çº¢è‰²æ–‡æœ¬å±žæ€§ï¼ˆçº¢è‰²æ–‡æœ¬ï¼Œé»‘è‰²èƒŒæ™¯ï¼‰
 WORD redTextAttr = FOREGROUND_RED | FOREGROUND_INTENSITY;
 WORD greenTextAttr = FOREGROUND_GREEN | FOREGROUND_INTENSITY;
-// ¶¨ÒåÄ¬ÈÏÎÄ±¾ÊôÐÔ£¨°×É«ÎÄ±¾£¬ºÚÉ«±³¾°£©
+// å®šä¹‰é»˜è®¤æ–‡æœ¬å±žæ€§ï¼ˆç™½è‰²æ–‡æœ¬ï¼Œé»‘è‰²èƒŒæ™¯ï¼‰
 WORD defaultTextAttr = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
 static std::wstring stringToWString(std::string& str) {
     int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
@@ -60,14 +60,14 @@ static bool IsRunningAsAdmin()
     BOOL isAdmin = FALSE;
     PSID adminGroup = NULL;
 
-    // »ñÈ¡¹ÜÀíÔ±×éµÄ SID
+    // èŽ·å–ç®¡ç†å‘˜ç»„çš„ SID
     SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
     if (AllocateAndInitializeSid(&NtAuthority, 2,
         SECURITY_BUILTIN_DOMAIN_RID,
         DOMAIN_ALIAS_RID_ADMINS,
         0, 0, 0, 0, 0, 0, &adminGroup))
     {
-        // ¼ì²éµ±Ç°ÁîÅÆÊÇ·ñ°üº¬¹ÜÀíÔ± SID
+        // æ£€æŸ¥å½“å‰ä»¤ç‰Œæ˜¯å¦åŒ…å«ç®¡ç†å‘˜ SID
         CheckTokenMembership(NULL, adminGroup, &isAdmin);
         FreeSid(adminGroup);
     }
@@ -79,7 +79,7 @@ static bool IsRunningAsAdmin()
 
 
 
-const char* FILE_NAME = "kami.txt"; // ÎÄ¼þÃû
+const char* FILE_NAME = "kami.txt"; // æ–‡ä»¶å
 static void SaveKami(const char* kami) {
     std::ofstream outfile(FILE_NAME);
     if (outfile.is_open()) {
@@ -100,7 +100,7 @@ HBRUSH hbrBackground;
 HBRUSH hbrBtnBackground;
 HBRUSH hbrStaticBackground;
 HBRUSH hbrEditBackground;
-HWND hwndLanguageComboBox; // ¶¨ÒåÒ»¸öÈ«¾Ö±äÁ¿À´´æ´¢ÓïÑÔÑ¡ÔñÏÂÀ­¿òµÄ¾ä±ú
+HWND hwndLanguageComboBox; // å®šä¹‰ä¸€ä¸ªå…¨å±€å˜é‡æ¥å­˜å‚¨è¯­è¨€é€‰æ‹©ä¸‹æ‹‰æ¡†çš„å¥æŸ„
 HWND hwndStatic;
 HWND hLoginButton;
 HWND hUnbindButton;
@@ -115,12 +115,12 @@ HWND Language23;
 
 
 
-// ´ÓÎÄ¼þ¼ÓÔØÓïÑÔÉèÖÃ
+// ä»Žæ–‡ä»¶åŠ è½½è¯­è¨€è®¾ç½®
 static int LoadLanguageSetting() {
     FILE* file = fopen("language_setting.txt", "r");
-    int languageIndex = 0; // Ä¬ÈÏÖÐÎÄ
+    int languageIndex = 0; // é»˜è®¤ä¸­æ–‡
     if (file) {
-        fscanf(file, "%d", &languageIndex); // ¶ÁÈ¡ÓïÑÔË÷Òý
+        fscanf(file, "%d", &languageIndex); // è¯»å–è¯­è¨€ç´¢å¼•
         fclose(file);
     }
     return languageIndex;
@@ -140,17 +140,17 @@ static void SetFontForButton(HWND hButton, const wchar_t* fontName, int fontSize
 
 
 static void ConvertWCharArrayToCharArray(wchar_t* wstr, char* str, int strSize) {
-    // »ñÈ¡×ª»»ºóµÄ×Ö·û´®³¤¶È
+    // èŽ·å–è½¬æ¢åŽçš„å­—ç¬¦ä¸²é•¿åº¦
     int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
     if (size_needed == 0 || size_needed > strSize) {
-        std::cerr << "ÇëÖØÐÂ´ò¿ª±¾Èí¼þ" << std::endl;
+        std::cerr << "è¯·é‡æ–°æ‰“å¼€æœ¬è½¯ä»¶" << std::endl;
         return;
     }
 
-    // Ö´ÐÐ×ª»»
+    // æ‰§è¡Œè½¬æ¢
     WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, strSize, NULL, NULL);
 }
-// ÐÂµÄ´°¿Ú¹ý³Ì£¬ÓÃÓÚÀ¹½Ø»Ø³µ¼ü
+// æ–°çš„çª—å£è¿‡ç¨‹ï¼Œç”¨äºŽæ‹¦æˆªå›žè½¦é”®
 
 static std::string ConvertUTF8toGBK(const std::string& strUTF8) {
     int len = MultiByteToWideChar(CP_UTF8, 0, strUTF8.c_str(), -1, NULL, 0);
@@ -168,16 +168,16 @@ static std::string ConvertUTF8toGBK(const std::string& strUTF8) {
 }
 
 
-// ¸¨Öúº¯Êý£º½«ÈÕÆÚÊ±¼ä×Ö·û´®×ª»»Îªtime_tÀàÐÍ
+// è¾…åŠ©å‡½æ•°ï¼šå°†æ—¥æœŸæ—¶é—´å­—ç¬¦ä¸²è½¬æ¢ä¸ºtime_tç±»åž‹
 time_t StringToTimeT(const std::string& dateTimeStr) {
-    struct tm tm = { 0 }; // ³õÊ¼»¯
-    // ¼ÙÉèÈÕÆÚÊ±¼ä¸ñÊ½Îª YYYY-MM-DD HH:MM:SS
+    struct tm tm = { 0 }; // åˆå§‹åŒ–
+    // å‡è®¾æ—¥æœŸæ—¶é—´æ ¼å¼ä¸º YYYY-MM-DD HH:MM:SS
     sscanf_s(dateTimeStr.c_str(), "%d-%d-%d %d:%d:%d",
         &tm.tm_year, &tm.tm_mon, &tm.tm_mday,
         &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
-    tm.tm_year -= 1900; // tm_year ÊÇ´Ó1900Äê¿ªÊ¼¼ÆÊý
-    tm.tm_mon -= 1; // tm_mon ÊÇ´Ó0¿ªÊ¼¼ÆÊý
-    return mktime(&tm); // ·µ»Øtime_tÊ±¼ä
+    tm.tm_year -= 1900; // tm_year æ˜¯ä»Ž1900å¹´å¼€å§‹è®¡æ•°
+    tm.tm_mon -= 1; // tm_mon æ˜¯ä»Ž0å¼€å§‹è®¡æ•°
+    return mktime(&tm); // è¿”å›žtime_tæ—¶é—´
 }
 
 

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Data.h"
 #include "utils/utils.h"
 #include <nlohmann/json.hpp>
@@ -243,49 +243,49 @@ public:
 				Config[ConfigName]["PhysxDynamicRefreshInterval"] = GameData.Config.ESP.PhysxDynamicRefreshInterval;
 				Config[ConfigName]["PhysxRefreshLimit"] = GameData.Config.ESP.PhysxRefreshLimit;
 
-				Config[ConfigName]["Enable"] = GameData.Config.ESP.Enable;//¿ªÆôµĞÈËÍ¸ÊÓ
+				Config[ConfigName]["Enable"] = GameData.Config.ESP.Enable;//å¼€å¯æ•Œäººé€è§†
 				Config[ConfigName]["Stroke"] = GameData.Config.ESP.Stroke;
 				Config[ConfigName]["miwu"] = GameData.Config.ESP.miwu;
-				Config[ConfigName]["DistanceStyle"] = GameData.Config.ESP.DistanceStyle;//Í¸ÊÓ¾àÀë
+				Config[ConfigName]["DistanceStyle"] = GameData.Config.ESP.DistanceStyle;//é€è§†è·ç¦»
 				Config[ConfigName]["HealthBarStyle"] = GameData.Config.ESP.HealthBarStyle;
 				Config[ConfigName]["VisibleCheck"] = GameData.Config.ESP.VisibleCheck;
 				Config[ConfigName]["AimExpandInfo"] = GameData.Config.ESP.AimExpandInfo;
-				Config[ConfigName]["TargetedRay"] = GameData.Config.ESP.TargetedRay;//±»ÃéÉäÏß
-				Config[ConfigName]["VisibleCheckRay"] = GameData.Config.ESP.VisibleCheckRay;//¿ÉÊÓ¼ì²â
-				Config[ConfigName]["LockedHiddenBones"] = GameData.Config.ESP.LockedHiddenBones;//Ëø¶¨²»ÏÔ
-				Config[ConfigName]["Server IP"] = GameData.Config.ESP.·şÎñÆ÷IP;
-				Config[ConfigName]["shouchi"] = GameData.Config.ESP.Weapon;//ÊÖ³Ö
-				Config[ConfigName]["hezuozhe"] = GameData.Config.ESP.Partner;//ºÏ×÷Õß
+				Config[ConfigName]["TargetedRay"] = GameData.Config.ESP.TargetedRay;//è¢«ç„å°„çº¿
+				Config[ConfigName]["VisibleCheckRay"] = GameData.Config.ESP.VisibleCheckRay;//å¯è§†æ£€æµ‹
+				Config[ConfigName]["LockedHiddenBones"] = GameData.Config.ESP.LockedHiddenBones;//é”å®šä¸æ˜¾
+				Config[ConfigName]["Server IP"] = GameData.Config.ESP.æœåŠ¡å™¨IP;
+				Config[ConfigName]["shouchi"] = GameData.Config.ESP.Weapon;//æ‰‹æŒ
+				Config[ConfigName]["hezuozhe"] = GameData.Config.ESP.Partner;//åˆä½œè€…
 				
-				Config[ConfigName]["jisha"] = GameData.Config.ESP.»÷É±;//»÷É±
-				Config[ConfigName]["shanghai"] = GameData.Config.ESP.ÉËº¦;//ÉËº¦
-				Config[ConfigName]["diaoxian"] = GameData.Config.ESP.ShowInfos;//µôÏßÏÔÊ¾
+				Config[ConfigName]["jisha"] = GameData.Config.ESP.å‡»æ€;//å‡»æ€
+				Config[ConfigName]["shanghai"] = GameData.Config.ESP.ä¼¤å®³;//ä¼¤å®³
+				Config[ConfigName]["diaoxian"] = GameData.Config.ESP.ShowInfos;//æ‰çº¿æ˜¾ç¤º
 
-				Config[ConfigName]["Nickname"] = GameData.Config.ESP.Nickname;//Ãû×Ö
-				Config[ConfigName]["WeaponDistanceMax"] = GameData.Config.ESP.WeaponDistanceMax;//Ãû×Ö
+				Config[ConfigName]["Nickname"] = GameData.Config.ESP.Nickname;//åå­—
+				Config[ConfigName]["WeaponDistanceMax"] = GameData.Config.ESP.WeaponDistanceMax;//åå­—
 		
-				Config[ConfigName]["TeamID"] = GameData.Config.ESP.TeamID;//Œ¦˜Ë
-				Config[ConfigName]["ClanName"] = GameData.Config.ESP.ClanName;//‘ğê 
-				Config[ConfigName]["Dis"] = GameData.Config.ESP.Dis;//¾àÀë
-				Config[ConfigName]["health_bar"] = GameData.Config.ESP.health_bar;//Ñª—l
-				Config[ConfigName]["Health"] = GameData.Config.ESP.Health;//ÑªÁ¿
-				Config[ConfigName]["Tier"] = GameData.Config.ESP.Tier;//¶ÎÎ»
-				Config[ConfigName]["RankPoint"] = GameData.Config.ESP.RankPoint;//·Ö”µ
+				Config[ConfigName]["TeamID"] = GameData.Config.ESP.TeamID;//å°æ¨™
+				Config[ConfigName]["ClanName"] = GameData.Config.ESP.ClanName;//æˆ°éšŠ
+				Config[ConfigName]["Dis"] = GameData.Config.ESP.Dis;//è·ç¦»
+				Config[ConfigName]["health_bar"] = GameData.Config.ESP.health_bar;//è¡€æ¢
+				Config[ConfigName]["Health"] = GameData.Config.ESP.Health;//è¡€é‡
+				Config[ConfigName]["Tier"] = GameData.Config.ESP.Tier;//æ®µä½
+				Config[ConfigName]["RankPoint"] = GameData.Config.ESP.RankPoint;//åˆ†æ•¸
 				Config[ConfigName]["KDA"] = GameData.Config.ESP.KDA;//KDA
-				Config[ConfigName]["dengji"] = GameData.Config.ESP.µÈ¼¶;//µÈ¼¶
-				Config[ConfigName]["guanzhan"] = GameData.Config.ESP.¹ÛÕ½;//¹ÛÕ½
-				Config[ConfigName]["Skeleton"] = GameData.Config.ESP.Skeleton;//¹Ç÷Àï@Ê¾
-				Config[ConfigName]["DisplayFrame"] = GameData.Config.ESP.DisplayFrame;//¹Ç÷Àï@Ê¾
-				Config[ConfigName]["TargetedRay"] = GameData.Config.ESP.TargetedRay;//¹Ç÷Àï@Ê¾
+				Config[ConfigName]["dengji"] = GameData.Config.ESP.ç­‰çº§;//ç­‰çº§
+				Config[ConfigName]["guanzhan"] = GameData.Config.ESP.è§‚æˆ˜;//è§‚æˆ˜
+				Config[ConfigName]["Skeleton"] = GameData.Config.ESP.Skeleton;//éª¨éª¼é¡¯ç¤º
+				Config[ConfigName]["DisplayFrame"] = GameData.Config.ESP.DisplayFrame;//éª¨éª¼é¡¯ç¤º
+				Config[ConfigName]["TargetedRay"] = GameData.Config.ESP.TargetedRay;//éª¨éª¼é¡¯ç¤º
 				Config[ConfigName]["showIcon"] = GameData.Config.ESP.showIcon;
 				Config[ConfigName]["DistanceMax"] = GameData.Config.ESP.DistanceMax;
 				Config[ConfigName]["HeadDrawing"] = GameData.Config.ESP.HeadDrawing;
-				Config[ConfigName]["SkeletonWidth"] = GameData.Config.ESP.SkeletonWidth;//¹Ç÷À´ÖÏ¸
-				Config[ConfigName]["FontSize"] = GameData.Config.ESP.FontSize;//ĞÅÏ¢´óĞ¡
-				Config[ConfigName]["WeaponDistanceMax"] = GameData.Config.ESP.WeaponDistanceMax;//ÎäÆ÷¾àÀë
-				Config[ConfigName]["InfoDistanceMax"] = GameData.Config.ESP.InfoDistanceMax;//ĞÅÏ¢¾àÀë
+				Config[ConfigName]["SkeletonWidth"] = GameData.Config.ESP.SkeletonWidth;//éª¨éª¼ç²—ç»†
+				Config[ConfigName]["FontSize"] = GameData.Config.ESP.FontSize;//ä¿¡æ¯å¤§å°
+				Config[ConfigName]["WeaponDistanceMax"] = GameData.Config.ESP.WeaponDistanceMax;//æ­¦å™¨è·ç¦»
+				Config[ConfigName]["InfoDistanceMax"] = GameData.Config.ESP.InfoDistanceMax;//ä¿¡æ¯è·ç¦»
 				Config[ConfigName]["RayWidth"] = GameData.Config.ESP.RayWidth;
-				Config[ConfigName]["FocusModeKey"] = GameData.Config.ESP.FocusModeKey;//Õ½¶·Ä£Ê½
+				Config[ConfigName]["FocusModeKey"] = GameData.Config.ESP.FocusModeKey;//æˆ˜æ–—æ¨¡å¼
 				Config[ConfigName]["ConfigIndex"] = GameData.Config.AimBot.ConfigIndex;//
 				Config[ConfigName]["duiyouKey"] = GameData.Config.ESP.duiyouKey;//
 				Config[ConfigName]["DataSwitchkey"] = GameData.Config.ESP.DataSwitchkey;//
@@ -763,7 +763,7 @@ public:
 			std::string ConfigName = "ESP";
 			if (Config[ConfigName].count("Server IP"))
 			{
-				snprintf(GameData.Config.ESP.·şÎñÆ÷IP, sizeof(GameData.Config.ESP.·şÎñÆ÷IP), "%s", Utils::StringToUTF8(Config[ConfigName]["Server IP"]));
+				snprintf(GameData.Config.ESP.æœåŠ¡å™¨IP, sizeof(GameData.Config.ESP.æœåŠ¡å™¨IP), "%s", Utils::StringToUTF8(Config[ConfigName]["Server IP"]));
 			}
 			SetConfigItem(Config, { ConfigName, "XueTiaoWEizhi" }, GameData.Config.ESP.XueTiaoWEizhi);
 			SetConfigItem(Config, { ConfigName, "PhysXDebug" }, GameData.Config.ESP.PhysXDebug);
@@ -786,13 +786,13 @@ public:
 			SetConfigItem(Config, { ConfigName, "shouchi" }, GameData.Config.ESP.Weapon);
 			SetConfigItem(Config, { ConfigName, "Partner" }, GameData.Config.ESP.Partner);
 
-			SetConfigItem(Config, { ConfigName, "shanghai" }, GameData.Config.ESP.ÉËº¦);
+			SetConfigItem(Config, { ConfigName, "shanghai" }, GameData.Config.ESP.ä¼¤å®³);
 			SetConfigItem(Config, { ConfigName, "diaoxian" }, GameData.Config.ESP.ShowInfos);
-			SetConfigItem(Config, { ConfigName, "jisha" }, GameData.Config.ESP.»÷É±);
+			SetConfigItem(Config, { ConfigName, "jisha" }, GameData.Config.ESP.å‡»æ€);
 			SetConfigItem(Config, { ConfigName, "RankPoint" }, GameData.Config.ESP.RankPoint);
 			SetConfigItem(Config, { ConfigName, "KDA" }, GameData.Config.ESP.KDA);
-			SetConfigItem(Config, { ConfigName, "dengji" }, GameData.Config.ESP.µÈ¼¶);
-			SetConfigItem(Config, { ConfigName, "guanzhan" }, GameData.Config.ESP.¹ÛÕ½);
+			SetConfigItem(Config, { ConfigName, "dengji" }, GameData.Config.ESP.ç­‰çº§);
+			SetConfigItem(Config, { ConfigName, "guanzhan" }, GameData.Config.ESP.è§‚æˆ˜);
 			SetConfigItem(Config, { ConfigName, "Skeleton" }, GameData.Config.ESP.Skeleton);
 			SetConfigItem(Config, { ConfigName, "showIcon" }, GameData.Config.ESP.showIcon);
 			/*for (size_t i = 0; i < 17; i++)

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <DMALibrary/Memory/Memory.h>
 #include <Common/Data.h>
 #include <Common/Entitys.h>
@@ -24,7 +24,7 @@ public:
                 continue;
             }
 
-            // ³µÁ¾
+            // è½¦è¾†
             {
 
                 std::unordered_map<uint64_t, VehicleInfo> Vehicles = Data::GetCacheVehicles();
@@ -131,7 +131,7 @@ public:
 
             }
 
-            // °ü¹ü
+            // åŒ…è£¹
             {
                 std::unordered_map<uint64_t, PackageInfo> Packages = Data::GetPackages();
                 std::unordered_map<uint64_t, PackageInfo> CachePackages = Data::GetCachePackages();

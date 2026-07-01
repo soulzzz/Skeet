@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <DMALibrary/Memory/Memory.h>
 #include <Common/Data.h>
 #include <Common/Entitys.h>
@@ -67,47 +67,47 @@ public:
         for (auto& Item : EqItemInfo)
         {
             EntityInfo EntityInfo = Data::GetGNameListsByIDItem(Item.ItemID);
-            if (EntityInfo.DisplayName == "ÊÖÀ×" && Item.ItemCount >= GameData.Config.Item.Grenade)
+            if (EntityInfo.DisplayName == "æ‰‹é›·" && Item.ItemCount >= GameData.Config.Item.Grenade)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "ÉÁ¹âµ¯" && Item.ItemCount >= GameData.Config.Item.FlashGrenade)
+            else if (EntityInfo.DisplayName == "é—ªå…‰å¼¹" && Item.ItemCount >= GameData.Config.Item.FlashGrenade)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "ÑÌÎíµ¯" && Item.ItemCount >= GameData.Config.Item.SmokeGrenade)
+            else if (EntityInfo.DisplayName == "çƒŸé›¾å¼¹" && Item.ItemCount >= GameData.Config.Item.SmokeGrenade)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "È¼ÉÕÆ¿" && Item.ItemCount >= GameData.Config.Item.MolotovGrenade)
+            else if (EntityInfo.DisplayName == "ç‡ƒçƒ§ç“¶" && Item.ItemCount >= GameData.Config.Item.MolotovGrenade)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "À¶È¦ÊÖÀ×" && Item.ItemCount >= GameData.Config.Item.BluezoneGrenade)
+            else if (EntityInfo.DisplayName == "è“åœˆæ‰‹é›·" && Item.ItemCount >= GameData.Config.Item.BluezoneGrenade)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "Ò½ÁÆÏä" && Item.ItemCount >= GameData.Config.Item.Medicalkit)
+            else if (EntityInfo.DisplayName == "åŒ»ç–—ç®±" && Item.ItemCount >= GameData.Config.Item.Medicalkit)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "¼±¾È°ü" && Item.ItemCount >= GameData.Config.Item.FirstAidKit)
+            else if (EntityInfo.DisplayName == "æ€¥æ•‘åŒ…" && Item.ItemCount >= GameData.Config.Item.FirstAidKit)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "±Á´ø" && Item.ItemCount >= GameData.Config.Item.Bandage)
+            else if (EntityInfo.DisplayName == "ç»·å¸¦" && Item.ItemCount >= GameData.Config.Item.Bandage)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "ÉöÉÏÏÙ¼¤ËØ" && Item.ItemCount >= GameData.Config.Item.Epinephrine)
+            else if (EntityInfo.DisplayName == "è‚¾ä¸Šè…ºæ¿€ç´ " && Item.ItemCount >= GameData.Config.Item.Epinephrine)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "ÄÜÁ¿ÒûÁÏ" && Item.ItemCount >= GameData.Config.Item.EnergyDrink)
+            else if (EntityInfo.DisplayName == "èƒ½é‡é¥®æ–™" && Item.ItemCount >= GameData.Config.Item.EnergyDrink)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
-            else if (EntityInfo.DisplayName == "Ö¹ÌÛÒ©" && Item.ItemCount >= GameData.Config.Item.PainKiller)
+            else if (EntityInfo.DisplayName == "æ­¢ç–¼è¯" && Item.ItemCount >= GameData.Config.Item.PainKiller)
             {
                 FilteredItems[Item.ItemID] = Item.ItemCount;
             }
@@ -148,7 +148,7 @@ public:
                 std::unordered_map<uint64_t, DroppedItemInfo> CacheDroppedItems = Data::GetCacheDroppedItems();
                 std::unordered_map<uint64_t, DroppedItemGroupInfo> CacheDroppedItemGroups = Data::GetCacheDroppedItemGroups();
 
-                //ÎïÆ·×é
+                //ç‰©å“ç»„
                 {
                     for (auto& Item : CacheDroppedItemGroups)
                     {
@@ -216,7 +216,7 @@ public:
                     mem.ExecuteReadScatter(hScatter);
                 }
 
-                //ÎïÆ·ÁĞ
+                //ç‰©å“åˆ—
                 {
                     for (auto& Item : CacheDroppedItems)
                     {

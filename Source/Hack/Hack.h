@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <winsock2.h>
 #include <windows.h>
@@ -119,20 +119,20 @@ public:
 		mem.CloseScatterHandle(hScatter);
 	}
 	static void ReleaseLoadedModel() {
-		// í˜Ğò„h³ıˆö¾°
+		// é †åºåˆªé™¤å ´æ™¯
 
-		// „h³ı Dynamic Load Scene
+		// åˆªé™¤ Dynamic Load Scene
 		{
 
 			//std::lock_guard<std::mutex> lock(GameData.dynamicLoadMutex);
 			try {
 				auto dynamicLoadScene = GameData.DynamicLoadScene;
-				// ™z²éÖ¸˜ËÊÇ·ñÓĞĞ§
+				// æª¢æŸ¥æŒ‡æ¨™æ˜¯å¦æœ‰æ•ˆ
 				if (dynamicLoadScene != nullptr) {
 					delete dynamicLoadScene;
-					GameData.DynamicLoadScene = nullptr; // ´_±£Ö¸˜ËÇå¿Õ
+					GameData.DynamicLoadScene = nullptr; // ç¢ºä¿æŒ‡æ¨™æ¸…ç©º
 #ifdef _PHYSX_DEBUG
-					Utils::Log(1, "ÊÍ·Å¾²Ì¬¼ÓÔØ³¡¾°");
+					Utils::Log(1, "é‡Šæ”¾é™æ€åŠ è½½åœºæ™¯");
 #endif
 				}
 			}
@@ -141,18 +141,18 @@ public:
 			}
 		}
 
-		// „h³ı Height Field Scene
+		// åˆªé™¤ Height Field Scene
 		{
 
 			//std::lock_guard<std::mutex> lock(GameData.heightFieldMutex);
 			try {
 				auto heightFieldScene = GameData.HeightFieldScene;
-				// ™z²éÖ¸˜ËÊÇ·ñÓĞĞ§
+				// æª¢æŸ¥æŒ‡æ¨™æ˜¯å¦æœ‰æ•ˆ
 				if (heightFieldScene != nullptr) {
 					delete heightFieldScene;
-					GameData.HeightFieldScene = nullptr; // ´_±£Ö¸˜ËÇå¿Õ
+					GameData.HeightFieldScene = nullptr; // ç¢ºä¿æŒ‡æ¨™æ¸…ç©º
 #ifdef _PHYSX_DEBUG
-					Utils::Log(1, "ÊÍ·Å¸ß¶È³¡³¡¾°");
+					Utils::Log(1, "é‡Šæ”¾é«˜åº¦åœºåœºæ™¯");
 #endif
 				}
 			}
@@ -161,18 +161,18 @@ public:
 			}
 		}
 
-		// „h³ı Dynamic Rigid Scene
+		// åˆªé™¤ Dynamic Rigid Scene
 		{
 
 			// std::lock_guard<std::mutex> lock(GameData.globalMutex);
 			try {
 				auto globalScene = GameData.DynamicRigidScene;
-				// ™z²éÖ¸˜ËÊÇ·ñÓĞĞ§
+				// æª¢æŸ¥æŒ‡æ¨™æ˜¯å¦æœ‰æ•ˆ
 				if (globalScene != nullptr) {
 					delete globalScene;
-					GameData.DynamicRigidScene = nullptr; // ´_±£Ö¸˜ËÇå¿Õ
+					GameData.DynamicRigidScene = nullptr; // ç¢ºä¿æŒ‡æ¨™æ¸…ç©º
 #ifdef _PHYSX_DEBUG
-					Utils::Log(1, "ÊÍ·Å¶¯Ì¬¼ÓÔØ³¡¾°");
+					Utils::Log(1, "é‡Šæ”¾åŠ¨æ€åŠ è½½åœºæ™¯");
 #endif
 				}
 			}
@@ -184,42 +184,42 @@ public:
 
 	static void StartLoadMapModel() {
 		static std::mutex gameDataMutex;
-		// µ÷ÓÃÊÍ·ÅÄ£ĞÍµÄº¯Êı
+		// è°ƒç”¨é‡Šæ”¾æ¨¡å‹çš„å‡½æ•°
 		//ReleaseLoadedModel();
 		Sleep(GameData.ThreadSleep);
-		// ¼ÇÂ¼ÈÕÖ¾£¬±íÊ¾¿ªÊ¼¼ÓÔØµØÍ¼Ä£ĞÍ...
-		Utils::Log(1, "¿ªÊ¼¼ÓÔØµØÍ¼Ä£ĞÍ...");
+		// è®°å½•æ—¥å¿—ï¼Œè¡¨ç¤ºå¼€å§‹åŠ è½½åœ°å›¾æ¨¡å‹...
+		Utils::Log(1, "å¼€å§‹åŠ è½½åœ°å›¾æ¨¡å‹...");
 
-		// ¼Ó»¥³âËø£¬È·±£´´½¨ĞÂ³¡¾°Ê±µÄÏß³Ì°²È«
+		// åŠ äº’æ–¥é”ï¼Œç¡®ä¿åˆ›å»ºæ–°åœºæ™¯æ—¶çš„çº¿ç¨‹å®‰å…¨
 		{
 			std::lock_guard<std::mutex> lock(gameDataMutex);
-			// ´´½¨¶¯Ì¬¼ÓÔØ³¡¾°£¬Ê¹ÓÃ PrunerPayload ºÍ PrunerPayloadHash
+			// åˆ›å»ºåŠ¨æ€åŠ è½½åœºæ™¯ï¼Œä½¿ç”¨ PrunerPayload å’Œ PrunerPayloadHash
 			GameData.DynamicLoadScene = new Physics::VisibleScene<PrunerPayload, PrunerPayloadHash>(Physics::prunerPayloadExtractor);
 
-			// ´´½¨²¢Æô¶¯Ïß³ÌÒÔ¸üĞÂ¶¯Ì¬¸ß¶È³¡
+			// åˆ›å»ºå¹¶å¯åŠ¨çº¿ç¨‹ä»¥æ›´æ–°åŠ¨æ€é«˜åº¦åœº
 			std::thread LoadDynamicHeightFieldThread(VisibleCheck::UpdateDynamicHeightField);
 			LoadDynamicHeightFieldThread.detach();
 		}
-		// ¼Ó»¥³âËø£¬È·±£´´½¨ĞÂ³¡¾°Ê±µÄÏß³Ì°²È«
+		// åŠ äº’æ–¥é”ï¼Œç¡®ä¿åˆ›å»ºæ–°åœºæ™¯æ—¶çš„çº¿ç¨‹å®‰å…¨
 		{
 			std::lock_guard<std::mutex> lock(gameDataMutex);
 
 
-			// ´´½¨¸ß¶È³¡³¡¾°£¬Ê¹ÓÃ uint64_t ºÍ Int64Hash
+			// åˆ›å»ºé«˜åº¦åœºåœºæ™¯ï¼Œä½¿ç”¨ uint64_t å’Œ Int64Hash
 			GameData.HeightFieldScene = new Physics::VisibleScene<uint64_t, Int64Hash>(Physics::int64Extractor);
-			// ´´½¨²¢Æô¶¯Ïß³ÌÒÔ¸üĞÂ¶¯Ì¬¸ÕÌå
+			// åˆ›å»ºå¹¶å¯åŠ¨çº¿ç¨‹ä»¥æ›´æ–°åŠ¨æ€åˆšä½“
 			std::thread LoadDynamicRigidThread(VisibleCheck::UpdateDynamicRigid);
 			LoadDynamicRigidThread.detach();
 
 		}
-		// ¼Ó»¥³âËø£¬È·±£´´½¨ĞÂ³¡¾°Ê±µÄÏß³Ì°²È«
+		// åŠ äº’æ–¥é”ï¼Œç¡®ä¿åˆ›å»ºæ–°åœºæ™¯æ—¶çš„çº¿ç¨‹å®‰å…¨
 		{
 			std::lock_guard<std::mutex> lock(gameDataMutex);
 
 
-			// ´´½¨¶¯Ì¬¸ÕÌå³¡¾°£¬Ê¹ÓÃ PrunerPayload ºÍ PrunerPayloadHash
+			// åˆ›å»ºåŠ¨æ€åˆšä½“åœºæ™¯ï¼Œä½¿ç”¨ PrunerPayload å’Œ PrunerPayloadHash
 			GameData.DynamicRigidScene = new Physics::VisibleScene<PrunerPayload, PrunerPayloadHash>(Physics::prunerPayloadExtractor);
-			// ´´½¨²¢Æô¶¯Ïß³ÌÒÔ°´·¶Î§¸üĞÂ³¡¾°
+			// åˆ›å»ºå¹¶å¯åŠ¨çº¿ç¨‹ä»¥æŒ‰èŒƒå›´æ›´æ–°åœºæ™¯
 			std::thread LoadSceneByRangeThread(VisibleCheck::UpdateSceneByRange);
 
 			LoadSceneByRangeThread.detach();

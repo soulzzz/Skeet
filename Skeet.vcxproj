@@ -24,7 +24,7 @@
     <ProjectGuid>{3082529e-a996-48c4-981b-1795cdae093f}</ProjectGuid>
     <RootNamespace>OXO</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
-    <ProjectName>DMA-KaKa</ProjectName>
+    <ProjectName>Skeet</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -45,7 +45,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -53,7 +53,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Static</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -76,16 +76,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(DXSDK_DIR)Include;$(SolutionDir)Include;$(SolutionDir)Source;C:\Users\GKYN20230046\Desktop\kaka\Source\cJSON;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;C:\Users\GKYN20230046\Desktop\kaka\Include\libs\freetype\include;C:\Users\GKYN20230046\Desktop\kaka\Server;C:\Users\GKYN20230046\Desktop\kaka\Source\Hack\WS;C:\Users\GKYN20230046\Desktop\kaka\Include\imgui;C:\Users\GKYN20230046\Desktop\kaka\Include\libs\freetype\win64;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib\x64;$(SolutionDir)Source;$(SolutionDir)Lib;C:\Users\GKYN20230046\Desktop\kaka\Include\Mosquitto;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x64;C:\UsersGKYN20230046\Desktop\kaka\Server;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\x64;$(SolutionDir)Source;$(SolutionDir)Lib;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x64;C:\UsersGKYN20230046\Desktop\kaka\Server;$(LibraryPath)</LibraryPath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
-    <OutDir>$(ProjectDir)x64\AKM_Test\</OutDir>
-    <TargetName>AKM_Test</TargetName>
+    <OutDir>$(ProjectDir)x64\Skeet\</OutDir>
+    <TargetName>Skeet</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(DXSDK_DIR)Include;$(SolutionDir)Include;$(SolutionDir)Source;D:\kaka\Include;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010);D:\kaka\Include\imgui;D:\kaka\Include\libs\freetype\include;C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x64;$(SolutionDir)Source;$(SolutionDir)Lib;$(LibraryPath)</LibraryPath>
-    <OutDir>.\x64\Release\</OutDir>
+    <OutDir>$(ProjectDir)x64\Skeet\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\kaka\Include;D:\kaka\Include\libs\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)Include\sdk\Include;$(ProjectDir)Include\libs\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>
       </AdditionalOptions>
       <DisableSpecificWarnings>4244</DisableSpecificWarnings>
@@ -147,7 +147,7 @@
       <PrecompiledHeaderFile>Include\DMALibrary\pch.h</PrecompiledHeaderFile>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0;C:\UsersGKYN20230046\Desktop\kaka\Include;C:\UsersGKYN20230046\Desktop\kaka\Include\DMARender\Vectors;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)Include\sdk\Include;$(ProjectDir)Include\DMARender\Vectors;$(ProjectDir)Include\libs\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BufferSecurityCheck>true</BufferSecurityCheck>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <DisableSpecificWarnings>4996;4244;4099</DisableSpecificWarnings>
@@ -155,7 +155,7 @@
       </OmitFramePointers>
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/bigobj</AdditionalOptions>
+      <AdditionalOptions>/bigobj /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -164,8 +164,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)/Lib/x64;C:\UsersGKYN20230046\Desktop\kaka\x64\Release;C:\UsersGKYN20230046\Desktop\kaka\Include\DMARender;C:\UsersGKYN20230046\Desktop\kaka\lib;C:\UsersGKYN20230046\Desktop\kaka\x64\AKM_Test;C:\UsersGKYN20230046\Desktop\kaka\Include\DMARender\Vectors</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wsock32.lib;Ws2_32.lib;SetupAPI.lib;Dwmapi.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;bcrypt.lib;crypt32.lib;embree4.lib;tbb12.lib;zstd.lib;VMP\VMProtectSDK64.lib;Iphlpapi.lib;Shell32.lib;mosquitto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Include\sdk\Lib\x64;$(ProjectDir)x64\Release;$(ProjectDir)Include\DMARender;$(ProjectDir)lib;$(ProjectDir)Include\DMARender\Vectors;$(ProjectDir)Include\DMALibrary\libs;$(ProjectDir)Include\libs\freetype\win64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wsock32.lib;Ws2_32.lib;SetupAPI.lib;Dwmapi.lib;d3d11.lib;d3dcompiler.lib;dxgi.lib;bcrypt.lib;crypt32.lib;embree4.lib;tbb12.lib;zstd.lib;VMP\VMProtectSDK64.lib;Iphlpapi.lib;Shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
@@ -379,7 +379,7 @@
     <Library Include="QPLibX64_MT.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DMA-KaKa.rc" />
+    <ResourceCompile Include="Skeet.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\libs\emscripten\shell_minimal.html" />
@@ -395,3 +395,5 @@
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
+
+

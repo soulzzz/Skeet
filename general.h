@@ -1,25 +1,25 @@
-#pragma once
+ï»¿#pragma once
 #include<Windows.h>
 #include <boost/locale.hpp>
 #include <string>
 #include <stdexcept>
 
-//Í¨ÓÃ¹¦ÄÜ
+//é€šç”¨åŠŸèƒ½
 namespace general
 {
-	//debugÊä³ö
+	//debugè¾“å‡º
 	inline void print(LPCSTR str)
 	{
 		OutputDebugStringA(str);
 	}
 
-	//»ñÈ¡µ±Ç°ºÁÃë
+	//è·å–å½“å‰æ¯«ç§’
 	inline int GetTime()
 	{
 		return GetTickCount64();
 	}
 
-	//×ªUTF8±àÂë
+	//è½¬UTF8ç¼–ç 
 	inline std::string convertToUTF8(const std::string& input, const std::string& fromEncoding) {
 		try {
 			return boost::locale::conv::to_utf<char>(input, fromEncoding);

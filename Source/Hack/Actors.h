@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include <DMALibrary/Memory/Memory.h>
 #include <Common/Data.h>
 #include <Common/Entitys.h>
@@ -116,8 +116,8 @@ public:
                 }
                 else {
 
-                    if (EntityInfo.Type == EntityType::Player || EntityInfo.Type == EntityType::AI//Ω© ¨¿‡√˚
-                        || EntityInfo.Name == "SLBZombieBase_C"//Ω© ¨
+                    if (EntityInfo.Type == EntityType::Player || EntityInfo.Type == EntityType::AI//ÂÉµÂ∞∏Á±ªÂêç
+                        || EntityInfo.Name == "SLBZombieBase_C"//ÂÉµÂ∞∏
                         || EntityInfo.Name == "SLBZombie_C"
                         || EntityInfo.Name == "SLBZombie_Grenade_C"
                         || EntityInfo.Name == "SLBZombie_Burning_C"
@@ -137,7 +137,7 @@ public:
                         || EntityInfo.Name == "SLB_WeapZombieFlashGrenade_C"
                         || EntityInfo.Name == "SLBZombie_Doctor_C"
 
-                        || EntityInfo.Name == "UltAIPawn_Base_Pillar_C"// ÿŒ¿
+                        || EntityInfo.Name == "UltAIPawn_Base_Pillar_C"//ÂÆàÂç´
                         || EntityInfo.Name == "UltAIPawn_Base_Female_Pillar_C"
                         || EntityInfo.Name == "UltAIPawn_Base_Male_Pillar_C"
                         || EntityInfo.Name == "BP_MarketAI_Pawn_C"

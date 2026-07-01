@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 enum class Language1
 {
@@ -8,10 +8,10 @@ enum class Language1
 
 Language1 currentLanguage1 = Language1::Chinese;
 
-const char* languages[] = { U8("ÖĞÎÄ"), "EN" };
+const char* languages[] = { U8("ä¸­æ–‡"), "EN" };
 
 static const char* Translate(const char* chinese, const char* english)
 {
 	return currentLanguage1 == Language1::Chinese ? chinese : english;
 }
-int currentLanguageIndex = 0;  // ¶¨ÒåÈ«¾Ö±äÁ¿
+int currentLanguageIndex = 0;  // å®šä¹‰å…¨å±€å˜é‡

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <DMALibrary/Memory/Memory.h>
 #include <Common/Data.h>
 #include <Common/Entitys.h>
@@ -116,25 +116,25 @@ public:
 
     static FVector2D WorldToRadarLocation2(FVector WorldPos)
     {
-        // 1. µ÷ÕûÊÀ½ç×ø±êÔ­µã£¨¶ÔÓ¦IDAÖĞµÄdword_1405C2B90/dword_1405C2B94£©
+        // 1. è°ƒæ•´ä¸–ç•Œåæ ‡åŸç‚¹ï¼ˆå¯¹åº”IDAä¸­çš„dword_1405C2B90/dword_1405C2B94ï¼‰
         FVector2D AdjustedWorldPos = {
             WorldPos.X + GameData.Radar.WorldOriginLocation.X,
             WorldPos.Y + GameData.Radar.WorldOriginLocation.Y
         };
 
-        // 2. ¼ÆËãÏà¶ÔÓÚÀ×´ïÖĞĞÄµÄÆ«ÒÆ£¨¶ÔÓ¦IDAÖĞµÄdword_1405C2BF8/dword_1405C2BFC£©
+        // 2. è®¡ç®—ç›¸å¯¹äºé›·è¾¾ä¸­å¿ƒçš„åç§»ï¼ˆå¯¹åº”IDAä¸­çš„dword_1405C2BF8/dword_1405C2BFCï¼‰
         FVector2D RadarOffset = AdjustedWorldPos - GameData.Radar.WorldCenterLocation;
 
-        // 3. »ñÈ¡ÆÁÄ»ÖĞĞÄ£¨¶ÔÓ¦IDAÖĞµÄdword_1405C3604/dword_1405C3608£©
+        // 3. è·å–å±å¹•ä¸­å¿ƒï¼ˆå¯¹åº”IDAä¸­çš„dword_1405C3604/dword_1405C3608ï¼‰
         FVector2D ScreenCenter = {
             GameData.Config.Overlay.ScreenWidth / 2.0f,
             GameData.Config.Overlay.ScreenHeight / 2.0f
         };
 
-        // 4. Ó¦ÓÃËõ·ÅÒò×Ó£¨¶ÔÓ¦IDAÖĞµÄdword_1405C2C00£©
+        // 4. åº”ç”¨ç¼©æ”¾å› å­ï¼ˆå¯¹åº”IDAä¸­çš„dword_1405C2C00ï¼‰
         FVector2D RadarScreenPos;
         RadarScreenPos.X = ScreenCenter.X + (RadarOffset.X / GameData.Radar.MapSizeFactored) * ScreenCenter.X;
-        RadarScreenPos.Y = ScreenCenter.Y - (RadarOffset.Y / GameData.Radar.MapSizeFactored) * ScreenCenter.Y; // YÖáÈ¡·´
+        RadarScreenPos.Y = ScreenCenter.Y - (RadarOffset.Y / GameData.Radar.MapSizeFactored) * ScreenCenter.Y; // Yè½´å–å
 
         return RadarScreenPos;
     }

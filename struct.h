@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 struct v4
 {
@@ -46,8 +46,8 @@ struct item
 
 
 
-// ·â°üÊı¾İ½á¹¹
-//·â°ü½á¹¹ÖĞµÄdwValue  
+// å°åŒ…æ•°æ®ç»“æ„
+//å°åŒ…ç»“æ„ä¸­çš„dwValue  
 //
 struct CustomData {
 	DWORD dwValue;

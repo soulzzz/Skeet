@@ -1,4 +1,4 @@
-// dear imgui: FreeType font builder (used as a replacement for the stb_truetype builder)
+﻿// dear imgui: FreeType font builder (used as a replacement for the stb_truetype builder)
 // (code)
 
 // Get the latest version at https://github.com/ocornut/imgui/tree/master/misc/freetype
@@ -52,7 +52,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpragmas"                  // warning: unknown option after '#pragma GCC diagnostic' kind
 #pragma GCC diagnostic ignored "-Wunused-function"          // warning: 'xxxx' defined but not used
-#pragma GCC diagnostic ignored "-Wsubobject-linkage"        // warning: 'xxxx' has a field �xxxx?whose type uses the anonymous namespace
+#pragma GCC diagnostic ignored "-Wsubobject-linkage"        // warning: 'xxxx' has a field 憍xxx?whose type uses the anonymous namespace
 #endif
 
 //-------------------------------------------------------------------------
