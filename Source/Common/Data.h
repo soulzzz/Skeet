@@ -1107,7 +1107,7 @@ struct FGameData
 			int rankList = VK_F10;
 			int Quit_key = VK_END;
 			bool UseLastFrameCameraCache = false;
-			bool UseThread = false;
+			bool UseThread = true;
 			int FusionModeKey = VK_INSERT;
 			bool zhixiangmoshi = false;
 			int MonitorCurrentIdx = 0;

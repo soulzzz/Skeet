@@ -228,10 +228,8 @@ public:
 	}
 	static void UpdateCamera()
 	{
-		Throttler Throttlered;
 		auto hScatter = mem.CreateScatterHandle();
 		CameraData Camera;
-		float DeltaSeconds = 0.f;
 		float TimeSeconds = 0.f;
 
 		while (true)
@@ -239,6 +237,12 @@ public:
 			if (GameData.Scene != Scene::Gaming || !GameData.Config.Overlay.UseThread)
 			{
 				Sleep(GameData.ThreadSleep);
+				continue;
+			}
+
+			if (!GameData.PlayerCameraManager || !GameData.UWorld)
+			{
+				Sleep(1);
 				continue;
 			}
 
@@ -253,6 +257,8 @@ public:
 
 			GameData.Camera = Camera;
 			GameData.WorldTimeSeconds = TimeSeconds;
+
+			Sleep(1);
 		}
 		mem.CloseScatterHandle(hScatter);
 	}
