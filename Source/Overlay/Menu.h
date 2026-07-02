@@ -65,6 +65,20 @@ static const BonePosition bonePositions[] = {
 	{ImVec2(174, 447), "右小腿",  17}
 };
 
+inline void SkeetHelpMarker(const char* desc)
+{
+	ImGui::SameLine();
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 28.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
 // 保存账号和密码到文件
 inline void SaveLoginConfig(const std::string& username, const std::string& password)
 {
@@ -203,7 +217,7 @@ inline std::vector<std::string> MenuItemTypes  {
 		U8("其它"),
 
 };
-std::vector<std::string> itemsChinese = { 
+std::vector<std::string> itemsChinese = {
 	U8("头皮"), U8("头部"), U8("脖子"), U8("胸部"), U8("裆部"),
 	U8("左肩"), U8("左肘"), U8("右肩"), U8("右肘"),
 	U8("左手"), U8("右手"), U8("左骨盆"), U8("左腿骨"),
@@ -274,7 +288,7 @@ class newMenu
 {
 public:
 
-	
+
 
 	static void Setting(std::string type)
 	{
@@ -282,7 +296,7 @@ public:
 		//auto& Config = GameData.Config.AimBot.Configs[GameData.Config.AimBot.ConfigIndex].Weapon[WeapType[item_world]];
 
 		 ImGui::BeginGroup(); {
-			
+
 			ImGui::BeginChild(true, U8("开关自瞄"), "o", ImVec2(306, 470));
 			{
 				ImGui::Checkbox(U8("启动"), &Config.enable);
@@ -308,7 +322,7 @@ public:
 					}
 
 				}
-				
+
 
 				ImGui::Checkbox(U8("启用瞄准车胎"), &Config.AimWheel);
 
@@ -320,7 +334,7 @@ public:
 
 				ImGui::Checkbox(U8("击杀切换"), &Config.AutoSwitch);
 
-				
+
 
 				ImGui::Checkbox(U8("后座抑制"), &Config.NoRecoil);
 				if (!Config.NoRecoil)
@@ -342,7 +356,7 @@ public:
 
 				ImGui::SliderFloat(U8("压枪Y轴"), &GameData.Config.AimBot.wybYSpeed, 1.0f, 10.f,"%.1f [F]");
 
-				
+
 
 				ImGui::Checkbox(U8("热键合并"), &Config.HotkeyMerge);
 
@@ -354,7 +368,7 @@ public:
 
 				ImGui::Keybind(U8("瞄准车胎热键"), &Config.Wheel.Key);
 
-				
+
 				const char* aim_mode[]  { U8("范围优先"), U8("距离优先") };
 				ImGui::Combo(U8("优先锁定选择"), &Config.LockMode, aim_mode, IM_ARRAYSIZE(aim_mode));
 
@@ -398,7 +412,7 @@ public:
 				ImGui::SliderInt(U8("锁胎FOV"), &Config.WheelFOV, 1, 360, "%d\xC2\xB0");
 
 				ImGui::SliderFloat(U8("瞄准车胎平滑"), &Config.AimWheelSpeed, 0.1f, 100.f, "%.1f [F]");
-			
+
 			}
 			ImGui::EndChild(true);
 			ImGui::SameLine(); ImGui::SetCursorPosY(GetCursorPosY() - 95);
@@ -546,12 +560,12 @@ public:
 			ImGui::EndChild(true);
 		 }
 		 ImGui::EndGroup();
-		
+
 
 	}
-	
 
-	
+
+
 	static void newmenu(HWND hwnd) {
 
 		ImGuiStyle* style = &ImGui::GetStyle();
@@ -718,19 +732,19 @@ public:
 						{
 							ImGui::BeginChild(true, U8("自瞄控制器"), "o", ImVec2(180, 540));
 							{
-								
+
 								const char* youself_char[]{ U8("KMBOX"), U8("KMNET"), U8("Lurker"), U8("键鼠魔盒") };
 								ImGui::Combo(U8("控制器"), &GameData.Config.AimBot.Controller, youself_char, IM_ARRAYSIZE(youself_char));
-								
+
 								if (GameData.Config.AimBot.Controller == 1) {
-								
+
 									ImGui::InputTextEx("##IP/", U8("输入您的ip"), GameData.Config.AimBot.IP, sizeof(GameData.Config.AimBot.IP), ImVec2(ImGui::GetContentRegionMax().x - style->WindowPadding.x, 25), ImGuiInputTextFlags_NoLabel);
 									ImGui::InputTextEx("##PORT/", U8("输入您的port"), GameData.Config.AimBot.Port, sizeof(GameData.Config.AimBot.Port), ImVec2(ImGui::GetContentRegionMax().x - style->WindowPadding.x, 25), ImGuiInputTextFlags_NoLabel);
 									ImGui::InputTextEx("##UUID/", U8("输入您的uid"), GameData.Config.AimBot.UUID, sizeof(GameData.Config.AimBot.UUID), ImVec2(ImGui::GetContentRegionMax().x - style->WindowPadding.x, 25), ImGuiInputTextFlags_NoLabel);
 								}
-								
+
 								static std::vector<std::string> ports = Utils::GetCOMPorts();
-								
+
 								if (GameData.Config.AimBot.Controller != 1) {
 									std::vector<std::pair<std::string, std::string>> portVector;
 									for (const auto& port : ports) {
@@ -744,13 +758,13 @@ public:
 									if (!items.empty())
 										ImGui::Combo(U8("COM端口"), &GameData.Config.AimBot.COM, items[0], items.size());
 								}
-								
+
 								if (ImGui::Button(GameData.Config.AimBot.Connected ? U8("断开连接") : U8("连接"), ImVec2(ImGui::GetContentRegionMax().x - style->WindowPadding.x, 25))) {
 									bool Connected = false;
-								
+
 									std::string extractedStr;
 									if (ports.size() > 0)
-								
+
 										extractedStr = Utils::ExtractSubstring(ports[GameData.Config.AimBot.COM], R"(COM(\d+))");
 									int COM = 0;
 									int number = 0;
@@ -758,7 +772,7 @@ public:
 										COM = std::stoi(extractedStr);
 										number = std::stoi(extractedStr);
 									}
-								
+
 									switch (GameData.Config.AimBot.Controller)
 									{
 									case 0:
@@ -822,16 +836,16 @@ public:
 										}
 										break;
 									}
-								
+
 									GameData.Config.AimBot.Connected = Connected;
-								
+
 									if (Connected)
 										//notify->AddNotification(U8("提示"), U8("端口已连接"), 3000, gui->get_clr(ImColor(150, 255, 123)));
 										ImGui::OpenPopup(U8("端口已连接"));
 									else
 										//notify->AddNotification(U8("提示"), U8("连接已断开"), 3000, gui->get_clr(ImColor(150, 255, 123)));
 										ImGui::OpenPopup(U8("连接已断开"));
-								
+
 								}
 
 								if (ImGui::Button(U8("测试移动"), ImVec2(ImGui::GetContentRegionMax().x - style->WindowPadding.x, 25))) {
@@ -852,12 +866,12 @@ public:
 									}
 								}
 								const char* configItems[]{ U8("配置1"), U8("配置2") };
-								
+
 								ImGui::Combo(U8("当前配置"), &GameData.Config.AimBot.ConfigIndex, configItems, IM_ARRAYSIZE(configItems));
-								
+
 								ImGui::Keybind(U8("配置热键"), &GameData.Config.AimBot.Configs[GameData.Config.AimBot.ConfigIndex].Key);
 
-							
+
 
 								if (ImGui::Button(U8("保存配置"), ImVec2(ImGui::GetContentRegionMax().x - style->WindowPadding.x, 25))) {
 									Config::Save();
@@ -865,17 +879,17 @@ public:
 								}
 
 								if (ImGui::Button(U8("退出"), ImVec2(ImGui::GetContentRegionMax().x - style->WindowPadding.x, 25))) {
-								
+
 									HWND Progman = FindWindowA("Progman", NULL);
 									ShowWindow(Progman, SW_SHOW);
 									exit(0);
-								
+
 								}
 
 
 							}
 							ImGui::EndChild(true);
-							
+
 						}
 						ImGui::EndGroup();
 						ImGui::SameLine();
@@ -885,7 +899,7 @@ public:
 							ImGui::BeginChild(true, U8("武器设置"), "o", ImVec2(635, 30), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 							{
 								ImGui::SetCursorPosY(3);
-								
+
 								ImGui::RadioButton(U8("步槍"), &自瞄, 0); ImGui::SameLine();
 								ImGui::RadioButton(U8("栓狙"), &自瞄, 1); ImGui::SameLine();
 								ImGui::RadioButton(U8("连狙"), &自瞄, 2); ImGui::SameLine();
@@ -897,7 +911,7 @@ public:
 								//ImGui::RadioButton(U8("模型绘制"), &自瞄, 8);
 							}
 							ImGui::EndChild(true);
-							
+
 							if (自瞄 == 0) {
 								Setting(WeapType[0]);
 							}
@@ -905,42 +919,42 @@ public:
 								Setting(WeapType[2]);
 							}
 							else if (自瞄 == 2) {
-							
+
 								Setting(WeapType[1]);
 							}
 							else if (自瞄 == 3) {
-							
+
 								Setting(WeapType[3]);
 							}
 							else if (自瞄 == 4) {
-							
+
 								Setting(WeapType[6]);
 							}
 							else if (自瞄 == 5) {
-							
+
 								Setting(WeapType[5]);
 							}
 							else if (自瞄 == 6) {
-							
+
 								Setting(WeapType[4]);
 							}
 							else if (自瞄 == 7) {
-								
-								 
+
+
 								ImGui::BeginChild(true, U8("压枪幅度"), "o", ImVec2(306, 470));
 								{
 									ImGui::Checkbox(U8("启用"), &GameData.Config.AimBot.Recoilenanlek);
-							
+
 									 ImGui::SliderInt(U8("红点幅度"), &GameData.Config.AimBot.yRecoil[0], 1, 50,  "%.d\xC2\xB0");
-							
+
 									 ImGui::SliderInt(U8("二倍幅度"), &GameData.Config.AimBot.yRecoil[1], 1, 50, "%d\xC2\xB0");
-							
+
 									 ImGui::SliderInt(U8("三倍幅度"), &GameData.Config.AimBot.yRecoil[2], 1, 50,  "%d\xC2\xB0");
-							
+
 									 ImGui::SliderInt(U8("四倍幅度"), &GameData.Config.AimBot.yRecoil[3], 1, 50,  "%d\xC2\xB0");
-							
+
 									 ImGui::SliderInt(U8("六倍幅度"), &GameData.Config.AimBot.yRecoil[4], 1, 50,  "%d\xC2\xB0");
-							
+
 									 ImGui::SliderInt(U8("八倍幅度"), &GameData.Config.AimBot.yRecoil[5], 1, 50,  "%d\xC2\xB0");
 								}
 								ImGui::EndChild(true);
@@ -1009,10 +1023,10 @@ public:
 
 								}
 								ImGui::EndChild(true);
-							
+
 							}
 							else if (自瞄 == 8) {
-								
+
 								/*ImGui::BeginChild(true, U8("模型绘制"), "o", ImVec2(627, 470));
 								{
 
@@ -1074,12 +1088,12 @@ public:
 									ImGui::SetCursorPos(ImVec2(174, 447));
 									ImGui::Checkbox_hitbox("BONE 18", &hitbox[17]);
 
-								
+
 								}
 								ImGui::EndChild(true);
 
 							}
-		
+
 						}
 						ImGui::EndGroup();
 
@@ -1105,7 +1119,7 @@ public:
 								 ImGui::Checkbox(U8("文字阴影"), &GameData.Config.ESP.Stroke);
 
 								 ImGui::Checkbox(U8("锁定不显"), &GameData.Config.ESP.LockedHiddenBones);
-							 
+
 								 ImGui::Checkbox(U8("可视检测"), &GameData.Config.ESP.VisibleCheck);
 
 								 ImGui::Checkbox(U8("锁定变色"), &GameData.Config.ESP.soudingbianse);
@@ -1118,13 +1132,13 @@ public:
 							 ImGui::BeginChild(true, U8("数值设置"), "a", ImVec2(260, 250));//365
 							 {
 								 ImGui::SliderInt(U8("透视距离"), &GameData.Config.ESP.DistanceMax, 0, 1000,  "%d\xC2\xB0");
-							 
+
 								 ImGui::SliderInt(U8("信息距离"), &GameData.Config.ESP.InfoDistanceMax, 0, 1000,  "%d\xC2\xB0");
-							 
+
 								 ImGui::SliderInt(U8("武器距离"), &GameData.Config.ESP.WeaponDistanceMax, 0, 1000,  "%d\xC2\xB0");
-							 
+
 								 ImGui::SliderInt(U8("骨骼粗细"), &GameData.Config.ESP.SkeletonWidth, 1, 5, "%d\xC2\xB0");
-							 
+
 								 ImGui::SliderInt(U8("信息大小"), &GameData.Config.ESP.FontSize, 8, 28,  "%d\xC2\xB0");
 							 }
 							 ImGui::EndChild(true);
@@ -1145,17 +1159,17 @@ public:
 								 ImGui::ColorEdit4(U8("可视信息"), GameData.Config.ESP.Color.Visible.Info, picker_flags);
 
 								 ImGui::ColorEdit4(U8("掩体颜色"), GameData.Config.ESP.Color.Default.Skeleton, picker_flags);
-							 
+
 								 ImGui::ColorEdit4(U8("掩体信息"), GameData.Config.ESP.Color.Default.Info, picker_flags);
-							 
+
 								 ImGui::ColorEdit4(U8("人机颜色"), GameData.Config.ESP.Color.AI.Skeleton, picker_flags);
 
 								 ImGui::ColorEdit4(U8("人机信息"), GameData.Config.ESP.Color.AI.Info, picker_flags);
-							 
+
 								 ImGui::ColorEdit4(U8("危险颜色"), GameData.Config.ESP.Color.Dangerous.Skeleton, picker_flags);//危险
 
 								 ImGui::ColorEdit4(U8("危险信息"), GameData.Config.ESP.Color.Dangerous.Info, picker_flags);//危险
-							 
+
 								 ImGui::ColorEdit4(U8("倒地颜色"), GameData.Config.ESP.Color.Groggy.Skeleton, picker_flags);
 
 								 ImGui::ColorEdit4(U8("倒地信息"), GameData.Config.ESP.Color.Groggy.Info, picker_flags);
@@ -1163,13 +1177,13 @@ public:
 								 ImGui::ColorEdit4(U8("被瞄颜色"), GameData.Config.ESP.Color.Ray.Line, picker_flags);
 
 								 ImGui::ColorEdit4(U8("锁定颜色"), GameData.Config.ESP.Color.aim.Skeleton, picker_flags);
-								 
+
 								 ImGui::ColorEdit4(U8("黑名单骨骼"), GameData.Config.ESP.Color.Blacklist.Skeleton, picker_flags);
 
 								 ImGui::ColorEdit4(U8("黑名单信息"), GameData.Config.ESP.Color.Blacklist.Info, picker_flags);
-							 
+
 								 ImGui::ColorEdit4(U8("白名单骨骼"), GameData.Config.ESP.Color.Whitelist.Skeleton, picker_flags);//没有
-							
+
 								 ImGui::ColorEdit4(U8("白名单信息"), GameData.Config.ESP.Color.Whitelist.Info, picker_flags);//没有
 
 
@@ -1193,25 +1207,25 @@ public:
 							 {
 
 								 ImGui::Checkbox(U8("玩家血条"), &GameData.Config.ESP.health_bar);
-								
+
 								 ImGui::Checkbox(U8("玩家方框"), &GameData.Config.ESP.DisplayFrame);
-								 
+
 								 ImGui::Checkbox(U8("玩家骨骼"), &GameData.Config.ESP.Skeleton);
 
 								 ImGui::Checkbox(U8("玩家名字"), &GameData.Config.ESP.Nickname);
-								 
+
 								 ImGui::Checkbox(U8("玩家队标"), &GameData.Config.ESP.TeamID);
-								 
+
 								 ImGui::Checkbox(U8("玩家战队"), &GameData.Config.ESP.ClanName);
-								 
+
 								 ImGui::Checkbox(U8("玩家等级"), &GameData.Config.ESP.等级);
 
 								 ImGui::Checkbox(U8("玩家距离"), &GameData.Config.ESP.Dis);
-								 
+
 								 ImGui::Checkbox(U8("玩家血量"), &GameData.Config.ESP.Health);
 
 								 ImGui::Checkbox(U8("掉线显示"), &GameData.Config.ESP.ShowInfos);
-							
+
 								 ImGui::Checkbox(U8("玩家手持"), &GameData.Config.ESP.Weapon);
 
 								 ImGui::Checkbox(U8("玩家击杀"), &GameData.Config.ESP.击杀);
@@ -1226,12 +1240,12 @@ public:
 
 								 ImGui::Checkbox(U8("玩家观战"), &GameData.Config.ESP.观战);
 
-								 ImGui::Checkbox(U8("玩家KDA"), &GameData.Config.ESP.KDA);								
+								 ImGui::Checkbox(U8("玩家KDA"), &GameData.Config.ESP.KDA);
 
 								 const char* items[]{ U8("不查战绩"), U8("TPP单人"), U8("TPP小队"), U8("FPP单人"), U8("FPP小队") };
 								 ImGui::Combo(U8("段位数据"), &GameData.Config.PlayerList.RankMode, items, IM_ARRAYSIZE(items));
-								 
-								 
+
+
 								 const char* XueTiaoWEizhi[]{ U8("顶部显示"), U8("左侧显示") };
 								 ImGui::Combo(U8("血条位置"), &GameData.Config.ESP.XueTiaoWEizhi, XueTiaoWEizhi, IM_ARRAYSIZE(XueTiaoWEizhi));
 
@@ -1249,13 +1263,13 @@ public:
 
 						 ImGui::BeginChild(true, U8("ESP预览"), "o", ImVec2(330, 540));
 						 {
-							 
+
 							 if (GameData.Config.Window.Players) ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(149.0f / 255.0f, 1.0f / 255.0f, 247.f / 255.0f, 200.f / 255.f));
 							 ImGui::Keybind(U8("段位列表"), &GameData.Config.Overlay.rankList);
 							 if (ImGui::Button(GameData.Config.Window.Players ? U8("关闭列表") : U8("打开列表"), ImVec2(ImGui::GetContentRegionMax().x - 20, 20))) {
-							 
+
 							 	GameData.Config.Window.Players = !GameData.Config.Window.Players;
-							 
+
 							 };
 
 							 ImVec2 childpos = ImGui::GetCursorScreenPos() + ImVec2(0, 20);
@@ -1327,11 +1341,11 @@ public:
 							 ImGui::BeginChild(true, U8("物资开关"), "e", ImVec2(365, 215));
 							 {
 								 ImGui::Checkbox(U8("物品透视"), &GameData.Config.Item.Enable);
-								 
+
 								 ImGui::Checkbox(U8("物品叠加"), &GameData.Config.Item.Combination);
 
 								 ImGui::Checkbox(U8("配件过滤"), &GameData.Config.Item.AccessoriesFilter);
-								 
+
 								 ImGui::Checkbox(U8("显示图标"), &GameData.Config.Item.ShowIcon);
 
 								 ImGui::Keybind(U8("A组热键"), &GameData.Config.Item.GroupAKey);
@@ -1382,16 +1396,16 @@ public:
 
 							 ImGui::BeginChild(true, U8("颜色设置"), "a", ImVec2(365, 285));
 							 {
-								
+
 								ImGui::ColorEdit4(U8("分组A颜色"), GameData.Config.Item.GroupAColor, picker_flags);
-																								
+
 								ImGui::ColorEdit4(U8("分组B颜色"), GameData.Config.Item.GroupBColor, picker_flags);
-																							
+
 								ImGui::ColorEdit4(U8("分组C颜色"), GameData.Config.Item.GroupCColor, picker_flags);
-																								
+
 								ImGui::ColorEdit4(U8("分组D颜色"), GameData.Config.Item.GroupDColor, picker_flags);
 
-								ImGui::ColorEdit4(U8("盒子颜色"), GameData.Config.DeadBox.Color, picker_flags);								
+								ImGui::ColorEdit4(U8("盒子颜色"), GameData.Config.DeadBox.Color, picker_flags);
 
 								ImGui::ColorEdit4(U8("空投颜色"), GameData.Config.AirDrop.Color, picker_flags);
 
@@ -1435,7 +1449,7 @@ public:
 								 {
 									 ImGui::BeginGroup();
 									 {
- 
+
 										ImGui::Checkbox(U8("开启"), &GameData.Config.Item.FilterEnable);
 										ImGui::SliderInt(U8("医疗箱"), &GameData.Config.Item.Medicalkit, 1, 8);
 										ImGui::SliderInt(U8("急救包"), &GameData.Config.Item.FirstAidKit, 1, 8);
@@ -1448,14 +1462,14 @@ public:
 										ImGui::SliderInt(U8("烟雾弹"), &GameData.Config.Item.SmokeGrenade, 1, 8);
 										ImGui::SliderInt(U8("燃烧瓶"), &GameData.Config.Item.MolotovGrenade, 1, 8);
 										ImGui::SliderInt(U8("蓝圈手雷"), &GameData.Config.Item.BluezoneGrenade, 1, 8);
-										
+
 									 }
 									 ImGui::EndGroup();
 
 								 }
 								 ImGui::EndChild(true);
 
-							 
+
 							 }
 							 else
 							 {
@@ -1490,7 +1504,7 @@ public:
 									Type = WeaponType::Other;
 									break;
 								}
-								
+
 								ImGui::BeginChild(true, U8("物资选择分组"), "e", ImVec2(745, 442));
 								{
 									static char search_buffer[256] = "";
@@ -1601,7 +1615,7 @@ public:
 												//SetCursorPosY(GetCursorPosY() - 22);
 												ImGui::SetNextItemWidth(200);
 												if (ImGui::Combo_popup("##COMBO", &detail.Group, Group_item_chinese, IM_ARRAYSIZE(Group_item_chinese)));
-												
+
 												ImGui::PopID();
 
 
@@ -1610,7 +1624,7 @@ public:
 
 
 										}
-										
+
 										ImGui::EndTable();
 									}
 								}
@@ -1634,17 +1648,17 @@ public:
 							 ImGui::BeginChild(true, U8("大地图"), "a", ImVec2(350, 500));
 							 {
 								 ImGui::Checkbox(U8("大地图玩家"), &GameData.Config.Radar.Main.ShowPlayer);
-								 
+
 								 ImGui::Checkbox(U8("大地图载具"), &GameData.Config.Radar.Main.ShowVehicle);
-								 
+
 								 ImGui::Checkbox(U8("大地图空投"), &GameData.Config.Radar.Main.ShowAirDrop);
-								
+
 								 ImGui::Checkbox(U8("大地图死亡"), &GameData.Config.Radar.Main.ShowAirDrop);
-								 
+
 								 ImGui::SliderFloat(U8("大地图比例"), &GameData.Config.Radar.Main.Map_size, 5.0f, 14.0f,"%.1f [F]");
-								 
+
 								 ImGui::SliderInt(U8("大地图图标比例"), &GameData.Config.Radar.Main.FontSize, 1, 20, "%d\xC2\xB0");
-								 
+
 							 }
 							 ImGui::EndChild(true);
 						 }
@@ -1657,17 +1671,17 @@ public:
 							 ImGui::BeginChild(true, U8("小地图"), "a", ImVec2(350, 500));
 							 {
 								 ImGui::Checkbox(U8("小地图玩家"), &GameData.Config.Radar.Mini.ShowPlayer);
-								 
+
 								 ImGui::Checkbox(U8("小地图载具"), &GameData.Config.Radar.Mini.ShowVehicle);
-								 
+
 								 ImGui::Checkbox(U8("小地图空投"), &GameData.Config.Radar.Mini.ShowAirDrop);
-								 
+
 								 ImGui::Checkbox(U8("小地图死亡"), &GameData.Config.Radar.Main.ShowAirDrop);
-								 
+
 								 ImGui::SliderFloat(U8("小地图比例"), &GameData.Config.Radar.Mini.Map_size, 5.0f, 14.0f, "%.1f [F]");
-								 
+
 								 ImGui::SliderInt(U8("小地图图标比例"), &GameData.Config.Radar.Mini.FontSize, 1, 20, "%d\xC2\xB0");
-								 
+
 							 }
 							 ImGui::EndChild(true);
 
@@ -1680,7 +1694,7 @@ public:
 						 {
 							 ImGui::BeginChild(true, U8("网页雷达"), "a", ImVec2(350, 500));
 							 {
-								
+
 								 char address[512];
 								 snprintf(address, sizeof(address), "http://%s:7891", GameData.Config.ESP.服务器IP);
 
@@ -1739,9 +1753,9 @@ public:
 							 ImGui::BeginChild(true, U8("手雷预警"), "e", ImVec2(445, 295));
 							 {
 								 ImGui::Checkbox(U8("爆炸提示"), &GameData.Config.Project.Enable);
-								 
+
 								 ImGui::Checkbox(U8("爆炸范围"), &GameData.Config.Project.FOV);
-								 
+
 								 ImGui::Checkbox(U8("高抛预判"), &GameData.Config.Project.GrenadePrediction);
 
 								 ImGui::Checkbox(U8("文本计时"), &GameData.Config.Project.TextShowChareTime);
@@ -1749,9 +1763,9 @@ public:
 								 ImGui::Checkbox(U8("掐雷计时"), &GameData.Config.Project.ShowChareTime);
 
 								 ImGui::Checkbox(U8("血条计时"), &GameData.Config.Project.BarShowChareTime);
-								 
+
 								 ImGui::ColorEdit4(U8("提示颜色"), GameData.Config.Project.ChareColor, picker_flags);
-								 
+
 								 ImGui::SliderInt(U8("字体大小"), &GameData.Config.Project.ChareFontSize, 5, 20,  "%d\xC2\xB0");
 
 							 }
@@ -1774,18 +1788,22 @@ public:
 
 						 ImGui::BeginGroup();
 						 {
-							 
+
 							 ImGui::BeginChild(true, U8("软件其他设置"), "e", ImVec2(445, 530));
 							 {
 								 ImGui::Checkbox(U8("指向模式"), &GameData.Config.Overlay.zhixiangmoshi);
-								 
+
 								 ImGui::Checkbox(U8("垂直同步"), &GameData.Config.Overlay.VSync);
+									 SkeetHelpMarker(U8("开启后锁定显示器刷新率，画面更稳；关闭后延迟更低、FPS 更高。"));
 
 								 ImGui::Checkbox(U8("备用相机"), &GameData.Config.Overlay.UseLastFrameCameraCache);
+									 SkeetHelpMarker(U8("主相机数据异常时使用上一帧缓存，减少画面抖动。"));
 
 								 ImGui::Checkbox(U8("独立线程"), &GameData.Config.Overlay.UseThread);
+									 SkeetHelpMarker(U8("推荐开启：相机/数据读取与绘制分离，画面更流畅。"));
 
-								 ImGui::Checkbox(U8("过滤迷雾"), &GameData.Config.ESP.miwu);	
+								 ImGui::Checkbox(U8("过滤迷雾"), &GameData.Config.ESP.miwu);
+									 SkeetHelpMarker(U8("减少迷雾/异常实体干扰，提升 ESP 清晰度。"));
 
 								 if (ImGui::Checkbox(U8("融合模式"), &GameData.Config.Overlay.FusionMode)) {
 									 HWND Progman = FindWindowA("Progman", NULL);
@@ -1803,20 +1821,20 @@ public:
 
 									 }
 								 }
-								 
+
 								 ImGui::Keybind(U8("安全结束"), &GameData.Config.Overlay.Quit_key);
-								 
+
 								 ImGui::Keybind(U8("显隐菜单"), &GameData.Config.Menu.ShowKey);
-								 
-								
+
+
 								 ImGui::Keybind(U8("融合快捷按键"), &GameData.Config.Overlay.FusionModeKey);
-								 
+
 								 ImGui::Keybind(U8("战斗模式"), &GameData.Config.ESP.FocusModeKey);
 
 								 ImGui::Keybind(U8("信息开关"), &GameData.Config.ESP.DataSwitchkey);
 
 								 ImGui::Keybind(U8("显示队友"), &GameData.Config.ESP.duiyouKey);
-								 
+
 								 ImGui::Keybind(U8("刷新缓存"), &GameData.Config.Function.ClearKey);
 
 
@@ -1839,7 +1857,7 @@ public:
 		ImGui::RenderNotifications();
 
 
-	
+
 	};
 
 };
@@ -1847,4 +1865,4 @@ public:
 
 
 
-		
+

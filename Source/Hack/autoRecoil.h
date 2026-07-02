@@ -6,6 +6,7 @@
 #include "utils/Lurker.h"
 #include "utils/KmBoxNet.h"
 #include "utils/MoBox.h"
+#include "utils/Utils.h"
 
 class Recoil
 {
@@ -42,9 +43,27 @@ public:
 		auto Recolhs = mem.CreateScatterHandle();
 		while (true)
 		{
-			Sleep(1);
-			if (GameData.Radar.Visibility || GameData.Config.AimBot.aimboot || !GameData.Config.AimBot.Recoilenanlek)
+			if (GameData.Scene != Scene::Gaming)
+			{
+				Sleep(GameData.ThreadSleep);
 				continue;
+			}
+
+			if (GameData.Radar.Visibility || GameData.Config.AimBot.aimboot || !GameData.Config.AimBot.Recoilenanlek)
+			{
+				Sleep(5);
+				continue;
+			}
+
+			if (GameData.LocalPlayerInfo.WeaponEntityInfo.WeaponType != WeaponType::AR ||
+				Utils::ValidPtr(GameData.LocalPlayerInfo.AnimScriptInstance) ||
+				Utils::ValidPtr(GameData.LocalPlayerInfo.CurrentWeapon))
+			{
+				Sleep(5);
+				continue;
+			}
+
+			Sleep(1);
 
 			if (GameData.LocalPlayerInfo.WeaponEntityInfo.WeaponType == WeaponType::AR)
 			{

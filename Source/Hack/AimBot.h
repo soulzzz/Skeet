@@ -903,7 +903,14 @@ public:
         {
             //Timer timer("1");
 
-            Throttlered.executeTaskWithSleep("AimBotSleep", std::chrono::milliseconds(static_cast<int>(1000 / Config.FPS)), [] {});
+            int FrameDelayMs = 1;
+            if (Config.FPS > 0) {
+                FrameDelayMs = 1000 / Config.FPS;
+                if (FrameDelayMs < 1) {
+                    FrameDelayMs = 1;
+                }
+            }
+            Throttlered.executeTaskWithSleep("AimBotSleep", std::chrono::milliseconds(FrameDelayMs), [] {});
 
             //std::cout << timer.get() << std::endl;
             //continue;

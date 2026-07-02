@@ -384,7 +384,7 @@ void EndDraw(ImGuiIO& io)
 	g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
 	g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_color);
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	g_pSwapChain->Present((GameData.Config.Overlay.FusionMode && !GameData.Config.Overlay.VSync) ? 0 : 1, 0);
+	g_pSwapChain->Present(GameData.Config.Overlay.VSync ? 1 : 0, 0);
 }
 
 void UpdateWindowTransparency()
@@ -500,6 +500,19 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 	io.DisplaySize = ImVec2((float)Width, (float)Height);
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.FontGlobalScale = 1.0f;
+
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.AntiAliasedLines = true;
+	style.AntiAliasedLinesUseTex = true;
+	style.AntiAliasedFill = true;
+
+	cfg.OversampleH = 2;
+	cfg.OversampleV = 2;
+	cfg.PixelSnapH = false;
+	cfg.RasterizerMultiply = 1.05f;
+	cfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LightHinting | ImGuiFreeTypeBuilderFlags_LoadColor;
+	cfg_regular = cfg;
 	cfg_regular.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LightHinting | ImGuiFreeTypeBuilderFlags_LoadColor;
 	ImGui::StyleColorsDark();
 	ShaderResource();
@@ -1831,6 +1844,8 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 
 	cfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_ForceAutoHint | ImGuiFreeTypeBuilderFlags_LightHinting | ImGuiFreeTypeBuilderFlags_LoadColor;
 	cfg.FontDataOwnedByAtlas = true;
+	ImFontConfig iconCfg = cfg;
+	iconCfg.FontDataOwnedByAtlas = false;
 
 	font::calibri_bold = io.Fonts->AddFontFromFileTTF("c:/windows/fonts/msyhb.ttc", 18.f, &cfg, io.Fonts->GetGlyphRangesChineseFull());
 	font::calibri_bold_hint = io.Fonts->AddFontFromFileTTF("c:/windows/fonts/msyhbd.ttc", 18.f, &cfg, io.Fonts->GetGlyphRangesChineseFull());
@@ -1842,13 +1857,13 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 	{ // font
 
 
-		font::icomoon_default = io.Fonts->AddFontFromMemoryTTF(icomoon_sizeof, sizeof(icomoon_sizeof), 35.f, &cfg, io.Fonts->GetGlyphRangesChineseFull());
-		font::icomoon_menu = io.Fonts->AddFontFromMemoryTTF(icomoon_sizeof, sizeof(icomoon_sizeof), 17.f, &cfg, io.Fonts->GetGlyphRangesCyrillic());
-		font::pixel_7_small = io.Fonts->AddFontFromMemoryTTF(pixel_7_small, sizeof(pixel_7_small), 10.f, &cfg, io.Fonts->GetGlyphRangesCyrillic());
-		font::icomoon = io.Fonts->AddFontFromMemoryTTF(icomoon, sizeof(icomoon), 20, &cfg, io.Fonts->GetGlyphRangesCyrillic());
-		font::weapon_val = io.Fonts->AddFontFromMemoryTTF(weapon_icon, sizeof(weapon_icon), 55, &cfg, io.Fonts->GetGlyphRangesCyrillic());
+		font::icomoon_default = io.Fonts->AddFontFromMemoryTTF(icomoon_sizeof, sizeof(icomoon_sizeof), 35.f, &iconCfg, io.Fonts->GetGlyphRangesChineseFull());
+		font::icomoon_menu = io.Fonts->AddFontFromMemoryTTF(icomoon_sizeof, sizeof(icomoon_sizeof), 17.f, &iconCfg, io.Fonts->GetGlyphRangesCyrillic());
+		font::pixel_7_small = io.Fonts->AddFontFromMemoryTTF(pixel_7_small, sizeof(pixel_7_small), 10.f, &iconCfg, io.Fonts->GetGlyphRangesCyrillic());
+		font::icomoon = io.Fonts->AddFontFromMemoryTTF(icomoon, sizeof(icomoon), 20, &iconCfg, io.Fonts->GetGlyphRangesCyrillic());
+		font::weapon_val = io.Fonts->AddFontFromMemoryTTF(weapon_icon, sizeof(weapon_icon), 55, &iconCfg, io.Fonts->GetGlyphRangesCyrillic());
 
-		io.Fonts->AddFontFromMemoryTTF(icomoon_sizeof, sizeof icomoon_sizeof, 17);
+		io.Fonts->AddFontFromMemoryTTF(icomoon_sizeof, sizeof icomoon_sizeof, 17, &iconCfg);
 	}
 	
 	ImGui_ImplWin32_Init(hwnd);

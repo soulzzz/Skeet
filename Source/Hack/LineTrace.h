@@ -157,11 +157,11 @@ namespace LineTrace
             return true;
         }
         catch (const std::exception& e) {
-            Utils::Log(2, "LineTraceSingle exception: %s", e.what());
+            Utils::LogThrottled("LineTraceSingle.Exception", 3000, 2, "LineTraceSingle exception: %s", e.what());
             return true;
         }
         catch (...) {
-            Utils::Log(2, "LineTraceSingle unknown exception");
+            Utils::LogThrottled("LineTraceSingle.UnknownException", 3000, 2, "LineTraceSingle unknown exception");
             return true;
         }
     }
@@ -274,11 +274,11 @@ namespace LineTrace
             return result;
         }
         catch (const std::exception& e) {
-            Utils::Log(2, "getNextHint exception: %s", e.what());
+            Utils::LogThrottled("LineTrace.getNextHint.Exception", 3000, 2, "getNextHint exception: %s", e.what());
             return nullptr;
         }
         catch (...) {
-            Utils::Log(2, "getNextHint unknown exception");
+            Utils::LogThrottled("LineTrace.getNextHint.UnknownException", 3000, 2, "getNextHint unknown exception");
             return nullptr;
         }
     }

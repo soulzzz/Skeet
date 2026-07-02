@@ -268,10 +268,12 @@ public:
 
 		bool GameProcessFound = false;
 		bool PrevGameProcessFound = false;
+		int LastMapID = -1;
+		std::string LastMapName;
 
 		while (true)
 		{
-			Throttlered.executeTask("UpdatePID", std::chrono::milliseconds(1500), [&GameProcessFound, &PrevGameProcessFound] {
+			Throttlered.executeTask("UpdatePID", std::chrono::milliseconds(1500), [&GameProcessFound, &PrevGameProcessFound, &LastMapID, &LastMapName] {
 				DWORD PID = mem.GetTslGamePID();
 				if (PID == 0)
 				{
@@ -281,6 +283,8 @@ public:
 					GameData.GameBase = 0;
 					GameData.PID = 0;
 					Decrypt::DestroyXe();
+					LastMapID = -1;
+					LastMapName.clear();
 
 					if (GameProcessFound != PrevGameProcessFound) {
 						Utils::Log(2, "The game process has ended");
@@ -290,7 +294,7 @@ public:
 					GameProcessFound = true;
 					if (GameProcessFound != PrevGameProcessFound) {
 						GameData.HookBase = mem.GetHookModuleBase();
-						Utils::Log(1, "Successfully found PlayerUnknown's Battlegrounds game progress [%p]", GameData.PID);
+						Utils::Log(1, "Game process found: pid=%lu base=0x%llX", GameData.PID, static_cast<unsigned long long>(GameData.GameBase));
 						EntityInit();
 						Data::SetGNameLists(EntityLists);
 						Data::SetGNameListsByID({});
@@ -302,12 +306,20 @@ public:
 			
 
 			if (GameData.PID != 0) {
-				
+				if (Utils::ValidPtr(GameData.UWorld)) {
+					Sleep(1500);
+					continue;
+				}
 
 				int MapID = Decrypt::CIndex(mem.Read<uint64_t>(GameData.UWorld + GameData.Offset["ObjID"]));
-				Utils::Log(0, "MapID is [%d]", MapID);
-				GameData.MapName = GNames::GetNameByID(MapID);
-				Utils::Log(0, "Entered the game scene, World name is [%s]", GameData.MapName.c_str());
+				const std::string MapName = GNames::GetNameByID(MapID);
+				if (MapID != LastMapID || MapName != LastMapName) {
+					Utils::Log(1, "Map changed: id=%d name=%s", MapID, MapName.c_str());
+					LastMapID = MapID;
+					LastMapName = MapName;
+				}
+
+				GameData.MapName = MapName;
 				if (Utils::IsLobby(GameData.MapName)) {
 					GameData.Scene = Scene::Lobby;
 					/*if (MapID == 446822) {
@@ -332,7 +344,7 @@ public:
 					break;
 				case Scene::Gaming:
 	
-					Utils::Log(0, "Entered the game scene, World name is [%s]", GameData.MapName.c_str());
+					Utils::Log(1, "Entered gaming scene: %s", GameData.MapName.c_str());
 					Players::ReadPlayerLists();
 					//StartLoadMapModel();
 					

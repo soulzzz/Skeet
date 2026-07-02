@@ -1120,7 +1120,9 @@ namespace physx
 				return currentSceneObjects.find(obj) == currentSceneObjects.end();
 			}
 		);
-		Utils::Log(0, "Dynamic -> Remove objects: %d, Add objects: %d", removeObjects.size(), addObjects.size());
+#ifdef _PHYSX_DEBUG
+		Utils::LogThrottled("Physx.Dynamic.Change", 3000, 0, "Dynamic -> Remove objects: %d, Add objects: %d", removeObjects.size(), addObjects.size());
+#endif
 
 		// �������Shape�ӳ������Ƴ������ٵ�Shape���볡��
 		for (const auto& obj : removeObjects) {
@@ -1346,10 +1348,14 @@ namespace physx
 		);
 
 		if (removeObjects.size() + addObjects.size() < limit) {
-			Utils::Log(1, "Static -> Remove objects: %d, Add objects: %d", removeObjects.size(), addObjects.size());
+#ifdef _PHYSX_DEBUG
+			Utils::LogThrottled("Physx.Static.SmallChange", 5000, 1, "Static -> Remove objects: %d, Add objects: %d", removeObjects.size(), addObjects.size());
+#endif
 			return std::vector<TriangleMeshData>{};
 		}
-		Utils::Log(0, "Static -> Remove objects: %d, Add objects: %d", removeObjects.size(), addObjects.size());
+#ifdef _PHYSX_DEBUG
+		Utils::LogThrottled("Physx.Static.Change", 3000, 0, "Static -> Remove objects: %d, Add objects: %d", removeObjects.size(), addObjects.size());
+#endif
 
 		// �������Shape�ӳ������Ƴ������ٵ�Shape���볡��
 		for (const auto& obj : removeObjects) {

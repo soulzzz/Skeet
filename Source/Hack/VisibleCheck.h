@@ -244,12 +244,12 @@ namespace VisibleCheck {
 #ifdef _PHYSX_DEBUG
                     auto end = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                    Utils::Log(1, "Static: Load %d meshs cost %d ms", Meshs.size(), duration.count());
+                    Utils::LogThrottled("Visible.Static.Load", 3000, 1, "Static: Load %d meshs cost %d ms", Meshs.size(), duration.count());
 #endif
                     try {
                         // 检查DynamicLoadScene是否为null
                         if (GameData.DynamicLoadScene == nullptr) {
-                            Utils::Log(3, "Static: DynamicLoadScene is null, cannot update mesh.");
+                            Utils::LogThrottled("Visible.Static.NullScene", 3000, 3, "Static: DynamicLoadScene is null, cannot update mesh.");
                             return;
                         }
 
@@ -258,12 +258,12 @@ namespace VisibleCheck {
                         GameData.DynamicLoadScene->UpdateMesh(Meshs, willRemoveObjects);
                     }
                     catch (const std::exception& e) {
-                        Utils::Log(3, "Static: Update Mesh error: %s", e.what());
+                        Utils::LogThrottled("Visible.Static.UpdateError", 3000, 3, "Static: Update Mesh error: %s", e.what());
                     }
 #ifdef _PHYSX_DEBUG
                     end = std::chrono::high_resolution_clock::now();
                     duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                    Utils::Log(3, "Static: Update embree scene cost %d ms", duration.count());
+                    Utils::LogThrottled("Visible.Static.EmbreeCost", 3000, 3, "Static: Update embree scene cost %d ms", duration.count());
 #endif
                 }
                 });
@@ -298,12 +298,12 @@ namespace VisibleCheck {
 #ifdef _PHYSX_DEBUG
                     auto end = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                    Utils::Log(1, "Load %d meshs cost %d ms", Meshs.size(), duration.count());
+                    Utils::LogThrottled("Visible.HeightField.Load", 3000, 1, "Load %d meshs cost %d ms", Meshs.size(), duration.count());
 #endif
                     try {
                         // 检查 HeightFieldScene 是否为 null
                         if (GameData.HeightFieldScene == nullptr) {
-                            Utils::Log(3, "HeightField: HeightFieldScene is null, cannot update mesh.");
+                            Utils::LogThrottled("Visible.HeightField.NullScene", 3000, 3, "HeightField: HeightFieldScene is null, cannot update mesh.");
                             return;
                         }
 
@@ -312,13 +312,13 @@ namespace VisibleCheck {
                         GameData.HeightFieldScene->UpdateMesh(Meshs, RemoveHeightFieldKey);
                     }
                     catch (const std::exception& e) {
-                        Utils::Log(3, "Update Height Field Mesh error: %s", e.what());
+                        Utils::LogThrottled("Visible.HeightField.UpdateError", 3000, 3, "Update Height Field Mesh error: %s", e.what());
                     }
 
 #ifdef _PHYSX_DEBUG
                     end = std::chrono::high_resolution_clock::now();
                     duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                    Utils::Log(3, "Update embree scene cost %d ms", duration.count());
+                    Utils::LogThrottled("Visible.HeightField.EmbreeCost", 3000, 3, "Update embree scene cost %d ms", duration.count());
 #endif
                 }
                 });
@@ -360,12 +360,12 @@ namespace VisibleCheck {
 #ifdef _PHYSX_DEBUG
                     auto end = std::chrono::high_resolution_clock::now();
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                    Utils::Log(1, "Dynamic: Load %d meshs cost %d ms", Meshs.size(), duration.count());
+                    Utils::LogThrottled("Visible.Dynamic.Load", 3000, 1, "Dynamic: Load %d meshs cost %d ms", Meshs.size(), duration.count());
 #endif
                     try {
                         // 检查DynamicRigidScene是否为null
                         if (GameData.DynamicRigidScene == nullptr) {
-                            Utils::Log(3, "Dynamic: DynamicRigidScene is null, cannot update mesh.");
+                            Utils::LogThrottled("Visible.Dynamic.NullScene", 3000, 3, "Dynamic: DynamicRigidScene is null, cannot update mesh.");
                             return;
                         }
 
@@ -374,13 +374,13 @@ namespace VisibleCheck {
                         GameData.DynamicRigidScene->UpdateMesh(Meshs, willRemoveShape);
                     }
                     catch (const std::exception& e) {
-                        Utils::Log(3, "Dynamic: Update Mesh error: %s", e.what());
+                        Utils::LogThrottled("Visible.Dynamic.UpdateError", 3000, 3, "Dynamic: Update Mesh error: %s", e.what());
                     }
 
 #ifdef _PHYSX_DEBUG
                     end = std::chrono::high_resolution_clock::now();
                     duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-                    Utils::Log(3, "Dynamic: Update embree scene cost %d ms", duration.count());
+                    Utils::LogThrottled("Visible.Dynamic.EmbreeCost", 3000, 3, "Dynamic: Update embree scene cost %d ms", duration.count());
 #endif
                 }
                 });
@@ -388,4 +388,3 @@ namespace VisibleCheck {
         }
     }
 }
-

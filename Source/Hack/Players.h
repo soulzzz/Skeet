@@ -167,21 +167,27 @@ public:
 			GameData.NumAliveTeams = mem.Read<int>(GameData.GameState + GameData.Offset["NumAliveTeams"]);
 			if (GameData.PlayerCount <= 0 || GameData.PlayerCount > 2048)
 			{
+				Data::SetPlayerLists({});
 				return;
 			}
 
 			const uint64_t PlayerArrayPtr = mem.Read<uint64_t>(GameData.GameState + GameData.Offset["PlayerArray"]);
 			if (Utils::ValidPtr(PlayerArrayPtr))
 			{
+				Data::SetPlayerLists({});
 				return;
 			}
 
 			std::vector<uint64_t> PlayerArray(static_cast<size_t>(GameData.PlayerCount));
-			mem.Read(PlayerArrayPtr, PlayerArray.data(), sizeof(uint64_t) * PlayerArray.size());
+			if (!mem.Read(PlayerArrayPtr, PlayerArray.data(), sizeof(uint64_t) * PlayerArray.size()))
+			{
+				Data::SetPlayerLists({});
+				Utils::LogThrottled("Players.PlayerArray.ReadFailed", 3000, 2, "Failed to read player array: ptr=0x%llX count=%d", static_cast<unsigned long long>(PlayerArrayPtr), GameData.PlayerCount);
+				return;
+			}
+
 			playerLists.reserve(PlayerArray.size());
 			GPlayerLists.reserve(PlayerArray.size());
-
-			auto ScatterHandle = mem.CreateScatterHandle();
 
 			for (const auto pPlayerInfo : PlayerArray)
 			{
@@ -193,6 +199,14 @@ public:
 				player.pPlayerInfo = pPlayerInfo;
 				playerLists.emplace_back(player);
 			}
+
+			if (playerLists.empty())
+			{
+				Data::SetPlayerLists({});
+				return;
+			}
+
+			auto ScatterHandle = mem.CreateScatterHandle();
 
 			for (GamePlayerInfo& player : playerLists)
 			{
@@ -378,19 +392,21 @@ public:
 
 
 					// 从GamePlayerLists中获取玩家详细信息
-					GamePlayerInfo PlayerInfo = GamePlayerLists[Player.Name];
-
-					// 填充玩家对象的详细信息
-					Player.ClanName = PlayerInfo.ClanName;
-					//Player.SpectatedCount = PlayerInfo.SpectatedCount;
-					Player.SurvivalLevel = PlayerInfo.PubgIdData.SurvivalLevel;
-					Player.PartnerLevel = PlayerInfo.PartnerLevel;
-					Player.DamageDealtOnEnemy = PlayerInfo.DamageDealtOnEnemy;
-					Player.Alignment = PlayerInfo.Alignment;
-					Player.KillCount = PlayerInfo.KillCount;
-					Player.ListType = PlayerInfo.ListType;
-					Player.SquadMemberIndex = PlayerInfo.SquadMemberIndex;
-					Player.AccountId = PlayerInfo.AccountId;
+					const auto PlayerInfoIt = GamePlayerLists.find(Player.Name);
+					if (PlayerInfoIt != GamePlayerLists.end())
+					{
+						const GamePlayerInfo& PlayerInfo = PlayerInfoIt->second;
+						Player.ClanName = PlayerInfo.ClanName;
+						//Player.SpectatedCount = PlayerInfo.SpectatedCount;
+						Player.SurvivalLevel = PlayerInfo.PubgIdData.SurvivalLevel;
+						Player.PartnerLevel = PlayerInfo.PartnerLevel;
+						Player.DamageDealtOnEnemy = PlayerInfo.DamageDealtOnEnemy;
+						Player.Alignment = PlayerInfo.Alignment;
+						Player.KillCount = PlayerInfo.KillCount;
+						Player.ListType = PlayerInfo.ListType;
+						Player.SquadMemberIndex = PlayerInfo.SquadMemberIndex;
+						Player.AccountId = PlayerInfo.AccountId;
+					}
 					// 将玩家位置转换为屏幕坐标
 					FVector2D WorldToScreen = VectorHelper::WorldToScreen(Player.Location);
 

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <windows.h>
 #include "common/Data.h"
@@ -310,7 +310,7 @@ public:
 
 		return ImVec4{ Pos.x,Pos.y,Size.x,Size.y };
 	}
-	static std::unordered_map<int, std::list<ItemInfo>> GroupItems(std::vector<std::pair<uint64_t, ItemInfo>> Items, float ThresholdX, float ThresholdY) {
+	static std::unordered_map<int, std::list<ItemInfo>> GroupItems(std::vector<std::pair<uint64_t, ItemInfo>>& Items, float ThresholdX, float ThresholdY) {
 		static const auto IsNear = [&](const FVector2D& A, const FVector2D& B) {
 			return std::abs(A.X - B.X) < ThresholdX && std::abs(A.Y - B.Y) < ThresholdY;
 			};
@@ -341,7 +341,7 @@ public:
 		}
 		return Groups;
 	}
-	static void DrawItems(std::unordered_map<uint64_t, ItemInfo> Items)
+	static void DrawItems(const std::unordered_map<uint64_t, ItemInfo>& Items)
 	{
 		// 检查物品绘制功能是否启用
 		if (!GameData.Config.Item.Enable) return;
@@ -527,7 +527,7 @@ public:
 			}
 		}
 	}
-	static void DrawProjects(std::unordered_map<uint64_t, ProjectInfo> Items)
+	static void DrawProjects(const std::unordered_map<uint64_t, ProjectInfo>& Items)
 	{
 		// 检查项目绘制功能是否启用
 		if (!GameData.Config.Project.Enable) return;
@@ -649,7 +649,7 @@ public:
 					ImGui::GetWindowDrawList()->AddLine({ Vertices[i].X, Vertices[i].Y }, { Vertices[i + 1].X,  Vertices[i + 1].Y }, color, thickness);
 		}
 	}
-	static void DrawVehicles(std::unordered_map<uint64_t, VehicleInfo> Vehicles)
+	static void DrawVehicles(const std::unordered_map<uint64_t, VehicleInfo>& Vehicles)
 	{
 		
 		FVector2D FistPos; //
@@ -741,7 +741,7 @@ public:
 			}
 		}
 	}
-	static void DrawVehicleWheels(std::unordered_map<uint64_t, VehicleWheelInfo> VehicleWheels)
+	static void DrawVehicleWheels(const std::unordered_map<uint64_t, VehicleWheelInfo>& VehicleWheels)
 	{
 		// 将 VehicleWheels 中的键值对复制到一个向量中
 		std::vector<std::pair<uint64_t, VehicleWheelInfo>> Vectors(VehicleWheels.begin(), VehicleWheels.end());
@@ -770,14 +770,15 @@ public:
 			ImVec2 HeadInfoSize = RenderHelper::StrokeText(Text.c_str(), { Wheel.ScreenLocation.X, Wheel.ScreenLocation.Y }, InfoColor, 14, true, true);
 		}
 	}
-	static PlayerRankInfo GetPlayerRankInfo(const std::unordered_map<std::string, PlayerRankList> PlayerRankLists, const Player Player)
+	static PlayerRankInfo GetPlayerRankInfo(const std::unordered_map<std::string, PlayerRankList>& PlayerRankLists, const Player& Player)
 	{
 		PlayerRankInfo PlayerRankData; // 声明一个变量用于存储玩家排名信息
 
 		// 检查玩家排名列表中是否包含该玩家的名称
-		if (PlayerRankLists.count(Player.Name) > 0)
+		const auto PlayerRankIt = PlayerRankLists.find(Player.Name);
+		if (PlayerRankIt != PlayerRankLists.end())
 		{
-			PlayerRankList PlayerRank = PlayerRankLists.at(Player.Name); // 获取该玩家的排名信息
+			const PlayerRankList& PlayerRank = PlayerRankIt->second; // 获取该玩家的排名信息
 
 			// 根据配置的排名模式，选择相应的排名数据
 			switch (GameData.Config.PlayerList.RankMode) {
@@ -799,11 +800,11 @@ public:
 		}
 		return PlayerRankData; // 返回玩家的排名信息
 	}
-	static void DrawRadars(std::unordered_map<uint64_t, Player> Players, std::unordered_map<uint64_t, VehicleInfo> Vehicles, std::unordered_map<uint64_t, PackageInfo> Packages)
+	static void DrawRadars(const std::unordered_map<uint64_t, Player>& Players, const std::unordered_map<uint64_t, VehicleInfo>& Vehicles, const std::unordered_map<uint64_t, PackageInfo>& Packages)
 	{
-		for (auto& Item : Vehicles)
+		for (const auto& Item : Vehicles)
 		{
-			VehicleInfo& Vehicle = Item.second;
+			const VehicleInfo& Vehicle = Item.second;
 
 			std::string IconUrl = "Assets/image/Map/car_land.png";
 
@@ -829,9 +830,9 @@ public:
 			}
 		}
 
-		for (auto& Item : Packages)
+		for (const auto& Item : Packages)
 		{
-			PackageInfo& Package = Item.second;
+			const PackageInfo& Package = Item.second;
 
 			if (Package.Type == EntityType::AirDrop)
 			{
@@ -888,9 +889,9 @@ public:
 			}
 		}
 
-		for (auto& Item : Players)
+		for (const auto& Item : Players)
 		{
-			Player& Player = Item.second;
+			const Player& Player = Item.second;
 
 			if (Player.InFog || Player.IsMe || Player.IsMyTeam || (Player.State == CharacterState::Dead))
 			{
@@ -985,7 +986,7 @@ public:
 		}
 	}
 
-	static void DrawPlayers(std::unordered_map<uint64_t, Player> Players)
+	static void DrawPlayers(const std::unordered_map<uint64_t, Player>& Players)
 	{
 		if (!GameData.Config.ESP.Enable) return;
 
@@ -1518,9 +1519,9 @@ public:
 			int EnemiesBehindCount = 0;
 			bool IsBeingAimedFromBehind = false;
 
-			for (auto& Item : Players)
+			for (const auto& Item : Players)
 			{
-				Player& Player = Item.second;
+				const Player& Player = Item.second;
 				if (!Player.IsAimMe) continue;
 
 				float PlayerAngle = atan2(
@@ -1564,7 +1565,7 @@ public:
 
 	}
 
-	static void DrawPlayersEarly(std::unordered_map<uint64_t, Player> Players)
+	static void DrawPlayersEarly(const std::unordered_map<uint64_t, Player>& Players)
 	{
 		if (!GameData.Config.Early.Enable) return;
 
@@ -1573,9 +1574,9 @@ public:
 		float AngleXSize = 2.f * Scale;
 		float AngleYSize = 5.f * Scale;
 
-		for (auto& Item : Players)
+		for (const auto& Item : Players)
 		{
-			Player& Player = Item.second;
+			const Player& Player = Item.second;
 
 			if (Player.IsMe || Player.IsMyTeam || (Player.State == CharacterState::Dead))
 			{
@@ -1630,7 +1631,7 @@ public:
 		}
 	}
 
-	static void DrawPackages(std::unordered_map<uint64_t, PackageInfo> Packages)
+	static void DrawPackages(const std::unordered_map<uint64_t, PackageInfo>& Packages)
 	{
 		if (!GameData.Config.AirDrop.Enable && !GameData.Config.DeadBox.Enable) return;
 
@@ -1858,7 +1859,7 @@ public:
 
 			}
 			catch (...) {
-				Utils::Log(2, "Wild pointer error");
+				Utils::LogThrottled("ESP.DrawModel.WildPointer", 5000, 2, "Wild pointer error");
 			}
 		}
 	}
@@ -1951,7 +1952,7 @@ public:
 
 			}
 			catch (...) {
-				Utils::Log(2, "Wild pointer error");
+				Utils::LogThrottled("ESP.DrawNearModel.WildPointer", 5000, 2, "Wild pointer error");
 			}
 		}
 	}
@@ -1969,14 +1970,39 @@ public:
 			return;
 		}
 
-		std::unordered_map<uint64_t, Player> Players = Data::GetPlayers();
-		std::unordered_map<uint64_t, VehicleWheelInfo> VehicleWheels = Data::GetVehicleWheels();
-		std::unordered_map<uint64_t, VehicleInfo> Vehicles = Data::GetVehicles();
-		std::unordered_map<uint64_t, ItemInfo> Items = Data::GetItems();
-		std::unordered_map<uint64_t, ProjectInfo> Projects = Data::GetProjects();
-		std::unordered_map<uint64_t, PackageInfo> Packages = Data::GetPackages();
+		const bool DrawWorldInfo = !GameData.bShowMouseCursor && !GameData.AimBot.Lock;
+		const bool DrawWorldLoot = DrawWorldInfo && !GameData.Config.ESP.FocusMode;
+		const bool DrawMainRadar = GameData.Radar.Visibility;
+		const bool DrawMiniRadar = GameData.Radar.MiniRadarVisibility;
+		const bool NeedRadarData = DrawMainRadar || DrawMiniRadar;
 
-		if (!GameData.bShowMouseCursor && !GameData.AimBot.Lock)
+		const bool NeedPlayers =
+			(DrawWorldInfo && GameData.Config.Early.Enable) ||
+			(!DrawMainRadar && GameData.Config.ESP.Enable) ||
+			(NeedRadarData && (GameData.Config.Radar.Main.ShowPlayer || GameData.Config.Radar.Mini.ShowPlayer));
+
+		const bool NeedVehicles =
+			(DrawWorldLoot && GameData.Config.Vehicle.Enable) ||
+			(NeedRadarData && (GameData.Config.Radar.Main.ShowVehicle || GameData.Config.Radar.Mini.ShowVehicle));
+
+		const bool NeedPackages =
+			(DrawWorldLoot && (GameData.Config.AirDrop.Enable || GameData.Config.DeadBox.Enable)) ||
+			(NeedRadarData && (GameData.Config.Radar.Main.ShowAirDrop || GameData.Config.Radar.Main.ShowDeadBox ||
+				GameData.Config.Radar.Mini.ShowAirDrop || GameData.Config.Radar.Mini.ShowDeadBox));
+
+		std::unordered_map<uint64_t, Player> Players;
+		std::unordered_map<uint64_t, VehicleInfo> Vehicles;
+		std::unordered_map<uint64_t, ItemInfo> Items;
+		std::unordered_map<uint64_t, ProjectInfo> Projects;
+		std::unordered_map<uint64_t, PackageInfo> Packages;
+
+		if (NeedPlayers) Players = Data::GetPlayers();
+		if (NeedVehicles) Vehicles = Data::GetVehicles();
+		if (DrawWorldLoot && GameData.Config.Item.Enable) Items = Data::GetItems();
+		if (GameData.Config.Project.Enable) Projects = Data::GetProjects();
+		if (NeedPackages) Packages = Data::GetPackages();
+
+		if (DrawWorldInfo)
 		{
 			if (!GameData.Config.ESP.FocusMode)
 			{
@@ -1999,11 +2025,13 @@ public:
 		DrawLocalPlayerProject();
 		DrawAimBotPoint();
 		DrawProjects(Projects);
-		DrawRadars(Players, Vehicles, Packages);
+		if (NeedRadarData)
+		{
+			DrawRadars(Players, Vehicles, Packages);
+		}
 		if (GameData.Config.ESP.PhysXDebug) {
 			DrawNextHintMesh();
 			//DrawNearModel();
 		}
 	};
 };
-

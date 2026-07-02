@@ -144,7 +144,9 @@ zstd.dll
 - 默认配置文件：`Config/SkeetConfig.bak`。
 - 兼容旧配置：启动时如果存在 `Config/AKMConfig.bak` 会自动读取，并迁移保存为 `Config/SkeetConfig.bak`。
 - 运行日志：`Config/Skeet.log`，记录配置加载/保存、线程启动、关键异常等低频事件。
+- 高频渲染/射线/PhysX 异常日志已做限流，避免日志 IO 影响 DMA 读取与渲染帧率。
 - Overlay 默认启用独立线程模式，以降低渲染和数据读取互相阻塞的概率。
+- 菜单关键性能选项带 `(?)` 提示，鼠标悬停即可查看用途，方便快速理解和操作。
 
 ## Offset 更新
 

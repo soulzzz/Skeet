@@ -11,9 +11,14 @@
 #include <regex>
 #include <fstream>
 #include <iomanip>
+#include <iterator>
+#include <vector>
+#include <algorithm>
 #include <mutex>
 #include <cstdarg>
 #include <cstdio>
+#include <chrono>
+#include <unordered_map>
 #include <setupapi.h>
 #include <initguid.h>
 #include <devguid.h>
@@ -79,8 +84,8 @@ namespace Utils
 		return mapName.find("Main") == std::string::npos;
 	}
 
-	inline bool Contains(std::vector<std::string> vec, std::string str) {
-		for (std::string s : vec) {
+	inline bool Contains(const std::vector<std::string>& vec, const std::string& str) {
+		for (const std::string& s : vec) {
 			if (s == str)
 				return true;
 		}
@@ -206,23 +211,19 @@ namespace Utils
 	}
 
 	inline std::string ReadConfigFile(const std::string& filename) {
-		std::ifstream file(filename);
-		std::string content;
-
+		std::ifstream file(filename, std::ios::binary);
 		if (!file) {
 			return "";
 		}
 
-		std::string line;
-		while (std::getline(file, line)) {
-			content += line + '\n';
-		}
-
-		return content;
+		return std::string(
+			std::istreambuf_iterator<char>(file),
+			std::istreambuf_iterator<char>()
+		);
 	}
 
 	inline void WriteConfigFile(const std::string& filename, const std::string& content) {
-		std::ofstream file(filename);
+		std::ofstream file(filename, std::ios::binary | std::ios::trunc);
 
 		if (!file) {
 			return;
@@ -231,14 +232,20 @@ namespace Utils
 		file << content;
 	}
 
-	inline char* UnicodeToAnsi(char* wstr)
+	inline std::string UnicodeToAnsi(const char* wstr)
 	{
-		if (!wstr) { return NULL; }
-		int strleng = WideCharToMultiByte(CP_ACP, NULL, (LPCWCH)wstr, (int)wcslen((LPCWCH)wstr), NULL, 0, NULL, FALSE);
-		char* str = new char[strleng + 1];
-		WideCharToMultiByte(CP_ACP, NULL, (LPCWCH)wstr, (int)wcslen((LPCWCH)wstr), str, strleng, NULL, FALSE);
-		str[strleng] = '\0';
-		return str;
+		if (!wstr) { return {}; }
+
+		const auto wide = reinterpret_cast<LPCWCH>(wstr);
+		const int sizeNeeded = WideCharToMultiByte(CP_ACP, 0, wide, -1, nullptr, 0, nullptr, nullptr);
+		if (sizeNeeded <= 1) {
+			return {};
+		}
+
+		std::string result(static_cast<size_t>(sizeNeeded), '\0');
+		WideCharToMultiByte(CP_ACP, 0, wide, -1, result.data(), sizeNeeded, nullptr, nullptr);
+		result.pop_back();
+		return result;
 	}
 
 	inline std::wstring StringToWstring(const std::string& str) {
@@ -338,5 +345,35 @@ namespace Utils
 		if (LogFile.is_open()) {
 			LogFile << "[" << Time << "] [" << Level << "] " << buffer << std::endl;
 		}
+	}
+
+	inline bool ShouldLogThrottled(const std::string& key, const std::chrono::milliseconds interval)
+	{
+		static std::mutex ThrottleMutex;
+		static std::unordered_map<std::string, std::chrono::steady_clock::time_point> LastLogTime;
+
+		const auto now = std::chrono::steady_clock::now();
+		std::lock_guard<std::mutex> lock(ThrottleMutex);
+		auto it = LastLogTime.find(key);
+		if (it != LastLogTime.end() && now - it->second < interval) {
+			return false;
+		}
+
+		LastLogTime[key] = now;
+		return true;
+	}
+
+	inline void LogThrottled(const std::string& key, const int intervalMs, const int& type, const char* format, ...) {
+		if (!ShouldLogThrottled(key, std::chrono::milliseconds(intervalMs))) {
+			return;
+		}
+
+		va_list args;
+		va_start(args, format);
+		char buffer[1024];
+		std::vsnprintf(buffer, sizeof(buffer), format, args);
+		va_end(args);
+
+		Log(type, "%s", buffer);
 	}
 }

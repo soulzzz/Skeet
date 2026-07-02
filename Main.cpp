@@ -1,4 +1,6 @@
+#if defined(_DEBUG) && !defined(_PHYSX_DEBUG)
 #define _PHYSX_DEBUG
+#endif
 #include <winsock2.h>
 #include <windows.h>
 #include <Overlay/Overlay.h>
@@ -156,6 +158,9 @@ int main() {
 		return -1;
 	}
 
+	SetConsoleStyle();
+	Utils::Log(1, "Skeet starting");
+
 	HWND hwnd = GetConsoleWindow();
 	if (hwnd != NULL)
 	{
@@ -171,6 +176,7 @@ int main() {
 	Config::Load();
 
 	std::thread HackThread(Hack::Init);
+	HackThread.detach();
 
 	Overlay::Init(0, DrawMain);
 	while (true)
@@ -187,4 +193,3 @@ int main() {
 	
 	return 0;
 }
-
