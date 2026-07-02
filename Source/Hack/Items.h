@@ -29,17 +29,25 @@ public:
         }
 
         uint64_t CurrentEntity = GameData.LocalPlayerInfo.Entity;
+        if (Utils::ValidPtr(CurrentEntity)) return FilteredItems;
+
         uint64_t InventoryFacade = mem.Read<uint64_t>(CurrentEntity + GameData.Offset["InventoryFacade"]);
         InventoryFacade = Decrypt::Xe(InventoryFacade);
+        if (Utils::ValidPtr(InventoryFacade)) return FilteredItems;
+
         uint64_t Inventory = mem.Read<uint64_t>(InventoryFacade + GameData.Offset["Inventory"]);
+        if (Utils::ValidPtr(Inventory)) return FilteredItems;
+
         std::vector<FLocalBackpackItems> EqItemInfo;
         TArray<uint64_t> AttachedItems = mem.Read<TArray<uint64_t>>(Inventory + GameData.Offset["InventoryItems"]);
+        const auto AttachedItemList = AttachedItems.GetVector();
+        EqItemInfo.reserve(AttachedItemList.size());
 
-        for (const auto& Item : AttachedItems.GetVector())
+        for (const auto& Item : AttachedItemList)
         {
             if (Utils::ValidPtr(Item)) continue;
 
-            FLocalBackpackItems FItem;
+            FLocalBackpackItems FItem{};
             FItem.Item = Item;
             EqItemInfo.emplace_back(FItem);
         }
@@ -53,6 +61,7 @@ public:
 
         for (auto& Item : EqItemInfo)
         {
+            if (Utils::ValidPtr(Item.ItemTable)) continue;
             mem.AddScatterRead(hScatter, Item.ItemTable + GameData.Offset["ItemID"], (int*)&Item.ItemID);
         }
 
@@ -66,6 +75,7 @@ public:
 
         for (auto& Item : EqItemInfo)
         {
+            if (Item.ItemID <= 0) continue;
             EntityInfo EntityInfo = Data::GetGNameListsByIDItem(Item.ItemID);
             if (EntityInfo.DisplayName == "手雷" && Item.ItemCount >= GameData.Config.Item.Grenade)
             {

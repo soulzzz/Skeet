@@ -7,7 +7,9 @@
 #include <D3DX11tex.h>
 #include <imgui/imgui.h>
 
+#include <chrono>
 #include <imgui/imgui_internal.h>
+#include <thread>
 #pragma comment(lib, "D3DX11.lib")
 #include <Uxtheme.h>
 #include <dwmapi.h>
@@ -53,6 +55,28 @@ D3DX11_IMAGE_LOAD_INFO info; ID3DX11ThreadPump* pump{ nullptr };
 // 在文件开头添加全局变量
 static bool g_isDragging = false;
 static POINT g_dragOffset = { 0, 0 };
+
+namespace
+{
+	constexpr auto kOverlayNoVsyncFrameInterval = std::chrono::microseconds(4000); // ~250 FPS
+
+	void LimitNoVsyncFrameRate(std::chrono::steady_clock::time_point& lastFrameTime)
+	{
+		if (GameData.Config.Overlay.VSync)
+		{
+			lastFrameTime = std::chrono::steady_clock::now();
+			return;
+		}
+
+		const auto now = std::chrono::steady_clock::now();
+		const auto elapsed = now - lastFrameTime;
+		if (elapsed < kOverlayNoVsyncFrameInterval)
+		{
+			std::this_thread::sleep_for(kOverlayNoVsyncFrameInterval - elapsed);
+		}
+		lastFrameTime = std::chrono::steady_clock::now();
+	}
+}
 
 
 // Forward declarations of helper functions
@@ -1882,9 +1906,9 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 	if (texture::rank == nullptr) D3DX11CreateShaderResourceViewFromMemory(g_pd3dDevice, ranking, sizeof(ranking), &info, pump, &texture::rank, 0);
 
 
-	Throttler Throttlered;
 	CameraData Camera;
 	float TimeSeconds = 0.f;
+	auto LastOverlayFrameTime = std::chrono::steady_clock::now();
 	// Main loop
 	bool is = true;
 	while (is)
@@ -1937,6 +1961,8 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 				mem.CloseScatterHandle(hScatter);
 			}
 		}
+
+		LimitNoVsyncFrameRate(LastOverlayFrameTime);
 		
 	}
 

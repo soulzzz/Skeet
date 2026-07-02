@@ -44,8 +44,14 @@ public:
 
             std::vector<ActorEntityInfo> Entitys;
             TArray<uint64_t> ActorArray = mem.Read<TArray<uint64_t>>(GameData.ActorArray);
-            for (auto Actor : ActorArray.GetVector())
+            const auto Actors = ActorArray.GetVector();
+            Entitys.reserve(Actors.size());
+            for (auto Actor : Actors)
             {
+                if (Utils::ValidPtr(Actor)) {
+                    continue;
+                }
+
                 ActorEntityInfo Entity;
                 Entity.Index = 0;
                 Entity.Entity = Actor;
@@ -62,6 +68,7 @@ public:
             std::unordered_map<uint64_t, ProjectInfo> CacheProjects;
             std::unordered_map<uint64_t, PackageInfo> CachePackages;
             std::vector<int> NeedGetNameIDs;
+            NeedGetNameIDs.reserve(Entitys.size());
 
             //for (int i = 0; i < ActorCount; ++i)
             //{
@@ -82,11 +89,13 @@ public:
 
             for (ActorEntityInfo& Entity : Entitys)
             {
-                if (CacheEntitys.count(Entity.Entity) > 0)
+                const auto CacheEntityIt = CacheEntitys.find(Entity.Entity);
+                if (CacheEntityIt != CacheEntitys.end())
                 {
-                    if (CacheEntitys[Entity.Entity].DecodeID > 0 && CacheEntitys[Entity.Entity].DecodeID < 1000000 && CacheEntitys[Entity.Entity].EntityInfo.Type != EntityType::Player && CacheEntitys[Entity.Entity].EntityInfo.Type != EntityType::AI)
+                    const auto& CachedEntity = CacheEntityIt->second;
+                    if (CachedEntity.DecodeID > 0 && CachedEntity.DecodeID < 1000000 && CachedEntity.EntityInfo.Type != EntityType::Player && CachedEntity.EntityInfo.Type != EntityType::AI)
                     {
-                        Entity = CacheEntitys[Entity.Entity];
+                        Entity = CachedEntity;
                         continue;
                     }
                 }

@@ -1782,7 +1782,8 @@ namespace Data
 	inline Player GetPlayersItem(uint64_t Key)
 	{
 		std::shared_lock<std::shared_mutex> lock(GameData.Actors.PlayersMutex);
-		return GameData.Actors.Players[Key];
+		const auto it = GameData.Actors.Players.find(Key);
+		return it != GameData.Actors.Players.end() ? it->second : Player{};
 	}
 
 	inline void SetVehicles(const std::unordered_map<uint64_t, VehicleInfo>& value)
@@ -1842,7 +1843,8 @@ namespace Data
 	inline VehicleWheelInfo GetVehicleWheelsItem(uint64_t Key)
 	{
 		std::shared_lock<std::shared_mutex> lock(GameData.Actors.VehicleWheelsMutex);
-		return GameData.Actors.VehicleWheels[Key];
+		const auto it = GameData.Actors.VehicleWheels.find(Key);
+		return it != GameData.Actors.VehicleWheels.end() ? it->second : VehicleWheelInfo{};
 	}
 
 	inline std::unordered_map<std::string, EntityInfo, FnvHash> GetGNameLists()

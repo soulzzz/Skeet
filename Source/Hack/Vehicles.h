@@ -19,6 +19,8 @@ public:
             if (GameData.Scene != Scene::Gaming)
             {
                 CacheVehicles.clear();
+                Data::SetVehicles({});
+                Data::SetVehiclWheels({});
                 Data::SetPackages({});
                 Sleep(GameData.ThreadSleep);
                 continue;
@@ -33,6 +35,8 @@ public:
                 for (auto& Item : Vehicles)
                 {
                     VehicleInfo& Vehicle = Item.second;
+                    Vehicle.Wheels.clear();
+                    Vehicle.FlatTireCount = 0;
 
                     mem.AddScatterRead(hScatter, Vehicle.Entity + GameData.Offset["RootComponent"], (uint64_t*)&Vehicle.RootComponent);
                     mem.AddScatterRead(hScatter, Vehicle.Entity + GameData.Offset["VehicleMovement"], (uint64_t*)&Vehicle.VehicleMovement);
@@ -49,7 +53,7 @@ public:
                     mem.AddScatterRead(hScatter, Vehicle.VehicleMovement + GameData.Offset["Wheels"] + 0x8, (int*)&Vehicle.WheelsCount);
 
                     UINT64 VehicleCommonComponent = mem.Read<uint64_t>(Vehicle.Entity + GameData.Offset["VehicleCommonComponent"]);
-                    if (VehicleCommonComponent > 0X10000) {
+                    if (!Utils::ValidPtr(VehicleCommonComponent)) {
                         mem.AddScatterRead(hScatter, VehicleCommonComponent + GameData.Offset["VehicleHealth"], (float*)&Vehicle.VehicleHealth);
                         mem.AddScatterRead(hScatter, VehicleCommonComponent + GameData.Offset["VehicleHealthMax"], (float*)&Vehicle.VehicleHealthMax);
                         mem.AddScatterRead(hScatter, VehicleCommonComponent + GameData.Offset["VehicleFuel"], (float*)&Vehicle.VehicleFuel);
@@ -68,8 +72,9 @@ public:
                     Vehicle.ScreenLocation = VectorHelper::WorldToScreen(Vehicle.Location);
                     Vehicle.Distance = GameData.Camera.Location.Distance(Vehicle.Location) / 100.0f;
 
-                    if (Vehicle.WheelsCount == 4)
+                    if (Vehicle.WheelsCount == 4 && !Utils::ValidPtr(Vehicle.pWheels))
                     {
+                        Vehicle.Wheels.reserve(Vehicle.WheelsCount);
                         for (size_t i = 0; i < Vehicle.WheelsCount; i++)
                         {
                             VehicleWheelInfo WheelInfo;
@@ -149,6 +154,7 @@ public:
                 for (auto& Item : CachePackages)
                 {
                     PackageInfo& Package = Item.second;
+                    Package.Items.clear();
 
                     mem.AddScatterRead(hScatter, Package.pDroppedItemGroup, (uint64_t*)&Package.DroppedItemGroup);
                     if (Package.ItemCount <= 0 || Package.ItemCount > 100)

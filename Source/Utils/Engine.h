@@ -190,22 +190,32 @@ private:
 	friend struct FString;
 public:
 	size_t size(size_t MaxSize = 0x2000) const {
-		return Count < MaxSize ? Count : MaxSize;
+		if (Data == nullptr || Count <= 0 || Max < Count) {
+			return 0;
+		}
+
+		const auto count = static_cast<size_t>(Count);
+		return count < MaxSize ? count : MaxSize;
 	}
 
 	bool GetValue(int i, T& value) const {
-		if (i < 0 || i >= size(0x2000)) return false;
+		const auto count = size(0x2000);
+		if (i < 0 || static_cast<size_t>(i) >= count) return false;
 		//return memcpy(&value, (PVOID)(Data + sizeof(T) * i), sizeof(T));
-		return mem.Read(reinterpret_cast<uintptr_t>((Data + sizeof(T) * i)), &value, sizeof(T));
+		return mem.Read(reinterpret_cast<uintptr_t>(Data + i), &value, sizeof(T));
 	}
 
 	bool GetValues(T& value, size_t MaxSize = 0x2000) const {
-		return mem.Read(reinterpret_cast<uintptr_t>(Data), &value, sizeof(T) * size(MaxSize));
+		const auto count = size(MaxSize);
+		if (count == 0) return false;
+		return mem.Read(reinterpret_cast<uintptr_t>(Data), &value, sizeof(T) * count);
 		//return memcpy(&value, (PVOID)Data, sizeof(T) * size(MaxSize));
 	}
 
 	std::vector<T> GetVector(size_t MaxSize = 0x2000) const {
-		std::vector<T> v(size(MaxSize));
+		const auto count = size(MaxSize);
+		std::vector<T> v(count);
+		if (count == 0) return v;
 		if (!GetValues(v[0], MaxSize))
 			v.clear();
 
@@ -215,7 +225,7 @@ public:
 	operator std::vector<T>() const { return GetVector(); }
 
 	T operator [](int i) const {
-		T Value;
+		T Value{};
 		if (!GetValue(i, Value))
 			ZeroMemory(&Value, sizeof(Value));
 		return Value;

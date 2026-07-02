@@ -1794,7 +1794,7 @@ public:
 								 ImGui::Checkbox(U8("指向模式"), &GameData.Config.Overlay.zhixiangmoshi);
 
 								 ImGui::Checkbox(U8("垂直同步"), &GameData.Config.Overlay.VSync);
-									 SkeetHelpMarker(U8("开启后锁定显示器刷新率，画面更稳；关闭后延迟更低、FPS 更高。"));
+									 SkeetHelpMarker(U8("开启后锁定显示器刷新率，画面更稳；关闭后延迟更低，内置约 250FPS 帧率保护避免空跑占满 CPU。"));
 
 								 ImGui::Checkbox(U8("备用相机"), &GameData.Config.Overlay.UseLastFrameCameraCache);
 									 SkeetHelpMarker(U8("主相机数据异常时使用上一帧缓存，减少画面抖动。"));
@@ -1861,7 +1861,6 @@ public:
 	};
 
 };
-
 
 
 
