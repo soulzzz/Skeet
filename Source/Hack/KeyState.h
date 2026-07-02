@@ -5,6 +5,7 @@
 #include <Utils/KmBox.h>
 #include <Utils/KmBoxNet.h>
 #include <Hack/Players.h>
+#include <string_view>
 
 namespace KeyState
 {
@@ -19,9 +20,8 @@ namespace KeyState
 			GameData.KeyState = false;
 		}
 		else {
-			//Utils::Log(1, U8("初始化键盘热键成功（免责声明：该游戏仅供学习使用与本人无关，请及时在24小时内删除谢谢）"));
 			GameData.KeyState = true;
-			Utils::Log(1, U8("初始化键盘热键成功（免责声明：该游戏仅供学习使用与本人无关，请及时在24小时内删除谢谢）:%llx", GameData.Keyboard.GetAddrss()));
+			Utils::Log(1, U8("键盘热键初始化成功: 0x%llx", GameData.Keyboard.GetAddrss()));
 		}
 	}
 	void Update() {
@@ -30,38 +30,42 @@ namespace KeyState
 		{
 			GameData.Keyboard.UpdateKeys();
 
-			std::unordered_map<int, std::vector<std::string>> Keys;
-			Keys[GameData.Config.Menu.ShowKey].push_back("Menu");
-			Keys[GameData.Config.Overlay.Quit_key].push_back("DEAD");
-			Keys[GameData.Config.AimBot.Configs[0].Key].push_back("AimBotConfig0");
-			Keys[GameData.Config.AimBot.Configs[1].Key].push_back("AimBotConfig1");
-			Keys[VK_DELETE].push_back("RecoverOverlay");
-			Keys[GameData.Config.Function.ClearKey].push_back("Clear");
-			//Keys[GameData.Config.Item.GroupKey].push_back("GroupKey");
-			Keys[GameData.Config.Item.GroupAKey].push_back("GroupAKey");
-			Keys[GameData.Config.Item.GroupBKey].push_back("GroupBKey");
-			Keys[GameData.Config.Item.GroupCKey].push_back("GroupCKey");
-			Keys[GameData.Config.Item.GroupDKey].push_back("GroupDKey");
-			Keys[GameData.Config.Vehicle.EnableKey].push_back("VehicleEnable");
-			Keys[GameData.Config.PlayerList.MarkKey].push_back("PlayerListMarkType");
-			Keys[GameData.Config.Overlay.rankList].push_back("rankList");
-			Keys[GameData.Config.ESP.FocusModeKey].push_back("FocusModeKey");
-			Keys[GameData.Config.AirDrop.EnableKey].push_back("AirDropEnableKey");
-			Keys[GameData.Config.DeadBox.EnableKey].push_back("DeadBoxEnableKey");
-			Keys[GameData.Config.Overlay.FusionModeKey].push_back("FusionModeKey");;
-			Keys[GameData.Config.ESP.duiyouKey].push_back("duiyouKey");
-			Keys[GameData.Config.ESP.fast_aimbot_switch].push_back("fast_aimbot_switch");
-			Keys[GameData.Config.ESP.DataSwitchkey].push_back("DataSwitchkey");
+			const std::pair<int, const char*> Keys[] = {
+				{ GameData.Config.Menu.ShowKey, "Menu" },
+				{ GameData.Config.Overlay.Quit_key, "DEAD" },
+				{ GameData.Config.AimBot.Configs[0].Key, "AimBotConfig0" },
+				{ GameData.Config.AimBot.Configs[1].Key, "AimBotConfig1" },
+				{ VK_DELETE, "RecoverOverlay" },
+				{ GameData.Config.Function.ClearKey, "Clear" },
+				//{ GameData.Config.Item.GroupKey, "GroupKey" },
+				{ GameData.Config.Item.GroupAKey, "GroupAKey" },
+				{ GameData.Config.Item.GroupBKey, "GroupBKey" },
+				{ GameData.Config.Item.GroupCKey, "GroupCKey" },
+				{ GameData.Config.Item.GroupDKey, "GroupDKey" },
+				{ GameData.Config.Vehicle.EnableKey, "VehicleEnable" },
+				{ GameData.Config.PlayerList.MarkKey, "PlayerListMarkType" },
+				{ GameData.Config.Overlay.rankList, "rankList" },
+				{ GameData.Config.ESP.FocusModeKey, "FocusModeKey" },
+				{ GameData.Config.AirDrop.EnableKey, "AirDropEnableKey" },
+				{ GameData.Config.DeadBox.EnableKey, "DeadBoxEnableKey" },
+				{ GameData.Config.Overlay.FusionModeKey, "FusionModeKey" },
+				{ GameData.Config.ESP.duiyouKey, "duiyouKey" },
+				{ GameData.Config.ESP.fast_aimbot_switch, "fast_aimbot_switch" },
+				{ GameData.Config.ESP.DataSwitchkey, "DataSwitchkey" },
+			};
 
 			/*if (GameData.Keyboard.WasKeyPressed(VK_F2))
 				GameData.Config.AimBot.Enable = !GameData.Config.AimBot.Enable;*/
 
-			for (auto Key : Keys)
+			for (const auto& Key : Keys)
 			{
+				if (Key.first <= 0) {
+					continue;
+				}
+
 				if (GameData.Keyboard.WasKeyPressed(Key.first))
 				{
-					for (auto KeyName : Key.second)
-					{
+					const std::string_view KeyName = Key.second;
 						if (KeyName == "AirDropEnableKey")
 						{
 							GameData.Config.AirDrop.Enable = !GameData.Config.AirDrop.Enable;
@@ -240,7 +244,6 @@ namespace KeyState
 						{
 							GameData.Config.AimBot.ConfigIndex = 1;
 						}
-					}
 				}
 			}
 

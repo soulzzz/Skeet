@@ -4,17 +4,27 @@
 #include "common/Entitys.h"
 #include "Decrypt.h"
 #include <Utils/FNVHash.h>
+#include <Utils/Utils.h>
 
 class GNames
 {
 public:
-    static void ReadGNames(std::vector<int> ids)
+    static void ReadGNames(const std::vector<int>& ids)
     {
+        if (ids.empty() || Utils::ValidPtr(GameData.GNames) || GameData.Offset["ChunkSize"] <= 0) {
+            return;
+        }
+
         auto hScatter = mem.CreateScatterHandle();
         std::vector<GNameInfo> gNameInfos;
+        gNameInfos.reserve(ids.size());
         for (auto id : ids)
         {
-            GNameInfo gNameInfo;
+            if (id <= 0) {
+                continue;
+            }
+
+            GNameInfo gNameInfo{};
             gNameInfo.ID = id;
             gNameInfos.push_back(gNameInfo);
         }
@@ -27,12 +37,18 @@ public:
 
         for (GNameInfo& gNameInfo : gNameInfos)
         {
+            if (Utils::ValidPtr(gNameInfo.pGName)) {
+                continue;
+            }
             mem.AddScatterRead(hScatter, gNameInfo.pGName + ((int(gNameInfo.ID % GameData.Offset["ChunkSize"])) * 8), (uint64_t*)&gNameInfo.pName);
         }
         mem.ExecuteReadScatter(hScatter);
 
         for (GNameInfo& gNameInfo : gNameInfos)
         {
+            if (Utils::ValidPtr(gNameInfo.pName)) {
+                continue;
+            }
             mem.AddScatterRead(hScatter, gNameInfo.pName + 0x10, (FText*)&gNameInfo.FName);
         }
         mem.ExecuteReadScatter(hScatter);
@@ -69,10 +85,22 @@ public:
 
     static std::string GetName(int ID)
     {
+        if (ID <= 0 || Utils::ValidPtr(GameData.GNames) || GameData.Offset["ChunkSize"] <= 0) {
+            return "fail";
+        }
+
         UINT64 fNamePtr = mem.Read<UINT64>(GameData.GNames + ((int(ID / GameData.Offset["ChunkSize"])) * 8));
+        if (Utils::ValidPtr(fNamePtr)) {
+            return "fail";
+        }
+
         UINT64 fName = mem.Read<UINT64>(fNamePtr + ((int(ID % GameData.Offset["ChunkSize"])) * 8));
-        char names_c[258];
-        mem.Read(fName + 0x10, names_c, sizeof(names_c));
+        if (Utils::ValidPtr(fName)) {
+            return "fail";
+        }
+
+        char names_c[258]{};
+        mem.Read(fName + 0x10, names_c, sizeof(names_c) - 1);
         std::string names = std::string(names_c);
         if (names == "")
             names = "fail";

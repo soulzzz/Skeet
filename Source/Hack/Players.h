@@ -137,11 +137,22 @@ public:
 				continue;
 			}
 
+			if (Utils::ValidPtr(GameData.AntiCheatCharacterSyncManager))
+			{
+				Data::SetFogPlayers({});
+				Sleep(GameData.ThreadSleep);
+				continue;
+			}
+
 			std::unordered_map<uint64_t, FogPlayerInfo> FogPlayerInfos;
 			TArray<uint64_t> DormantCharacterClientList = mem.Read<TArray<uint64_t>>(GameData.AntiCheatCharacterSyncManager + GameData.Offset["DormantCharacterClientList"]);
 			for (auto FogPlayerEntity : DormantCharacterClientList.GetVector())
 			{
-				FogPlayerInfo FogPlayer;
+				if (Utils::ValidPtr(FogPlayerEntity)) {
+					continue;
+				}
+
+				FogPlayerInfo FogPlayer{};
 				FogPlayerInfos[FogPlayerEntity] = FogPlayer;
 			}
 

@@ -1875,11 +1875,11 @@ namespace Data
 	inline void SetGNameListsAndGNameListsByID(const std::unordered_map<std::string, EntityInfo, FnvHash>& value, const std::unordered_map<int, EntityInfo>& value1)
 	{
 		std::unique_lock<std::shared_mutex> lock(GameData.Actors.GNameListsMutex);
-		for (auto item : value)
+		for (const auto& item : value)
 		{
 			GameData.GNameLists[item.first] = item.second;
 		}
-		for (auto item : value1)
+		for (const auto& item : value1)
 		{
 			GameData.GNameListsByID[item.first] = item.second;
 		}

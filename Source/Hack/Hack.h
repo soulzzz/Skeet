@@ -57,38 +57,65 @@ public:
 		auto hScatter = mem.CreateScatterHandle();
 		while (true)
 		{
-			mem.RefreshTLB();
-
-			GameData.UWorld = Decrypt::Xe(mem.Read<uint64_t>(GameData.GameBase + GameData.Offset["UWorld"]));
-			GameData.GameInstance = Decrypt::Xe(mem.Read<uint64_t>(GameData.UWorld + GameData.Offset["GameInstance"]));
-			GameData.GNames = GNames::GetGNamesPtr();
-
-			if (Utils::ValidPtr(GameData.UWorld) || GameData.Scene != Scene::Gaming)
+			if (GameData.Scene != Scene::Gaming || Utils::ValidPtr(GameData.GameBase))
 			{
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
 
+			mem.RefreshTLB();
+
+			GameData.UWorld = Decrypt::Xe(mem.Read<uint64_t>(GameData.GameBase + GameData.Offset["UWorld"]));
+			if (Utils::ValidPtr(GameData.UWorld))
+			{
+				Sleep(GameData.ThreadSleep);
+				continue;
+			}
+
+			GameData.GameInstance = Decrypt::Xe(mem.Read<uint64_t>(GameData.UWorld + GameData.Offset["GameInstance"]));
+			if (Utils::ValidPtr(GameData.GameInstance))
+			{
+				Utils::LogThrottled("HackInvalidGameInstance", 5000, 3, "Invalid GameInstance, waiting for next refresh");
+				Sleep(GameData.ThreadSleep);
+				continue;
+			}
+
+			GameData.GNames = GNames::GetGNamesPtr();
+
 			GameData.GameState = Decrypt::Xe(mem.Read<uint64_t>(GameData.UWorld + GameData.Offset["GameState"]));
-			GameData.LocalPlayer = Decrypt::Xe(mem.Read<uint64_t>(mem.Read<uint64_t>(GameData.GameInstance + GameData.Offset["LocalPlayer"])));
+			const auto LocalPlayerArray = mem.Read<uint64_t>(GameData.GameInstance + GameData.Offset["LocalPlayer"]);
+			if (Utils::ValidPtr(LocalPlayerArray))
+			{
+				Utils::LogThrottled("HackInvalidLocalPlayerArray", 5000, 3, "Invalid LocalPlayer array, waiting for next refresh");
+				Sleep(GameData.ThreadSleep);
+				continue;
+			}
+
+			GameData.LocalPlayer = Decrypt::Xe(mem.Read<uint64_t>(LocalPlayerArray));
 			GameData.PlayerController = Decrypt::Xe(mem.Read<uint64_t>(GameData.LocalPlayer + GameData.Offset["PlayerController"]));
 			GameData.AcknowledgedPawn = Decrypt::Xe(mem.Read<uint64_t>(GameData.PlayerController + GameData.Offset["AcknowledgedPawn"]));
 			GameData.CurrentLevel = Decrypt::Xe(mem.Read<uint64_t>(GameData.UWorld + GameData.Offset["CurrentLevel"]));
 			GameData.ActorArray = Decrypt::Xe(mem.Read<uint64_t>(GameData.CurrentLevel + GameData.Offset["Actors"]));
+			if (Utils::ValidPtr(GameData.GameState) || Utils::ValidPtr(GameData.LocalPlayer) || Utils::ValidPtr(GameData.PlayerController) ||
+				Utils::ValidPtr(GameData.CurrentLevel) || Utils::ValidPtr(GameData.ActorArray))
+			{
+				Utils::LogThrottled("HackInvalidCorePointers", 5000, 3, "Invalid core pointer, waiting for next refresh");
+				Sleep(GameData.ThreadSleep);
+				continue;
+			}
 
-			uint64_t PlayerCameraManager;
-			uint64_t MyHUD;
-			BYTE bShowMouseCursor;
-			uint64_t PlayerInput;
-			uint64_t AntiCheatCharacterSyncManager;
-			uint64_t CacheCameraViewTarget;
+			uint64_t PlayerCameraManager = 0;
+			uint64_t MyHUD = 0;
+			BYTE bShowMouseCursor = 0;
+			uint64_t PlayerInput = 0;
+			uint64_t AntiCheatCharacterSyncManager = 0;
+			uint64_t CacheCameraViewTarget = 0;
 
 			mem.AddScatterRead(hScatter, GameData.PlayerController + GameData.Offset["PlayerCameraManager"], &PlayerCameraManager);
 			mem.AddScatterRead(hScatter, GameData.PlayerController + GameData.Offset["MyHUD"], &MyHUD);
 			mem.AddScatterRead(hScatter, GameData.PlayerController + GameData.Offset["bShowMouseCursor"], &bShowMouseCursor);
 			mem.AddScatterRead(hScatter, GameData.PlayerController + GameData.Offset["PlayerInput"], &PlayerInput);
 			mem.AddScatterRead(hScatter, GameData.PlayerController + GameData.Offset["AntiCheatCharacterSyncManager"], &AntiCheatCharacterSyncManager);
-			mem.AddScatterRead(hScatter, GameData.PlayerCameraManager + GameData.Offset["ViewTarget"], &CacheCameraViewTarget);
 			mem.ExecuteReadScatter(hScatter);
 
 			GameData.PlayerCameraManager = PlayerCameraManager;
@@ -96,6 +123,10 @@ public:
 			GameData.bShowMouseCursor = bShowMouseCursor == 0x25 ? true : false;
 			GameData.PlayerInput = PlayerInput;
 			GameData.AntiCheatCharacterSyncManager = AntiCheatCharacterSyncManager;
+			if (!Utils::ValidPtr(GameData.PlayerCameraManager))
+			{
+				CacheCameraViewTarget = mem.Read<uint64_t>(GameData.PlayerCameraManager + GameData.Offset["ViewTarget"]);
+			}
 
 			//GameData.ActorArrayEmpty = mem.Read<uint64_t>(GameData.LocalPlayerInfo.Entity + GameData.Offset["ActorChildren"]);
 
