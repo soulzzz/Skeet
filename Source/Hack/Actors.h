@@ -6,6 +6,7 @@
 #include <Utils/Throttler.h>
 #include <Hack/GNames.h>
 #include <Utils/FNVHash.h>
+#include <algorithm>
 
 class Actors
 {
@@ -220,6 +221,8 @@ public:
             Data::SetCachePackages(CachePackages);
 
             if (NeedGetNameIDs.size() > 0) {
+                std::sort(NeedGetNameIDs.begin(), NeedGetNameIDs.end());
+                NeedGetNameIDs.erase(std::unique(NeedGetNameIDs.begin(), NeedGetNameIDs.end()), NeedGetNameIDs.end());
                 GNames::ReadGNames(NeedGetNameIDs);
             }
 

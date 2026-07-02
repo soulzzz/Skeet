@@ -117,33 +117,35 @@ public:
         }
 
         std::string names = GetName(ID);
+        if (names == "fail") {
+            return EntityInfo{ "Unknown", EntityType::Unknown, 0, WeaponType::Other };
+        }
 
         std::unordered_map<std::string, EntityInfo, FnvHash> GNameLists;
         std::unordered_map<int, EntityInfo> GNameListsByID;
 
-        if (names != "fail") {
-            EntityInfo GNameItem = Data::GetGNameListsItem(names);
+        EntityInfo GNameItem = Data::GetGNameListsItem(names);
 
-            if (GNameItem.Type != EntityType::Unknown) {
-                GNameLists[names] = GNameItem;
-                GNameLists[names].ID = ID;
-                GNameLists[names].Name = names;
-                GNameListsByID[ID] = GNameLists[names];
-            }
-            else {
-                EntityInfo entityInfoData;
-                entityInfoData.DisplayName = names;
-                entityInfoData.Type = EntityType::Unknown;
-                entityInfoData.ID = ID;
-                entityInfoData.Name = names;
-                GNameLists[names] = entityInfoData;
-                GNameListsByID[ID] = entityInfoData;
-            }
-
-            Data::SetGNameListsAndGNameListsByID(GNameLists, GNameListsByID);
+        if (GNameItem.Type != EntityType::Unknown) {
+            GNameLists[names] = GNameItem;
+            GNameLists[names].ID = ID;
+            GNameLists[names].Name = names;
+            GNameListsByID[ID] = GNameLists[names];
+        }
+        else {
+            EntityInfo entityInfoData;
+            entityInfoData.DisplayName = names;
+            entityInfoData.Type = EntityType::Unknown;
+            entityInfoData.ID = ID;
+            entityInfoData.Name = names;
+            GNameLists[names] = entityInfoData;
+            GNameListsByID[ID] = entityInfoData;
         }
 
-        return GNameLists[names];
+        Data::SetGNameListsAndGNameListsByID(GNameLists, GNameListsByID);
+
+        const auto it = GNameLists.find(names);
+        return it != GNameLists.end() ? it->second : EntityInfo{ "Unknown", EntityType::Unknown, 0, WeaponType::Other };
     }
 
     static std::string GetNameByID(int ID)

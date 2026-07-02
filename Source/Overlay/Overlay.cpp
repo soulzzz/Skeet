@@ -14,6 +14,7 @@
 #include <Uxtheme.h>
 #include <dwmapi.h>
 #include <Utils/Throttler.h>
+#include <Utils/Utils.h>
 #include "Style.h"
 #include "Map.h"
 #include "RenderHelper.h"
@@ -472,7 +473,7 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 		::GetClientRect(DesktopWindow, &rect);
 		Width = rect.right - rect.left;
 		Height = rect.bottom - rect.top;
-		std::cout << "Width: " << Width << "Height:  "<< Height << std::endl;
+		Utils::Log(1, "Overlay size detected: %dx%d", Width, Height);
 
 		GameData.Config.Overlay.ScreenWidth = (rect.right - rect.left);
 		GameData.Config.Overlay.ScreenHeight = (rect.bottom - rect.top);

@@ -1713,10 +1713,10 @@ public:
                 StopAiming();
             }
             if (Config.AimAndShot) {
-                if (IsReloading || (Config.NoBulletNotAim && BulletNumber == 0))
-                {
-                    std::cout << "no bullet" << std::endl;
-                }
+				if (IsReloading || (Config.NoBulletNotAim && BulletNumber == 0))
+				{
+					Utils::LogThrottled("AimBot.NoBulletOrReloading", 2000, 3, "AimBot paused: reloading=%d ammo=%d", IsReloading ? 1 : 0, static_cast<int>(BulletNumber));
+				}
                 else {
                     if (GameData.AimBot.Target == Player.Entity && GameData.AimBot.Lock) {
 

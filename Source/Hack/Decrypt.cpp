@@ -2,13 +2,14 @@
 #include <DMALibrary/Memory/Memory.h>
 #include "common/Data.h"
 #include "common/Offset.h"
+#include <Utils/Utils.h>
 #include <iostream>
 #include <iomanip>
 
 // 诊断开关:1 输出 Xe/CIndex 诊断日志,0 静默(零开销)。
 // 排查"解密是否还有效"时保持 1;确认无误后改 0。
 #ifndef XE_LOG
-#define XE_LOG 1
+#define XE_LOG 0
 #endif
 
 #if XE_LOG
@@ -141,7 +142,14 @@ uint64_t Decrypt::Xe(uint64_t addr)
 			ShellcodeBuff[7] = 0x90;
 			ShellcodeBuff[8] = 0x90;
 			DecFunction = reinterpret_cast<decltype(DecFunction)>(VirtualAlloc(nullptr, 4096, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE));
+			if (!DecFunction)
+			{
+				Utils::LogThrottled("Decrypt.Xe.VirtualAllocFailed", 5000, 2, "Decrypt shellcode allocation failed");
+				return 0;
+			}
+
 			RtlCopyMemory((LPVOID)DecFunction, (LPVOID)ShellcodeBuff, sizeof(ShellcodeBuff));
+			Utils::Log(1, "Decrypt shellcode initialized");
 
 #if XE_LOG
 			std::cout << "[Xe] VirtualAlloc -> 0x" << std::hex << (void*)DecFunction;
@@ -168,6 +176,7 @@ uint64_t Decrypt::Xe(uint64_t addr)
 	}
 	catch (const std::exception& e)
 	{
+		Utils::LogThrottled("Decrypt.Xe.StdException", 3000, 2, "Decrypt Xe exception: %s", e.what());
 #if XE_LOG
 		std::cout << "[Xe] EXCEPTION(std): " << e.what()
 			<< " (addr=0x" << std::hex << addr << std::dec << ")" << std::endl;
@@ -176,6 +185,7 @@ uint64_t Decrypt::Xe(uint64_t addr)
 	}
 	catch (...)
 	{
+		Utils::LogThrottled("Decrypt.Xe.UnknownException", 3000, 2, "Decrypt Xe unknown exception");
 #if XE_LOG
 		// 走到这说明执行 shellcode 抛了非 std 异常;若进程直接 AV 崩溃,则说明拷贝的例程字节已坏。
 		std::cout << "[Xe] EXCEPTION(unknown) (addr=0x" << std::hex << addr << std::dec << ")" << std::endl;
