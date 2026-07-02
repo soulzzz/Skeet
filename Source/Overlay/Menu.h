@@ -79,6 +79,57 @@ inline void SkeetHelpMarker(const char* desc)
 	}
 }
 
+inline void ApplySkeetPreset(int preset)
+{
+	GameData.Config.Overlay.UseThread = true;
+	GameData.Config.Overlay.UseLastFrameCameraCache = true;
+	GameData.Config.ESP.Enable = true;
+	GameData.Config.ESP.miwu = true;
+
+	switch (preset)
+	{
+	case 1: // 性能优先
+		GameData.Config.Overlay.VSync = false;
+		GameData.Config.ESP.Stroke = false;
+		GameData.Config.ESP.SkeletonWidth = 1;
+		GameData.Config.ESP.FontSize = 9;
+		GameData.Config.ESP.DistanceMax = 700;
+		GameData.Config.ESP.InfoDistanceMax = 220;
+		GameData.Config.ESP.WeaponDistanceMax = 200;
+		GameData.Config.ESP.showIcon = false;
+		GameData.Config.ESP.KDA = false;
+		GameData.Config.ESP.观战 = false;
+		GameData.Config.ESP.击杀 = false;
+		GameData.Config.ESP.伤害 = false;
+		GameData.Config.ESP.PhysXDebug = false;
+		Utils::Log(1, "Applied Skeet performance preset");
+		break;
+	case 2: // 清晰优先
+		GameData.Config.Overlay.VSync = true;
+		GameData.Config.ESP.Stroke = true;
+		GameData.Config.ESP.SkeletonWidth = 2;
+		GameData.Config.ESP.FontSize = 11;
+		GameData.Config.ESP.DistanceMax = 1000;
+		GameData.Config.ESP.InfoDistanceMax = 350;
+		GameData.Config.ESP.WeaponDistanceMax = 300;
+		GameData.Config.ESP.showIcon = true;
+		Utils::Log(1, "Applied Skeet clarity preset");
+		break;
+	default: // 均衡推荐
+		GameData.Config.Overlay.VSync = false;
+		GameData.Config.ESP.Stroke = true;
+		GameData.Config.ESP.SkeletonWidth = 1;
+		GameData.Config.ESP.FontSize = 10;
+		GameData.Config.ESP.DistanceMax = 850;
+		GameData.Config.ESP.InfoDistanceMax = 280;
+		GameData.Config.ESP.WeaponDistanceMax = 250;
+		GameData.Config.ESP.showIcon = false;
+		GameData.Config.ESP.PhysXDebug = false;
+		Utils::Log(1, "Applied Skeet balanced preset");
+		break;
+	}
+}
+
 // 保存账号和密码到文件
 inline void SaveLoginConfig(const std::string& username, const std::string& password)
 {
@@ -1791,13 +1842,28 @@ public:
 
 							 ImGui::BeginChild(true, U8("软件其他设置"), "e", ImVec2(445, 530));
 							 {
+								 ImGui::TextColored(c::text::text, U8("一键预设"));
+								 if (ImGui::Button(U8("均衡推荐"), ImVec2(130, 25))) {
+									 ApplySkeetPreset(0);
+								 }
+								 ImGui::SameLine();
+								 if (ImGui::Button(U8("性能优先"), ImVec2(130, 25))) {
+									 ApplySkeetPreset(1);
+								 }
+								 ImGui::SameLine();
+								 if (ImGui::Button(U8("清晰优先"), ImVec2(130, 25))) {
+									 ApplySkeetPreset(2);
+								 }
+								 SkeetHelpMarker(U8("均衡推荐适合日常；性能优先减少绘制负担；清晰优先提升文字/骨骼观感。"));
+								 ImGui::Separator();
+
 								 ImGui::Checkbox(U8("指向模式"), &GameData.Config.Overlay.zhixiangmoshi);
 
 								 ImGui::Checkbox(U8("垂直同步"), &GameData.Config.Overlay.VSync);
 									 SkeetHelpMarker(U8("开启后锁定显示器刷新率，画面更稳；关闭后延迟更低，内置约 250FPS 帧率保护避免空跑占满 CPU。"));
 
 								 ImGui::Checkbox(U8("备用相机"), &GameData.Config.Overlay.UseLastFrameCameraCache);
-									 SkeetHelpMarker(U8("主相机数据异常时使用上一帧缓存，减少画面抖动。"));
+									 SkeetHelpMarker(U8("推荐开启：相机读取异常时沿用上一帧有效相机，减少画面抖动/卡顿。"));
 
 								 ImGui::Checkbox(U8("独立线程"), &GameData.Config.Overlay.UseThread);
 									 SkeetHelpMarker(U8("推荐开启：相机/数据读取与绘制分离，画面更流畅。"));
@@ -1861,7 +1927,5 @@ public:
 	};
 
 };
-
-
 
 

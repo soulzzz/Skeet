@@ -1908,6 +1908,7 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 
 
 	CameraData Camera;
+	CameraData NextCamera;
 	float TimeSeconds = 0.f;
 	auto LastOverlayFrameTime = std::chrono::steady_clock::now();
 	// Main loop
@@ -1947,14 +1948,21 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 		if (GameData.Config.Window.IsLogin) {
 			if (!GameData.Config.Overlay.UseThread) {
 				auto hScatter = mem.CreateScatterHandle();
-				if (!GameData.Config.Overlay.UseLastFrameCameraCache)
-				{
-					mem.AddScatterRead(hScatter, GameData.PlayerCameraManager + GameData.Offset["CameraCacheLocation"], &Camera.Location);
-					mem.AddScatterRead(hScatter, GameData.PlayerCameraManager + GameData.Offset["CameraCacheRotation"], &Camera.Rotation);
-					mem.AddScatterRead(hScatter, GameData.PlayerCameraManager + GameData.Offset["CameraCacheFOV"], &Camera.FOV);
-				}
+				NextCamera = Camera;
+				mem.AddScatterRead(hScatter, GameData.PlayerCameraManager + GameData.Offset["CameraCacheLocation"], &NextCamera.Location);
+				mem.AddScatterRead(hScatter, GameData.PlayerCameraManager + GameData.Offset["CameraCacheRotation"], &NextCamera.Rotation);
+				mem.AddScatterRead(hScatter, GameData.PlayerCameraManager + GameData.Offset["CameraCacheFOV"], &NextCamera.FOV);
 				mem.AddScatterRead(hScatter, GameData.UWorld + GameData.Offset["TimeSeconds"], &TimeSeconds);
 				mem.ExecuteReadScatter(hScatter);
+
+				if (IsCameraDataValid(NextCamera) || !GameData.Config.Overlay.UseLastFrameCameraCache || !IsCameraDataValid(Camera))
+				{
+					Camera = NextCamera;
+				}
+				else
+				{
+					Utils::LogThrottled("Overlay.Camera.LastFrameCache", 3000, 3, "Invalid overlay camera read, using last valid frame");
+				}
 
 				GameData.Camera = Camera;
 				GameData.WorldTimeSeconds = TimeSeconds;

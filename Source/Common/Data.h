@@ -734,6 +734,14 @@ struct CameraData
 	float FOV;
 };
 
+inline bool IsCameraDataValid(const CameraData& Camera)
+{
+	return std::isfinite(Camera.Location.X) && std::isfinite(Camera.Location.Y) && std::isfinite(Camera.Location.Z) &&
+		std::isfinite(Camera.Rotation.Pitch) && std::isfinite(Camera.Rotation.Yaw) && std::isfinite(Camera.Rotation.Roll) &&
+		std::isfinite(Camera.FOV) && Camera.FOV > 1.0f && Camera.FOV < 180.0f &&
+		!Camera.Location.IsNearlyZero(1.0f);
+}
+
 struct PlayerRankInfo {
 	bool Updated;
 	std::string Tier = "";
