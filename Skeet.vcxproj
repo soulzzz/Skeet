@@ -355,6 +355,7 @@
     <ClInclude Include="Source\Utils\MoBox.h" />
     <ClInclude Include="Source\Utils\NetConfig\HidTable.h" />
     <ClInclude Include="Source\Utils\NetConfig\kmboxNet.h" />
+    <ClInclude Include="Source\Utils\RuntimeStats.h" />
     <ClInclude Include="Source\Utils\stb_image.h" />
     <ClInclude Include="Source\Utils\string.h" />
     <ClInclude Include="Source\Utils\Throttler.h" />

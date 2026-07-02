@@ -18,6 +18,7 @@
 #include <Utils/ue4math/rotator.h>
 #include <Utils/ue4math/transform.h>
 #include <Utils/Timer.h>
+#include <Utils/RuntimeStats.h>
 #include <Hack/KeyState.h>
 #include <Hack/Decrypt.h>
 #include <Hack/GNames.h>
@@ -57,8 +58,10 @@ public:
 		auto hScatter = mem.CreateScatterHandle();
 		while (true)
 		{
+			const auto TickStart = RuntimeStats::Now();
 			if (GameData.Scene != Scene::Gaming || Utils::ValidPtr(GameData.GameBase))
 			{
+				RuntimeStats::Record(RuntimeStats::ThreadId::Core, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
@@ -68,6 +71,7 @@ public:
 			GameData.UWorld = Decrypt::Xe(mem.Read<uint64_t>(GameData.GameBase + GameData.Offset["UWorld"]));
 			if (Utils::ValidPtr(GameData.UWorld))
 			{
+				RuntimeStats::Record(RuntimeStats::ThreadId::Core, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
@@ -76,6 +80,8 @@ public:
 			if (Utils::ValidPtr(GameData.GameInstance))
 			{
 				Utils::LogThrottled("HackInvalidGameInstance", 5000, 3, "Invalid GameInstance, waiting for next refresh");
+				RuntimeStats::AddError(RuntimeStats::ThreadId::Core);
+				RuntimeStats::Record(RuntimeStats::ThreadId::Core, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
@@ -87,6 +93,8 @@ public:
 			if (Utils::ValidPtr(LocalPlayerArray))
 			{
 				Utils::LogThrottled("HackInvalidLocalPlayerArray", 5000, 3, "Invalid LocalPlayer array, waiting for next refresh");
+				RuntimeStats::AddError(RuntimeStats::ThreadId::Core);
+				RuntimeStats::Record(RuntimeStats::ThreadId::Core, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
@@ -100,6 +108,8 @@ public:
 				Utils::ValidPtr(GameData.CurrentLevel) || Utils::ValidPtr(GameData.ActorArray))
 			{
 				Utils::LogThrottled("HackInvalidCorePointers", 5000, 3, "Invalid core pointer, waiting for next refresh");
+				RuntimeStats::AddError(RuntimeStats::ThreadId::Core);
+				RuntimeStats::Record(RuntimeStats::ThreadId::Core, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
@@ -144,6 +154,7 @@ public:
 			Players::UpdatePlayerLists();
 			Radar::UpdateWorldMapInfo();
 
+			RuntimeStats::Record(RuntimeStats::ThreadId::Core, TickStart, static_cast<uint32_t>(GameData.PlayerCount > 0 ? GameData.PlayerCount : 0));
 			Sleep(300);
 		}
 		mem.CloseScatterHandle(hScatter);
@@ -265,14 +276,18 @@ public:
 
 		while (true)
 		{
+			const auto TickStart = RuntimeStats::Now();
 			if (GameData.Scene != Scene::Gaming || !GameData.Config.Overlay.UseThread)
 			{
+				RuntimeStats::Record(RuntimeStats::ThreadId::Camera, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
 
 			if (!GameData.PlayerCameraManager || !GameData.UWorld)
 			{
+				RuntimeStats::AddError(RuntimeStats::ThreadId::Camera);
+				RuntimeStats::Record(RuntimeStats::ThreadId::Camera, TickStart);
 				Sleep(1);
 				continue;
 			}
@@ -296,6 +311,7 @@ public:
 			GameData.Camera = Camera;
 			GameData.WorldTimeSeconds = TimeSeconds;
 
+			RuntimeStats::Record(RuntimeStats::ThreadId::Camera, TickStart);
 			Sleep(1);
 		}
 		mem.CloseScatterHandle(hScatter);
@@ -313,6 +329,7 @@ public:
 		while (true)
 		{
 			Throttlered.executeTask("UpdatePID", std::chrono::milliseconds(1500), [&GameProcessFound, &PrevGameProcessFound, &LastMapID, &LastMapName] {
+				const auto TickStart = RuntimeStats::Now();
 				DWORD PID = mem.GetTslGamePID();
 				if (PID == 0)
 				{
@@ -340,6 +357,7 @@ public:
 					}
 				}
 				PrevGameProcessFound = GameProcessFound;
+				RuntimeStats::Record(RuntimeStats::ThreadId::PID, TickStart, PID);
 				});
 
 			

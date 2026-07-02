@@ -6,6 +6,7 @@
 #include "utils/Lurker.h"
 #include "utils/KmBoxNet.h"
 #include "utils/MoBox.h"
+#include "utils/RuntimeStats.h"
 #include <Hack/LineTraceHook.h>
 #include <set>
 #define MAX_flt			(3.402823466e+38F)
@@ -901,6 +902,7 @@ public:
 
         while (true)
         {
+            RuntimeStats::ScopedRecord RuntimeScope(RuntimeStats::ThreadId::AimBot);
             //Timer timer("1");
 
             int FrameDelayMs = 1;

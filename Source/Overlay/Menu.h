@@ -15,6 +15,7 @@
 #include <Utils/MoBox.h>
 #include <Utils/Throttler.h>
 #include <Utils/Utils.h>
+#include <Utils/RuntimeStats.h>
 #include "Common/Config.h"
 #include <Utils/FNVHash.h>
 #include <vector>
@@ -127,6 +128,45 @@ inline void ApplySkeetPreset(int preset)
 		GameData.Config.ESP.PhysXDebug = false;
 		Utils::Log(1, "Applied Skeet balanced preset");
 		break;
+	}
+}
+
+inline void DrawSkeetRuntimeStats()
+{
+	const auto snapshots = RuntimeStats::Snapshot();
+	ImGui::TextDisabled(U8("线程状态：绿色正常，黄色代表最近未刷新。耗时不含显式 Sleep。"));
+	if (ImGui::BeginTable("SkeetRuntimeStatsTable", 6, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
+	{
+		ImGui::TableSetupColumn(U8("线程"));
+		ImGui::TableSetupColumn(U8("次数"));
+		ImGui::TableSetupColumn(U8("最近ms"));
+		ImGui::TableSetupColumn(U8("峰值ms"));
+		ImGui::TableSetupColumn(U8("延迟ms"));
+		ImGui::TableSetupColumn(U8("数量"));
+		ImGui::TableHeadersRow();
+
+		for (const auto& item : snapshots)
+		{
+			const bool neverSeen = item.TickCount == 0;
+			const bool stale = !neverSeen && item.LastSeenAgeMs > 3000;
+			const ImVec4 statusColor = neverSeen ? ImVec4(0.55f, 0.55f, 0.55f, 1.0f) :
+				(stale ? ImVec4(1.0f, 0.75f, 0.25f, 1.0f) : ImVec4(0.35f, 1.0f, 0.45f, 1.0f));
+
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+			ImGui::TextColored(statusColor, "%s", item.Name.c_str());
+			ImGui::TableSetColumnIndex(1);
+			ImGui::Text("%llu", static_cast<unsigned long long>(item.TickCount));
+			ImGui::TableSetColumnIndex(2);
+			ImGui::Text("%.2f", item.LastDurationUs / 1000.0f);
+			ImGui::TableSetColumnIndex(3);
+			ImGui::Text("%.2f", item.MaxDurationUs / 1000.0f);
+			ImGui::TableSetColumnIndex(4);
+			ImGui::Text("%llu", static_cast<unsigned long long>(item.LastSeenAgeMs));
+			ImGui::TableSetColumnIndex(5);
+			ImGui::Text("%u", item.LastItemCount);
+		}
+		ImGui::EndTable();
 	}
 }
 
@@ -1857,6 +1897,12 @@ public:
 								 SkeetHelpMarker(U8("均衡推荐适合日常；性能优先减少绘制负担；清晰优先提升文字/骨骼观感。"));
 								 ImGui::Separator();
 
+								 if (ImGui::CollapsingHeader(U8("运行状态 / 性能诊断")))
+								 {
+									 DrawSkeetRuntimeStats();
+								 }
+								 ImGui::Separator();
+
 								 ImGui::Checkbox(U8("指向模式"), &GameData.Config.Overlay.zhixiangmoshi);
 
 								 ImGui::Checkbox(U8("垂直同步"), &GameData.Config.Overlay.VSync);
@@ -1927,5 +1973,3 @@ public:
 	};
 
 };
-
-

@@ -4,6 +4,7 @@
 #include <Common/Entitys.h>
 #include <Utils/Utils.h>
 #include <Utils/Throttler.h>
+#include <Utils/RuntimeStats.h>
 #include <Hack/Decrypt.h>
 #include <thread>
 #include <mutex>
@@ -131,8 +132,10 @@ public:
 	{
 		while (true)
 		{
+			const auto TickStart = RuntimeStats::Now();
 			if (GameData.Scene != Scene::Gaming)
 			{
+				RuntimeStats::Record(RuntimeStats::ThreadId::FogPlayers, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
@@ -140,6 +143,8 @@ public:
 			if (Utils::ValidPtr(GameData.AntiCheatCharacterSyncManager))
 			{
 				Data::SetFogPlayers({});
+				RuntimeStats::AddError(RuntimeStats::ThreadId::FogPlayers);
+				RuntimeStats::Record(RuntimeStats::ThreadId::FogPlayers, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
@@ -158,6 +163,7 @@ public:
 
 			Data::SetFogPlayers(FogPlayerInfos);
 
+			RuntimeStats::Record(RuntimeStats::ThreadId::FogPlayers, TickStart, static_cast<uint32_t>(FogPlayerInfos.size()));
 			Sleep(50);
 		}
 	}
@@ -317,6 +323,7 @@ public:
 		float TimeSeconds = 0.f;
 		while (true)
 		{
+			const auto TickStart = RuntimeStats::Now();
 			if (GameData.Scene != Scene::Gaming)
 			{
 				TimeSeconds = 0.f;
@@ -326,6 +333,7 @@ public:
 				GameData.PlayerRankLists.clear();
 				Data::SetPlayerLists({});
 				GameData.LocalPlayerInfo = Player();
+				RuntimeStats::Record(RuntimeStats::ThreadId::Players, TickStart);
 				Sleep(GameData.ThreadSleep);
 				continue;
 			}
@@ -884,6 +892,8 @@ public:
 			Data::SetPlayers(CachePlayers);
 			Data::SetPlayersData(PlayersData);
 			GameData.FogPlayerCount = FogPlayerCount;
+			RuntimeStats::Record(RuntimeStats::ThreadId::Players, TickStart, static_cast<uint32_t>(CachePlayers.size()));
+			Sleep(1);
 
 		}
 		mem.CloseScatterHandle(hScatter);

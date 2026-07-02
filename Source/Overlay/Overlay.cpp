@@ -15,6 +15,7 @@
 #include <dwmapi.h>
 #include <Utils/Throttler.h>
 #include <Utils/Utils.h>
+#include <Utils/RuntimeStats.h>
 #include "Style.h"
 #include "Map.h"
 #include "RenderHelper.h"
@@ -1915,6 +1916,7 @@ int Overlay::Init(HWND TargetWnd, DRAW_PROC DrawProc, int Width, int Height)
 	bool is = true;
 	while (is)
 	{
+		RuntimeStats::ScopedRecord RuntimeScope(RuntimeStats::ThreadId::Overlay);
 		MSG msg;
 		while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
 		{

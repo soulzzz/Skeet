@@ -99,6 +99,7 @@
     <ClInclude Include="Source\Utils\string.h" />
     <ClInclude Include="Source\Utils\Throttler.h" />
     <ClInclude Include="Source\Utils\Timer.h" />
+    <ClInclude Include="Source\Utils\RuntimeStats.h" />
     <ClInclude Include="Source\Utils\ue4math\matrix.h" />
     <ClInclude Include="Source\Utils\ue4math\quat.h" />
     <ClInclude Include="Source\Utils\ue4math\rotator.h" />

@@ -4,6 +4,7 @@
 #include <Common/Entitys.h>
 #include <Utils/Utils.h>
 #include <Utils/Throttler.h>
+#include <Utils/RuntimeStats.h>
 #include <Hack/GNames.h>
 #include <Hack/Decrypt.h>
 
@@ -134,10 +135,12 @@ public:
         Throttler Throttlered;
         while (true)
         {
+            const auto TickStart = RuntimeStats::Now();
             if (GameData.Scene != Scene::Gaming)
             {
                 CacheItems.clear();
                 Data::SetItems({});
+                RuntimeStats::Record(RuntimeStats::ThreadId::Items, TickStart);
                 Sleep(GameData.ThreadSleep);
                 continue;
             }
@@ -146,6 +149,7 @@ public:
             {
                 CacheItems.clear();
                 Data::SetItems({});
+                RuntimeStats::Record(RuntimeStats::ThreadId::Items, TickStart);
                 Sleep(200);
                 continue;
             }
@@ -343,6 +347,7 @@ public:
 
             Data::SetItems(CacheItems);
 
+            RuntimeStats::Record(RuntimeStats::ThreadId::Items, TickStart, static_cast<uint32_t>(CacheItems.size()));
             Sleep(200);
         }
         mem.CloseScatterHandle(hScatter);

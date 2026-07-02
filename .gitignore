@@ -1,5 +1,6 @@
 # ===================== Build output =====================
 /x64/
+/dist/
 /Debug/
 /Release/
 [Dd]ebug/

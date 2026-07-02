@@ -4,6 +4,7 @@
 #include <Common/Entitys.h>
 #include <Utils/Utils.h>
 #include <Utils/Throttler.h>
+#include <Utils/RuntimeStats.h>
 #include <Hack/GNames.h>
 #include <Utils/FNVHash.h>
 #include <algorithm>
@@ -18,8 +19,10 @@ public:
 
         while (true)
         {
+            const auto TickStart = RuntimeStats::Now();
             if (GameData.Scene != Scene::Gaming)
             {
+                RuntimeStats::Record(RuntimeStats::ThreadId::Actors, TickStart);
                 Sleep(GameData.ThreadSleep);
                 continue;
             }
@@ -226,6 +229,7 @@ public:
                 GNames::ReadGNames(NeedGetNameIDs);
             }
 
+            RuntimeStats::Record(RuntimeStats::ThreadId::Actors, TickStart, static_cast<uint32_t>(Entitys.size()));
             Sleep(30);
         }
         mem.CloseScatterHandle(hScatter);

@@ -4,6 +4,7 @@
 #include <Common/Entitys.h>
 #include <Utils/Utils.h>
 #include <Utils/Throttler.h>
+#include <Utils/RuntimeStats.h>
 #include <Hack/GNames.h>
 #include <Hack/Decrypt.h>
 
@@ -16,12 +17,15 @@ public:
         std::unordered_map<uint64_t, VehicleInfo> CacheVehicles;
         while (true)
         {
+            const auto TickStart = RuntimeStats::Now();
+            uint32_t VehicleCount = 0;
             if (GameData.Scene != Scene::Gaming)
             {
                 CacheVehicles.clear();
                 Data::SetVehicles({});
                 Data::SetVehiclWheels({});
                 Data::SetPackages({});
+                RuntimeStats::Record(RuntimeStats::ThreadId::Vehicles, TickStart);
                 Sleep(GameData.ThreadSleep);
                 continue;
             }
@@ -31,6 +35,7 @@ public:
 
                 std::unordered_map<uint64_t, VehicleInfo> Vehicles = Data::GetCacheVehicles();
                 std::unordered_map<uint64_t, VehicleWheelInfo> VehicleWheels = {};
+                VehicleCount = static_cast<uint32_t>(Vehicles.size());
 
                 for (auto& Item : Vehicles)
                 {
@@ -232,7 +237,7 @@ public:
 
                 Data::SetPackages(CachePackages);
             }
-
+            RuntimeStats::Record(RuntimeStats::ThreadId::Vehicles, TickStart, VehicleCount);
             Sleep(100);
         }
         mem.CloseScatterHandle(hScatter);

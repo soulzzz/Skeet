@@ -4,6 +4,7 @@
 #include <Common/Entitys.h>
 #include <Utils/Utils.h>
 #include <Utils/Throttler.h>
+#include <Utils/RuntimeStats.h>
 #include <Hack/GNames.h>
 
 class Projects
@@ -16,10 +17,12 @@ public:
         Throttler Throttlered;
         while (true)
         {
+            const auto TickStart = RuntimeStats::Now();
             if (GameData.Scene != Scene::Gaming)
             {
                 Times.clear();
                 Data::SetCacheProjects({});
+                RuntimeStats::Record(RuntimeStats::ThreadId::Projects, TickStart);
                 Sleep(GameData.ThreadSleep);
                 continue;
             }
@@ -78,6 +81,7 @@ public:
             }
 
             Data::SetProjects(CacheProjects);
+            RuntimeStats::Record(RuntimeStats::ThreadId::Projects, TickStart, static_cast<uint32_t>(CacheProjects.size()));
             Sleep(20);
         }
         mem.CloseScatterHandle(hScatter);

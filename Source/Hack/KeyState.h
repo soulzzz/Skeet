@@ -4,6 +4,7 @@
 #include <Common/Data.h>
 #include <Utils/KmBox.h>
 #include <Utils/KmBoxNet.h>
+#include <Utils/RuntimeStats.h>
 #include <Hack/Players.h>
 #include <string_view>
 
@@ -28,6 +29,7 @@ namespace KeyState
 		//Utils::Log(1, "Key Thread Running...");
 		while (true)
 		{
+			const auto TickStart = RuntimeStats::Now();
 			GameData.Keyboard.UpdateKeys();
 
 			const std::pair<int, const char*> Keys[] = {
@@ -247,6 +249,7 @@ namespace KeyState
 				}
 			}
 
+			RuntimeStats::Record(RuntimeStats::ThreadId::KeyState, TickStart);
 			Sleep(3);
 		}
 	}

@@ -5,6 +5,7 @@
 #include <Common/Constant.h>
 #include <Utils/Utils.h>
 #include <Utils/Throttler.h>
+#include <Utils/RuntimeStats.h>
 #include <Hack/GNames.h>
 #include <Hack/Decrypt.h>
 
@@ -187,11 +188,13 @@ public:
         int SleepTime = 4;
         while (true)
         {
+            const auto TickStart = RuntimeStats::Now();
             if (GameData.Scene != Scene::Gaming || GameData.Radar.MapSize.Size <= 0)
             {
                 GameData.Radar.MapSize = {};
                 GameData.Radar.MapGrid = 0;
                 GameData.Radar.MiniMapWidget = 0;
+                RuntimeStats::Record(RuntimeStats::ThreadId::Radar, TickStart);
                 Sleep(GameData.ThreadSleep);
                 continue;
             }
@@ -299,6 +302,8 @@ public:
 
                 //Utils::Log(1, "%d %f %f %f", GameData.Radar.Visibility, GameData.Radar.ZoomFactor, GameData.Radar.Position.X, GameData.Radar.Position.Y);
             }
+
+            RuntimeStats::Record(RuntimeStats::ThreadId::Radar, TickStart);
         }
         mem.CloseScatterHandle(hScatter);
     }

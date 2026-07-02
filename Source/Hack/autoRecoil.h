@@ -7,6 +7,7 @@
 #include "utils/KmBoxNet.h"
 #include "utils/MoBox.h"
 #include "utils/Utils.h"
+#include "utils/RuntimeStats.h"
 
 class Recoil
 {
@@ -43,6 +44,7 @@ public:
 		auto Recolhs = mem.CreateScatterHandle();
 		while (true)
 		{
+			RuntimeStats::ScopedRecord RuntimeScope(RuntimeStats::ThreadId::Recoil);
 			if (GameData.Scene != Scene::Gaming)
 			{
 				Sleep(GameData.ThreadSleep);

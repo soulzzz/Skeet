@@ -58,6 +58,7 @@ Skeet 是一个基于 Visual Studio / MSBuild 的 C++ x64 工程，当前解决�
 ### 7. 软件 / Overlay 设置
 
 - 一键预设：均衡推荐、性能优先、清晰优先，快速切换常用显示/性能组合。
+- 运行状态 / 性能诊断：查看 PID、Core、Actors、Players、Items、Overlay 等线程最近耗时、峰值耗时、刷新延迟和实体数量。
 - 菜单主题和背景样式。
 - 机器人/目标颜色设置。
 - 指向模式。
@@ -140,6 +141,28 @@ zstd.dll
 
 当前工程已移除 MQTT / Mosquitto 依赖，代码和工程文件不再引用 `mosquitto.lib`、`mosquitto.dll` 或 `mqtt` 目录。
 
+## 打包发布
+
+生成 Release 后可执行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\AMD\Skeet\tools\package_release.ps1
+```
+
+如果希望打包前自动重新编译：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\AMD\Skeet\tools\package_release.ps1 -Build
+```
+
+输出目录：
+
+```text
+D:\AMD\Skeet\dist\Skeet\
+```
+
+脚本会复制 `Skeet.exe`、运行所需 DLL、`README.md`，并生成 `package-manifest.json`。
+
 ## 配置与日志
 
 - 默认配置文件：`Config/SkeetConfig.bak`。
@@ -148,6 +171,7 @@ zstd.dll
 - 高频渲染/射线/PhysX 异常日志已做限流，避免日志 IO 影响 DMA 读取与渲染帧率。
 - Overlay 默认启用独立线程模式，以降低渲染和数据读取互相阻塞的概率。
 - 软件设置页提供一键预设：均衡推荐适合日常，性能优先降低绘制负担，清晰优先提升文字和骨骼观感。
+- 软件设置页提供运行状态 / 性能诊断表，用于快速判断线程是否正常刷新以及哪些模块耗时较高。
 - 菜单关键性能选项带 `(?)` 提示，鼠标悬停即可查看用途，方便快速理解和操作。
 
 ## Offset 更新
